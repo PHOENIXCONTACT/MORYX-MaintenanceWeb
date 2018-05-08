@@ -1,0 +1,62 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build via yarn",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "type": "shell",
+            "command": "yarn build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Install via yarn",
+            "type": "shell",
+            "command": "yarn install",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Start debugging environment",
+            "type": "shell",
+            "command": "yarn",
+			"args": [
+				"start",
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "webpack-dev-server",
+                "fileLocation": "relative",
+                "pattern": {
+                    "regexp": "^([^\\s].*)\\((\\d+|\\,\\d+|\\d+,\\d+,\\d+,\\d+)\\):\\s+(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+                    "file": 1,
+                    "location": 2,
+                    "severity": 3,
+                    "code": 4,
+                    "message": 5
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "yarn run",
+                    "endsPattern": "(Compiled successfully|Compiled with warnings)"
+                }
+            }
+        }
+    ]
+}
