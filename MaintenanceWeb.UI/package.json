@@ -5,9 +5,9 @@
     "main": "index.js",
     "scripts": {
         "start": "yarn dev",
-        "dev": "webpack-dev-server --watch --progress --mode development",
+        "dev": "webpack-dev-server --watch --progress --mode development --config webpack.dev.config.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "yarn install && rimraf dist/*.js && ./node_modules/.bin/webpack --mode production",
+        "build": "yarn install && rimraf dist/*.js && ./node_modules/.bin/webpack --mode production --config webpack.prod.config.js",
         "stop": "rimraf logs/* || true"
     },
     "author": "mma",
@@ -56,6 +56,7 @@
     "devDependencies": {
         "tslint": "^5.9.1",
         "tslint-loader": "^3.6.0",
-        "tslint-react": "^3.5.1"
+        "tslint-react": "^3.5.1",
+        "webpack-merge": "^4.1.2"
     }
 }

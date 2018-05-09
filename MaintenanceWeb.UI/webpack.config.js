@@ -1,10 +1,10 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 module.exports = (env, options) => {
     console.log(`Webpack 4 'mode': ${options.mode}`);
     return {
         entry: {
-            app: "./src/index.tsx",
+            app: __dirname + "/src/index.tsx",
         },
         output: {
             filename: "bundle.js",
@@ -15,10 +15,6 @@ module.exports = (env, options) => {
             contentBase: __dirname + "/dist"
         },
         
-        // Enable sourcemaps for debugging webpack's output.
-        //devtool: "inline-source-map",
-        devtool: options.mode == "production" ? "" : "inline-source-map",
-
         resolve: {
             // Add '.ts' and '.tsx' as resolvable extensions.
             extensions: [".ts", ".tsx", ".js", ".json"]

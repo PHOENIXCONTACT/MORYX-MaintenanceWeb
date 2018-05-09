@@ -1,3 +1,4 @@
+require("../../types/constants");
 import { ActionType } from "../../common/redux/Types";
 import ModulesRestClient from "../api/ModulesRestClient";
 import Config from "../models/Config";
@@ -15,7 +16,7 @@ export interface IModulesState {
 }
 
 export const initialModulesState: IModulesState = {
-  RestClient: new ModulesRestClient(window.location.hostname, parseInt(window.location.port)),
+  RestClient: new ModulesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
   Modules: [],
   Configs: [],
 };

@@ -1,3 +1,4 @@
+require("../../types/constants");
 import { ActionType } from "../../common/redux/Types";
 import DatabasesRestClient from "../api/DatabasesRestClient";
 import DataModel from "../models/DataModel";
@@ -9,7 +10,7 @@ export interface IDatabaseState {
 }
 
 export const initialDatabaseState: IDatabaseState = {
-    RestClient: new DatabasesRestClient(window.location.hostname, 80),
+    RestClient: new DatabasesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
     DatabaseConfigs: [],
 };
 

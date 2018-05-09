@@ -1,3 +1,4 @@
+require("../../types/constants");
 import { ActionType } from "../../common/redux/Types";
 import LogRestClient from "../api/LogRestClient";
 import LoggerModel from "../models/LoggerModel";
@@ -9,7 +10,7 @@ export interface ILogState {
 }
 
 export const initialLogState: ILogState = {
-    RestClient: new LogRestClient(window.location.hostname, 80),
+    RestClient: new LogRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
     Loggers: [],
 };
 

@@ -1,3 +1,4 @@
+require("../../types/constants");
 import NotificationSystem = require("react-notification-system");
 import CommonRestClient from "../api/CommonRestClient";
 import RestClientEndpoint from "../models/RestClientEnpoint";
@@ -15,7 +16,7 @@ export interface ICommonState {
 export const initialCommonState: ICommonState = {
     IsConnected: false,
     ServerTime: "",
-    RestClient: new CommonRestClient(window.location.hostname, 80),
+    RestClient: new CommonRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
     ShowWaitDialog: false,
     NotificationSystem: null,
 };
