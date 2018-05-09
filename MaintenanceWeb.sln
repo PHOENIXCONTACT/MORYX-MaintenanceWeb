@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceWeb.WebServer", "MaintenanceWeb.WebServer\MaintenanceWeb.WebServer.csproj", "{E1227A92-C942-42D3-A35A-D4C4C3574E78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marvin.Maintenance.Web", "Marvin.Maintenance.Web\Marvin.Maintenance.Web.csproj", "{E1227A92-C942-42D3-A35A-D4C4C3574E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaintenanceWeb.StartProject", "MaintenanceWeb.StartProject\MaintenanceWeb.StartProject.csproj", "{4888F7F7-6CC4-4FA2-A6E1-E24E565546A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartProject", "StartProject\StartProject.csproj", "{4888F7F7-6CC4-4FA2-A6E1-E24E565546A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

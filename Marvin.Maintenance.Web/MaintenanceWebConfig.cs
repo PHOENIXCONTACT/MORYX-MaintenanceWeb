@@ -2,15 +2,15 @@
 using Marvin.Runtime.Maintenance.Contracts;
 using Marvin.Tools.Wcf;
 
-namespace MaintenanceWeb.WebServer
+namespace Marvin.Maintenance.Web
 {
     [DataContract]
-    public class MaintenanceWebServerPluginConfig : MaintenancePluginConfig
+    public class MaintenanceWebConfig : MaintenancePluginConfig
     {
         /// <summary>
         /// Constructor for web server config. Creates an endpoint with name "MaintenanceWeb".
         /// </summary>
-        public MaintenanceWebServerPluginConfig()
+        public MaintenanceWebConfig()
         {
             ProvidedEndpoint = new HostConfig
             {
@@ -21,7 +21,6 @@ namespace MaintenanceWeb.WebServer
         /// <summary>
         /// The name of the plugin.
         /// </summary>
-        public override string PluginName => MaintenanceWebServerPlugin.PluginName;
-
+        public override string PluginName => MaintenanceWeb.PluginName;
     }
 }

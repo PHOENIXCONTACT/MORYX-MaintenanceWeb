@@ -4,7 +4,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using Marvin.Container;
 
-namespace MaintenanceWeb.WebServer.WebServerService
+namespace Marvin.Maintenance.Web
 {
     /// <summary>
     /// Service for the file system. 
@@ -17,14 +17,14 @@ namespace MaintenanceWeb.WebServer.WebServerService
         {
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
 
-            return GetResourceByName("MaintenanceWeb.WebServer.wwwroot.index.html");
+            return GetResourceByName("Maintenance.Web.wwwroot.index.html");
         }
 
         public Stream BundleJs()
         {
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/javascript";
 
-            return GetResourceByName("MaintenanceWeb.WebServer.wwwroot.bundle.js");
+            return GetResourceByName("Maintenance.Web.wwwroot.bundle.js");
         }
 
         private Stream GetResourceByName(string resourceName)

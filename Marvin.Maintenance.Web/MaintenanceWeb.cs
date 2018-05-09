@@ -1,15 +1,14 @@
-﻿using MaintenanceWeb.WebServer.WebServerService;
-using Marvin.Container;
+﻿using Marvin.Container;
 using Marvin.Modules;
 using Marvin.Runtime.Maintenance.Contracts;
 using Marvin.Runtime.Maintenance.Plugins;
 
-namespace MaintenanceWeb.WebServer
+namespace Marvin.Maintenance.Web
 {
-    [ExpectedConfig(typeof(MaintenanceWebServerPluginConfig))]
+    [ExpectedConfig(typeof(MaintenanceWebConfig))]
     [Plugin(LifeCycle.Singleton, typeof(IMaintenancePlugin), Name = PluginName)]
     [DependencyRegistration(typeof(IWebServerFileSystem))]
-    internal class MaintenanceWebServerPlugin : MaintenancePluginBase<MaintenanceWebServerPluginConfig, IWebServerFileSystem>
+    internal class MaintenanceWeb : MaintenancePluginBase<MaintenanceWebConfig, IWebServerFileSystem>
     {
         public const string PluginName = "MaintenanceWebServerModule";
     }

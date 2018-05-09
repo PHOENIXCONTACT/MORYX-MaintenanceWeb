@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E1227A92-C942-42D3-A35A-D4C4C3574E78}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{4888F7F7-6CC4-4FA2-A6E1-E24E565546A2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MaintenanceWeb.WebServer</RootNamespace>
-    <AssemblyName>MaintenanceWeb.WebServer</AssemblyName>
+    <RootNamespace>StartProject</RootNamespace>
+    <AssemblyName>StartProject</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,13 +30,52 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.2.1\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Facilities.WcfIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.WcfIntegrationFacility.4.1.0\lib\net45\Castle.Facilities.WcfIntegration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.4.1.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net208, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Log4Net208.3.4.1\lib\net40\Common.Logging.Log4Net208.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Marvin, Version=3.0.0.1073, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Marvin.3.0.0-dev001073\lib\net461\Marvin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Marvin.Container, Version=3.0.0.1073, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Marvin.Container.3.0.0-dev001073\lib\net461\Marvin.Container.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Marvin.Runtime, Version=3.0.0.1073, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Marvin.Runtime.3.0.0-dev001073\lib\net461\Marvin.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Marvin.Runtime.Kernel, Version=3.0.0.1073, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Marvin.Runtime.Kernel.3.0.0-dev001073\lib\net461\Marvin.Runtime.Kernel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Marvin.Runtime.Maintenance, Version=3.0.0.1073, Culture=neutral, processorArchitecture=MSIL">
@@ -52,10 +91,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Data.Services" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,22 +109,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MaintenanceWebServerPluginConfig.cs" />
-    <Compile Include="WebServerService\IWebServerFileSystem.cs" />
-    <Compile Include="WebServerService\WebServerFileSystem.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MaintenanceWebServerPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\MaintenanceWeb.UI\dist\bundle.js">
-      <Link>wwwroot\bundle.js</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\MaintenanceWeb.UI\dist\index.html">
-      <Link>wwwroot\index.html</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Marvin.Maintenance.Web\Marvin.Maintenance.Web.csproj">
+      <Project>{e1227a92-c942-42d3-a35a-d4c4c3574e78}</Project>
+      <Name>MaintenanceWeb.WebServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

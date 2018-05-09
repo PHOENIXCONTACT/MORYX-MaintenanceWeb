@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.ServiceModel;
-using Marvin.Tools.Wcf;
 using System.ServiceModel.Web;
+using Marvin.Tools.Wcf;
 
-namespace MaintenanceWeb.WebServer.WebServerService
+namespace Marvin.Maintenance.Web
 {
     /// <summary>
     /// Service contract for the maintenance file system.

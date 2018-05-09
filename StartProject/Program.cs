@@ -1,6 +1,6 @@
 ﻿using Marvin.Runtime.Kernel;
 
-namespace MaintenanceWeb.StartProject
+namespace StartProject
 {
     public class Program
     {
