@@ -159,8 +159,8 @@ class App extends React.Component<IAppPropModel & RouteComponentProps<{}> & IApp
                             <FontAwesomeIcon icon={faCubes} className="right-space" />
                             Maintenance
                         </NavbarBrand>
-                        <Collapse navbar>
-                            <Nav className="navbar-left" navbar>
+                        <Collapse navbar={true}>
+                            <Nav className="navbar-left" navbar={true}>
                                 <NavItem className={this.isRouteActive("/modules") ? "active" : ""}>
                                     <Link to="/modules">
                                         <FontAwesomeIcon icon={faSitemap} className="right-space" />
@@ -185,7 +185,7 @@ class App extends React.Component<IAppPropModel & RouteComponentProps<{}> & IApp
 
                     <Container fluid={true} id="body" className="content">
                         <Switch>
-                            <Route exact path="/" component={Dashboard} />
+                            <Route exact={true} path="/" component={Dashboard} />
                             <Route path="/modules" component={Modules} />
                             <Route path="/databases" component={Databases} />
                             <Route path="/log" component={Log} />

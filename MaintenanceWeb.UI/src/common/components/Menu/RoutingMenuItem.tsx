@@ -44,7 +44,8 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuIte
                              onMenuItemClicked={this.onMenuItemClicked}
                              match={this.props.match}
                              location={this.props.location}
-                             history={this.props.history} />);
+                             history={this.props.history}
+                             staticContext={this.props.staticContext} />);
     }
 
     public render() {

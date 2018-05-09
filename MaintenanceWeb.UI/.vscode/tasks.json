@@ -4,12 +4,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build via yarn",
+            "label": "Build via npm",
             "problemMatcher": [
                 "$tsc"
             ],
             "type": "shell",
-            "command": "yarn build",
+            "command": "npm run-script build",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -20,9 +20,9 @@
             }
         },
         {
-            "label": "Install via yarn",
+            "label": "Install via npm",
             "type": "shell",
-            "command": "yarn install",
+            "command": "npm install",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -31,10 +31,7 @@
         {
             "label": "Start debugging environment",
             "type": "shell",
-            "command": "yarn",
-			"args": [
-				"start",
-            ],
+            "command": "npm run-script dev",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -53,7 +50,7 @@
                 },
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": "yarn run",
+                    "beginsPattern": "npm run",
                     "endsPattern": "(Compiled successfully|Compiled with warnings)"
                 }
             }

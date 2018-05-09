@@ -167,12 +167,13 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    { this.state.LogMessages.length == 0 ? (
-                                        <span className="font-normal font-italic">No log messages found for this logger.</span>
-                                    ) : (
+                                    { this.state.LogMessages.length != 0 && (
                                         this.preRenderLogMessages()
                                     )}
                                 </tbody>
+                                { this.state.LogMessages.length == 0 && (
+                                        <span className="font-normal font-italic">No log messages found for this logger.</span>
+                                )}
                             </Table>
                         </Col>
                     </Row>

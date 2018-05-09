@@ -91,10 +91,10 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
 
         this.state.MenuModel.MenuItems.forEach((menuItem) => {
             const module = this.props.Modules.filter(function(element, index, array) { return element.Name == menuItem.Name; })[0];
-            routes.push(<Route key={idx} path={menuItem.NavPath} exact render={() => <Module Module={module} RestClient={this.props.RestClient} />}/>);
+            routes.push(<Route key={idx} path={menuItem.NavPath} exact={true} render={() => <Module Module={module} RestClient={this.props.RestClient} />}/>);
 
             menuItem.SubMenuItems.forEach((subMenuItem) => {
-                routes.push(<Route key={idx} path={subMenuItem.NavPath} exact
+                routes.push(<Route key={idx} path={subMenuItem.NavPath} exact={true}
                                    render={() => <ModuleConfiguration ModuleName={module.Name} RestClient={this.props.RestClient} />}/>);
                 ++idx;
             });
@@ -121,7 +121,7 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
                 </Col>
                 <Col md={9}>
                     <Switch>
-                        <Route exact path="/modules" render={() =>
+                        <Route exact={true} path="/modules" render={() =>
                             <Card>
                                 <CardHeader tag="h2">
                                     <FontAwesomeIcon icon={faComment} className="right-space" />

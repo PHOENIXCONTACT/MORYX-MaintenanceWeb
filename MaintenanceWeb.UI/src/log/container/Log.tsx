@@ -191,7 +191,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
                             Log
                         </CardHeader>
                         <CardBody>
-                            <Nav tabs>
+                            <Nav tabs={true}>
                                 <NavItem>
                                     <NavLink className={this.state.ActiveTab == "0" ? "active" : ""} onClick={() => { this.toggleTab("0"); }}>
                                         Overview

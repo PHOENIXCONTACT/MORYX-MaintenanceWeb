@@ -58,8 +58,8 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                     <Container fluid={true}>
                         {
                             this.props.Entry.SubEntries.map((entry, idx) =>
-                                <div>
-                                    <Row key={idx}>
+                                <div key={idx}>
+                                    <Row>
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
                                             <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>Open</Button>
@@ -77,7 +77,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                             <Col md={12}>
                                 <ButtonGroup>
                                     <UncontrolledDropdown>
-                                        <DropdownToggle caret>
+                                        <DropdownToggle caret={true}>
                                             {this.state.SelectedEntry}
                                         </DropdownToggle>
                                         <DropdownMenu>

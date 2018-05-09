@@ -134,7 +134,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 {this.props.Module.Dependencies.length == 0 ? (
                                     <span className="font-italic font-small">This module has no dependencies.</span>
                                 ) : (
-                                    <Table striped>
+                                    <Table striped={true}>
                                         <thead>
                                             <tr>
                                                 <th>Module Name</th>
@@ -190,7 +190,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 {this.props.Module.Notifications.length == 0 ? (
                                     <span className="font-italic font-small">No notifications detected.</span>
                                 ) : (
-                                <Table striped>
+                                <Table striped={true}>
                                     <thead>
                                         <tr>
                                             <th>Type</th>

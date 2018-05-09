@@ -321,7 +321,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                 <Container fluid={true}>
                                     <Row>
                                         <Col md={12}>
-                                            <Form inline>
+                                            <Form inline={true}>
                                                 <Input placeholder={"Host"} value={this.state.host} onChange={(e: React.FormEvent<HTMLInputElement>) => this.onChangeHost(e)} onBlur={this.onTestConnection.bind(this)} style={{width: "78%"}} />
                                                 <span className="center-text" style={{width: "2%"}}>:</span>
                                                 <Input placeholder={"Port"} value={this.state.port} onChange={(e: React.FormEvent<HTMLInputElement>) => this.onChangePort(e)} onBlur={this.onTestConnection.bind(this)} style={{width: "20%"}} />
@@ -384,7 +384,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                         </Row>
                         <Row className="up-space-lg">
                             <Col md={12}>
-                                <Nav tabs>
+                                <Nav tabs={true}>
                                     <NavItem>
                                         <NavLink active={this.state.activeTab == "1"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
                                     </NavItem>
