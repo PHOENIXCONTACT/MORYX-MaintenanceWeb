@@ -69,10 +69,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="..\Maintenance.Web.UI\dist\bundle.js">
+    <EmbeddedResource Include="..\Marvin.Maintenance.Web.UI\dist\bundle.js">
       <Link>wwwroot\bundle.js</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Maintenance.Web.UI\dist\index.html">
+    <EmbeddedResource Include="..\Marvin.Maintenance.Web.UI\dist\index.html">
       <Link>wwwroot\index.html</Link>
     </EmbeddedResource>
   </ItemGroup>

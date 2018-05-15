@@ -13,21 +13,26 @@ namespace Marvin.Maintenance.Web
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
     internal class WebServerFileSystem : IWebServerFileSystem
     {
+        private static readonly string AssemblyName;
+
+        static WebServerFileSystem()
+        {
+            AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+        }
+
         public Stream Html()
         {
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
-
-            return GetResourceByName("Maintenance.Web.wwwroot.index.html");
+            return GetResourceByName($"{AssemblyName}.wwwroot.index.html");
         }
 
         public Stream BundleJs()
         {
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/javascript";
-
-            return GetResourceByName("Maintenance.Web.wwwroot.bundle.js");
+            return GetResourceByName($"{AssemblyName}.wwwroot.bundle.js");
         }
 
-        private Stream GetResourceByName(string resourceName)
+        private static Stream GetResourceByName(string resourceName)
         {
             return Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
         }
