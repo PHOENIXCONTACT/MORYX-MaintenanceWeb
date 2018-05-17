@@ -74,15 +74,15 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
                                             <ButtonGroup>
-                                                <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>
+                                                <Button color="secondary" onClick={() => this.props.navigateToEntry(entry)}>
                                                     <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
                                                     Open
                                                 </Button>
-                                                <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
                                                     <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
                                                     Expand
                                                 </Button>
-                                                <Button color="primary" onClick={() => this.removeEntry(entry)}>
+                                                <Button color="secondary" onClick={() => this.removeEntry(entry)}>
                                                     <FontAwesomeIcon icon={faTrash} className="right-space" />
                                                     Remove
                                                 </Button>

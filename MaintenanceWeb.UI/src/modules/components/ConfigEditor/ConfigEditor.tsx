@@ -76,11 +76,11 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
             {
                 return (
                     <ButtonGroup>
-                        <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>
+                        <Button color="secondary" onClick={() => this.props.navigateToEntry(entry)}>
                             <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
                             Open
                         </Button>
-                        <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                        <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
                             <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
                             {this.isExpanded(entry.Key.Name) ? "Collapse" : "Expand"}
                         </Button>

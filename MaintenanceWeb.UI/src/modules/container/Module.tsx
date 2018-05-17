@@ -209,7 +209,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                                 <td>{notification.Exception.Message}</td>
                                                 <td>{notification.NotificationType}</td>
                                                 <td>{notification.Exception.StackTrace}</td>
-                                                <td>{notification.Exception.InnerException.Message}</td>
+                                                <td>{notification.Exception.InnerException != null ? notification.Exception.InnerException.Message : "No inner exception"}</td>
                                                 <td>{notification.Timestamp}</td>
                                             </tr>)
                                         }
