@@ -1,4 +1,4 @@
-import { faCogs } from "@fortawesome/fontawesome-free-solid";
+import { faCogs, faSave, faSync, faUndo } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import * as Notifications from "react-notification-system";
@@ -18,6 +18,7 @@ interface IModuleConfigurationPropModel {
 interface IModuleConfigurationStateModel {
     ModuleConfig: Config;
     ConfigIsLoading: boolean;
+    ParentEntry: Entry;
     CurrentSubEntries: Entry[];
     EntryChain: Entry[];
 }
@@ -29,6 +30,7 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
         this.state = {
             ModuleConfig: { Module: this.props.ModuleName, Entries: [] },
             ConfigIsLoading: true,
+            ParentEntry: null,
             CurrentSubEntries: [],
             EntryChain: [],
         };
@@ -42,7 +44,14 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
 
     public loadConfig() {
         this.props.RestClient.moduleConfig(this.props.ModuleName)
-                             .then((data) => this.setState({ ModuleConfig: data, CurrentSubEntries: data.Entries, ConfigIsLoading: false }));
+                             .then((data) => this.setState(
+                                {
+                                    ModuleConfig: data,
+                                    ParentEntry: null,
+                                    CurrentSubEntries: data.Entries,
+                                    ConfigIsLoading: false,
+                                    EntryChain: [],
+                                }));
     }
 
     public onApply() {
@@ -60,10 +69,10 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
 
     public onClickBreadcrumb(entry: Entry) {
         if (entry == null) {
-            this.setState({ EntryChain: [], CurrentSubEntries: this.state.ModuleConfig.Entries });
+            this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
         } else {
             const idx = this.state.EntryChain.indexOf(entry);
-            this.setState((prevState) => ({ EntryChain: prevState.EntryChain.slice(0, idx + 1), CurrentSubEntries: entry.SubEntries }));
+            this.setState((prevState) => ({ EntryChain: prevState.EntryChain.slice(0, idx + 1), ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
         }
     }
 
@@ -82,7 +91,7 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
     }
 
     public navigateToEntry(entry: Entry) {
-        this.setState((prevState) => ({ EntryChain: [...prevState.EntryChain, entry], CurrentSubEntries: entry.SubEntries }));
+        this.setState((prevState) => ({ EntryChain: [...prevState.EntryChain, entry], ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
     }
 
     public render() {
@@ -90,7 +99,7 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
             <Card>
                 <CardHeader tag="h2">
                     <FontAwesomeIcon icon={faCogs} className="right-space" />
-                    {this.state.ModuleConfig.Module} - Configuration
+                    {this.props.ModuleName} - Configuration
                 </CardHeader>
                 <CardBody>
                     {this.state.ConfigIsLoading ? (
@@ -103,13 +112,22 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
                             <Col md={5}><span className="font-bold">Property</span></Col>
                             <Col md={7}><span className="font-bold">Value</span></Col>
                         </Row>
-                        {<ConfigEditor Entries={this.state.CurrentSubEntries} navigateToEntry={this.navigateToEntry} />}
+                        {<ConfigEditor ParentEntry={this.state.ParentEntry} Entries={this.state.CurrentSubEntries} navigateToEntry={this.navigateToEntry} />}
                     </Container>
 
                     <ButtonGroup className="up-space-lg">
-                        <Button color="primary" onClick={() => this.onApply()}>Save &amp; Restart</Button>
-                        <Button color="primary" onClick={() => this.onSave()}>Save only</Button>
-                        <Button color="dark" onClick={() => this.onRevert()}>Revert</Button>
+                        <Button color="primary" onClick={() => this.onApply()}>
+                            <FontAwesomeIcon icon={faSync} className="right-space" />
+                            Save &amp; Restart
+                        </Button>
+                        <Button color="primary" onClick={() => this.onSave()}>
+                            <FontAwesomeIcon icon={faSave} className="right-space" />
+                            Save only
+                        </Button>
+                        <Button color="dark" onClick={() => this.onRevert()}>
+                            <FontAwesomeIcon icon={faUndo} className="right-space" />
+                            Revert
+                        </Button>
                     </ButtonGroup>
                 </CardBody>
             </Card>

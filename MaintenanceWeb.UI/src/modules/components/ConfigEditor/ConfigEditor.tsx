@@ -1,3 +1,5 @@
+import { faArrowsAltV, faFolderOpen } from "@fortawesome/fontawesome-free-solid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Row, Table } from "reactstrap";
 import Entry from "../../models/Entry";
@@ -11,6 +13,7 @@ import NumberEditor from "./NumberEditor";
 import StringEditor from "./StringEditor";
 
 interface IConfigEditorPropModel {
+    ParentEntry: Entry;
     Entries: Entry[];
     navigateToEntry: (entry: Entry) => void;
 }
@@ -68,18 +71,21 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
             {
                 return (<EnumEditor Entry={entry} />);
             }
+            case EntryValueType.Collection:
             case EntryValueType.Class:
             {
                 return (
                     <ButtonGroup>
-                        <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>Open</Button>
-                        <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>{this.isExpanded(entry.Key.Name) ? "Collapse" : "Expand"}</Button>
+                        <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>
+                            <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
+                            Open
+                        </Button>
+                        <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                            <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
+                            {this.isExpanded(entry.Key.Name) ? "Collapse" : "Expand"}
+                        </Button>
                     </ButtonGroup>
                 );
-            }
-            case EntryValueType.Collection:
-            {
-                return (<Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)} style={{ marginBottom: "0rem" }}>{this.isExpanded(entry.Key.Name) ? "Collapse" : "Expand"}</Button>);
             }
         }
 
@@ -130,9 +136,22 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
     }
 
     public render() {
+        let entries: any;
+        if (this.props.ParentEntry != null && this.props.ParentEntry.Value.Type == EntryValueType.Collection) {
+            entries = (
+                <Row>
+                    <Col md={12}>
+                        <CollectionEditor Entry={this.props.ParentEntry} IsExpanded={true} navigateToEntry={this.props.navigateToEntry} />
+                    </Col>
+                </Row>
+            );
+        } else {
+            entries = this.preRenderEntries(this.props.Entries);
+        }
+
         return (
             <div>
-                {this.preRenderEntries(this.props.Entries)}
+                {entries}
             </div>
         );
     }

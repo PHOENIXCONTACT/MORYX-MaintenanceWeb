@@ -1,5 +1,7 @@
+import { faArrowsAltV, faFolderOpen, faPlus, faTrash } from "@fortawesome/fontawesome-free-solid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
-import { Button, ButtonGroup, Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown } from "reactstrap";
+import { Button, ButtonGroup, Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Row } from "reactstrap";
 import Entry from "../../models/Entry";
 import CollapsibleEntryEditorBase, { ICollapsibleEntryEditorBasePropModel } from "./CollapsibleEntryEditorBase";
 import ConfigEditor from "./ConfigEditor";
@@ -30,8 +32,8 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
         return this.state.ExpandedEntryNames.find((e: string) => e == entryName) != undefined;
     }
 
-    public onSelect(value: string) {
-        this.setState({ SelectedEntry: value });
+    public onSelect(e: React.FormEvent<HTMLInputElement>) {
+        this.setState({ SelectedEntry: e.currentTarget.value });
     }
 
     public addEntry() {
@@ -47,8 +49,17 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
         this.forceUpdate();
     }
 
+    public preRenderOptions() {
+        const options: React.ReactNode[] = [];
+        this.props.Entry.Value.Possible.map((colEntry, idx) =>
+        (
+            options.push(<option key={idx} value={colEntry}>{colEntry}</option>)
+        ));
+        return options;
+    }
+
     public preRenderConfigEditor(entry: Entry): React.ReactNode {
-        return <ConfigEditor Entries={entry.SubEntries} navigateToEntry={this.props.navigateToEntry} />;
+        return <ConfigEditor ParentEntry={entry} Entries={entry.SubEntries} navigateToEntry={this.props.navigateToEntry} />;
     }
 
     public render() {
@@ -62,9 +73,20 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                                     <Row>
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
-                                            <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>Open</Button>
-                                            <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>Expand</Button>
-                                            <Button color="primary" onClick={() => this.removeEntry(entry)}>Remove</Button>
+                                            <ButtonGroup>
+                                                <Button color="primary" onClick={() => this.props.navigateToEntry(entry)}>
+                                                    <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
+                                                    Open
+                                                </Button>
+                                                <Button color="primary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                                                    <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
+                                                    Expand
+                                                </Button>
+                                                <Button color="primary" onClick={() => this.removeEntry(entry)}>
+                                                    <FontAwesomeIcon icon={faTrash} className="right-space" />
+                                                    Remove
+                                                </Button>
+                                            </ButtonGroup>
                                         </Col>
                                     </Row>
                                     <Collapse isOpen={this.isExpanded(entry.Key.Name)}>
@@ -73,24 +95,18 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                                 </div>,
                             )
                         }
-                        <Row>
-                            <Col md={12}>
-                                <ButtonGroup>
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle caret={true}>
-                                            {this.state.SelectedEntry}
-                                        </DropdownToggle>
-                                        <DropdownMenu>
-                                            {
-                                                this.props.Entry.Value.Possible.map((colEntry, idx) =>
-                                                (
-                                                    <DropdownItem key={idx} onClick={() => this.onSelect(colEntry)}>{colEntry}</DropdownItem>
-                                                ))
-                                            }
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                    <Button color="primary" onClick={() => this.addEntry()}>Add entry</Button>
-                                </ButtonGroup>
+                        <Row className="up-space">
+                            <Col md={4}>
+                                <Input type="select" value={this.props.Entry.Value.Current}
+                                       onChange={(e: React.FormEvent<HTMLInputElement>) => this.onSelect(e)}>
+                                    {this.preRenderOptions()}
+                                </Input>
+                            </Col>
+                            <Col md={8}>
+                                <Button color="primary" onClick={() => this.addEntry()}>
+                                    <FontAwesomeIcon icon={faPlus} className="right-space" />
+                                    Add entry
+                                </Button>
                             </Col>
                         </Row>
                     </Container>
