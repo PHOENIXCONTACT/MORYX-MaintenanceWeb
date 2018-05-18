@@ -4,13 +4,6 @@
         "jsx-wrap-multiline": false,
         "max-line-length": {
             "options": [240]
-        },
-        "brace-style": [
-            true,
-            "allman",
-            {
-            "allowSingleLine": false
-            }
-        ]
+        }
     }
 }

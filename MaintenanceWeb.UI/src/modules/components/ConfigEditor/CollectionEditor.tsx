@@ -39,6 +39,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
     public addEntry() {
         const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.Key.Name == this.state.SelectedEntry);
         const entryClone = JSON.parse(JSON.stringify(prototype));
+        entryClone.Parent = this.props.Entry;
         this.props.Entry.SubEntries.push(entryClone);
 
         this.forceUpdate();

@@ -15,7 +15,7 @@ import IConfig from "../models/Config";
 import ServerModuleModel from "../models/ServerModuleModel";
 import { updateModules } from "../redux/ModulesActions";
 import Module from "./Module";
-import { ModuleConfiguration } from "./ModuleConfiguration";
+import ModuleConfiguration from "./ModuleConfiguration";
 
 interface IModulesPropModel {
     RestClient: ModulesRestClient;

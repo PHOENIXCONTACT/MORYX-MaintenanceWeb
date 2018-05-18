@@ -1,7 +1,10 @@
 import { faCogs, faSave, faSync, faUndo } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Action, Location, UnregisterCallback } from "history";
+import * as qs from "query-string";
 import * as React from "react";
 import * as Notifications from "react-notification-system";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Row, Table } from "reactstrap";
 import ModulesRestClient from "../api/ModulesRestClient";
 import ConfigEditor from "../components/ConfigEditor/ConfigEditor";
@@ -23,8 +26,10 @@ interface IModuleConfigurationStateModel {
     EntryChain: Entry[];
 }
 
-export class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel, IModuleConfigurationStateModel> {
-    constructor(props: IModuleConfigurationPropModel) {
+class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel & RouteComponentProps<{}>, IModuleConfigurationStateModel> {
+    public unregisterListener: UnregisterCallback;
+
+    constructor(props: IModuleConfigurationPropModel & RouteComponentProps<{}>) {
         super(props);
 
         this.state = {
@@ -39,19 +44,29 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
     }
 
     public componentDidMount() {
+        this.unregisterListener = this.props.history.listen(this.onHistoryChanged.bind(this));
+
         this.loadConfig();
+    }
+
+    public componentWillUnmount() {
+        this.unregisterListener();
     }
 
     public loadConfig() {
         this.props.RestClient.moduleConfig(this.props.ModuleName)
-                             .then((data) => this.setState(
-                                {
-                                    ModuleConfig: data,
-                                    ParentEntry: null,
-                                    CurrentSubEntries: data.Entries,
-                                    ConfigIsLoading: false,
-                                    EntryChain: [],
-                                }));
+                             .then((data) => {
+                                 Config.patchConfig(data);
+                                 this.setState(
+                                    {
+                                        ModuleConfig: data,
+                                        ParentEntry: null,
+                                        CurrentSubEntries: data.Entries,
+                                        ConfigIsLoading: false,
+                                        EntryChain: [],
+                                    });
+                                 this.resolveEntryChainByPath(this.props.location);
+                                });
     }
 
     public onApply() {
@@ -70,9 +85,14 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
     public onClickBreadcrumb(entry: Entry) {
         if (entry == null) {
             this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
+
+            this.updatePath([]);
         } else {
             const idx = this.state.EntryChain.indexOf(entry);
-            this.setState((prevState) => ({ EntryChain: prevState.EntryChain.slice(0, idx + 1), ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
+            const updatedEntryChain = this.state.EntryChain.slice(0, idx + 1);
+            this.setState((prevState) => ({ EntryChain: updatedEntryChain, ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
+
+            this.updatePath(updatedEntryChain);
         }
     }
 
@@ -91,7 +111,37 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
     }
 
     public navigateToEntry(entry: Entry) {
-        this.setState((prevState) => ({ EntryChain: [...prevState.EntryChain, entry], ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
+        this.updatePath(Entry.entryChain(entry));
+    }
+
+    private updatePath(entryChain: Entry[]) {
+        this.props.history.push("?path=" + entryChain.map((entry) => entry.Key.Name).join(","));
+    }
+
+    private resolveEntryChainByPath(location: Location) {
+        const query = qs.parse(location.search);
+        if (query != null && "path" in query) {
+            const entryChain: Entry[] = [];
+            let currentEntry: Entry = null;
+
+            query.path.split(",").forEach((element: string) => {
+                const searchableEntries: Entry[] = currentEntry != null ? currentEntry.SubEntries : this.state.ModuleConfig.Entries;
+                const filtered = searchableEntries.filter((entry) => entry.Key.Name == element);
+
+                if (filtered.length > 0) {
+                    currentEntry = filtered[0];
+                    entryChain.push(currentEntry);
+                }
+            });
+
+            this.setState({ EntryChain: entryChain, ParentEntry: currentEntry, CurrentSubEntries: currentEntry != null ? currentEntry.SubEntries : this.state.ModuleConfig.Entries });
+        } else {
+            this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
+        }
+    }
+
+    private onHistoryChanged(location: Location, action: Action) {
+        this.resolveEntryChainByPath(location);
     }
 
     public render() {
@@ -134,3 +184,5 @@ export class ModuleConfiguration extends React.Component<IModuleConfigurationPro
         );
     }
 }
+
+export default withRouter<IModuleConfigurationPropModel & RouteComponentProps<{}>>(ModuleConfiguration);
