@@ -4,7 +4,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using Marvin.Container;
 
-namespace Marvin.Maintenance.Web
+namespace Marvin.Runtime.Maintenance.Web
 {
     /// <summary>
     /// Service for the file system. 

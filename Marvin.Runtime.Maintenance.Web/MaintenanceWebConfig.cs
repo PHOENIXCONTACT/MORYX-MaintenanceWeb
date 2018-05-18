@@ -2,7 +2,7 @@
 using Marvin.Runtime.Maintenance.Contracts;
 using Marvin.Tools.Wcf;
 
-namespace Marvin.Maintenance.Web
+namespace Marvin.Runtime.Maintenance.Web
 {
     [DataContract]
     public class MaintenanceWebConfig : MaintenancePluginConfig

@@ -3,7 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using Marvin.Tools.Wcf;
 
-namespace Marvin.Maintenance.Web
+namespace Marvin.Runtime.Maintenance.Web
 {
     /// <summary>
     /// Service contract for the maintenance file system.

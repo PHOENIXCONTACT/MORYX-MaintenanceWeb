@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MaintenanceWeb.StartProject")]
+[assembly: AssemblyTitle("StartProject")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MaintenanceWeb.StartProject")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCompany("PHOENIX CONTACT GmbH & Co. KG")]
+[assembly: AssemblyProduct("StartProject")]
+[assembly: AssemblyCopyright("Copyright © PHOENIX CONTACT GmbH & Co. KG 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

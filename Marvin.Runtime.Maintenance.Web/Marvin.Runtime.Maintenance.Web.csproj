@@ -7,8 +7,8 @@
     <ProjectGuid>{E1227A92-C942-42D3-A35A-D4C4C3574E78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Marvin.Maintenance.Web</RootNamespace>
-    <AssemblyName>Marvin.Maintenance.Web</AssemblyName>
+    <RootNamespace>Marvin.Runtime.Maintenance.Web</RootNamespace>
+    <AssemblyName>Marvin.Runtime.Maintenance.Web</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -64,15 +64,15 @@
     <Compile Include="MaintenanceWeb.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Marvin.Maintenance.Web.nuspec" />
+    <None Include="Marvin.Runtime.Maintenance.Web.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="..\Marvin.Maintenance.Web.UI\dist\bundle.js">
+    <EmbeddedResource Include="..\Marvin.Runtime.Maintenance.Web.UI\dist\bundle.js">
       <Link>wwwroot\bundle.js</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Marvin.Maintenance.Web.UI\dist\index.html">
+    <EmbeddedResource Include="..\Marvin.Runtime.Maintenance.Web.UI\dist\index.html">
       <Link>wwwroot\index.html</Link>
     </EmbeddedResource>
   </ItemGroup>
