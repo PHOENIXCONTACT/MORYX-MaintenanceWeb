@@ -1,3 +1,5 @@
+type ReplacerFunction = (key: string, value: any) => any;
+
 export default class RestClientBase {
     private url: string;
 
@@ -14,9 +16,9 @@ export default class RestClientBase {
             });
     }
 
-    public put<R, T>(path: string, request: R, errorInstance: T): Promise<T> {
+    public put<R, T>(path: string, request: R, errorInstance: T, replacer: ReplacerFunction = null): Promise<T> {
         return fetch(this.url + path, {
-            body: JSON.stringify(request),
+            body: JSON.stringify(request, replacer),
             headers: {
                 "content-type": "application/json",
               },
@@ -30,9 +32,10 @@ export default class RestClientBase {
               });
     }
 
-    public post<R, T>(path: string, request: R, errorInstance: T): Promise<T> {
+    public post<R, T>(path: string, request: R, errorInstance: T, replacer: ReplacerFunction = null): Promise<T> {
+        const body = JSON.stringify(request, replacer);
         return fetch(this.url + path, {
-            body: JSON.stringify(request),
+            body,
             headers: {
                 "content-type": "application/json",
               },
@@ -58,9 +61,9 @@ export default class RestClientBase {
               });
     }
 
-    public delete<R, T>(path: string, request: R, errorInstance: T): Promise<T> {
+    public delete<R, T>(path: string, request: R, errorInstance: T, replacer: ReplacerFunction = null): Promise<T> {
         return fetch(this.url + path, {
-            body: JSON.stringify(request),
+            body: JSON.stringify(request, replacer),
             headers: {
                 "content-type": "application/json",
               },
