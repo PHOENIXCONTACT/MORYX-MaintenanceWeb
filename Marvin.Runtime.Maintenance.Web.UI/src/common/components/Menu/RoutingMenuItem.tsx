@@ -72,8 +72,8 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuIte
             <div style={{paddingLeft: this.props.Level * 10 + "px", margin: "5px 0px 5px 0px"}}>
                 <Container fluid={true} className="menu-item" onClick={(e: React.MouseEvent<HTMLElement>) => this.handleMenuItemClick(e)}>
                     <Row>
-                        <Col md={hasSubItems ? 10 : 12}>
-                            <Link to={this.props.MenuItem.NavPath} className={bold}>
+                        <Col md={hasSubItems ? 10 : 12} style={{display: "flex"}}>
+                            <Link to={this.props.MenuItem.NavPath} className={bold} style={{flex: "1"}}>
                                 { this.props.MenuItem.Icon != undefined &&
                                     <FontAwesomeIcon icon={this.props.MenuItem.Icon} style={{marginRight: "4px"}} />
                                 }
