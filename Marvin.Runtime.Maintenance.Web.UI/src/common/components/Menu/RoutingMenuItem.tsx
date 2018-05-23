@@ -1,5 +1,6 @@
 import { faAngleDown, faAngleRight } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Location, UnregisterCallback } from "history";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
@@ -16,11 +17,26 @@ interface IMenuItemState {
 }
 
 class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuItemProps, IMenuItemState> {
+    private unregisterListenerCallback: UnregisterCallback;
+
     constructor(props: RouteComponentProps<{}> & IMenuItemProps) {
         super (props);
-        this.state = { IsOpened: this.props.location.pathname.startsWith(this.props.MenuItem.NavPath) };
+        this.state = { IsOpened: this.isOpened(this.props.location) };
 
+        this.unregisterListenerCallback = this.props.history.listen(this.onRouteChanged.bind(this));
         this.onMenuItemClicked = this.onMenuItemClicked.bind(this);
+    }
+
+    public componentWillUnmount() {
+        this.unregisterListenerCallback();
+    }
+
+    private isOpened(location: Location) {
+        return location.pathname.startsWith(this.props.MenuItem.NavPath);
+    }
+
+    private onRouteChanged(location: Location, action: string) {
+        this.setState({ IsOpened: this.isOpened(location) });
     }
 
     private handleMenuItemClick(e: React.MouseEvent<HTMLElement>) {
