@@ -100,7 +100,7 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
                     <Col md={7}>
                         <Container fluid={true}>
                             <Row>
-                                <Col md={12} className=""><span className="font-bold align-self-center">{subEntry.Key.Name}</span></Col>
+                                <Col md={12}><span className="font-bold align-self-center">{subEntry.Key.Name}</span></Col>
                             </Row>
                             <Row>
                                 <Col md={12}><span className="font-disabled">{subEntry.Description}</span></Col>

@@ -71,7 +71,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                         {
                             this.props.Entry.SubEntries.map((entry, idx) =>
                                 <div key={idx}>
-                                    <Row>
+                                    <Row style={{background: idx % 2 == 0 ? "#f2f2f2" : "white"}}>
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
                                             <ButtonGroup>
