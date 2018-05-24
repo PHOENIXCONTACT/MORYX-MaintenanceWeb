@@ -1,10 +1,9 @@
-import SerializableException from './SerializableException';
-import { ModuleNotificationType } from './ModuleNotificationType';
+import { ModuleNotificationType } from "./ModuleNotificationType";
+import SerializableException from "./SerializableException";
 
-export default class NotificationModel
-{
-    Timestamp : Date;
-    Important : boolean;
-    Exception : SerializableException;
-    NotificationType : ModuleNotificationType;
+export default class NotificationModel {
+    public Timestamp: Date;
+    public Important: boolean;
+    public Exception: SerializableException;
+    public NotificationType: ModuleNotificationType;
 }

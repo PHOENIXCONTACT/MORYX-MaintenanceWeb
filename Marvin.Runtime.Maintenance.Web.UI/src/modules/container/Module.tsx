@@ -3,13 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Input, Row, Table } from "reactstrap";
+import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Input, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from "reactstrap";
 import { ActionType } from "../../common/redux/Types";
 import { HealthStateBadge } from "../../dashboard/components/HealthStateBadge";
 import ModulesRestClient from "../api/ModulesRestClient";
+import { ModuleNotificationTypeToCssClassConverter } from "../converter/ModuleNotificationTypeToCssClassConverter";
 import { FailureBehaviour } from "../models/FailureBehaviour";
 import { ModuleNotificationType } from "../models/ModuleNotificationType";
 import { ModuleStartBehaviour } from "../models/ModuleStartBehaviour";
+import NotificationModel from "../models/NotificationModel";
+import SerializableException from "../models/SerializableException";
 import ServerModuleModel from "../models/ServerModuleModel";
 import { updateFailureBehaviour, updateStartBehaviour } from "../redux/ModulesActions";
 
@@ -20,6 +23,8 @@ interface IModulePropModel {
 
 interface IModuleStateModel {
     HasWarnings: boolean;
+    IsNotificationDialogOpened: boolean;
+    SelectedNotification: NotificationModel;
 }
 
 interface IModuleDispatchPropModel {
@@ -35,10 +40,14 @@ const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): IModuleDispatch
 };
 
 class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel, IModuleStateModel> {
+    private moduleNotificationTypeConverter: ModuleNotificationTypeToCssClassConverter;
+
     constructor(props: IModulePropModel & IModuleDispatchPropModel) {
         super(props);
 
-        this.state = { HasWarnings: false };
+        this.state = { HasWarnings: false, IsNotificationDialogOpened: false, SelectedNotification: null };
+
+        this.moduleNotificationTypeConverter = new ModuleNotificationTypeToCssClassConverter();
     }
 
     public componentWillReceiveProps(nextProps: IModulePropModel) {
@@ -78,6 +87,36 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
     public onFailureBehaviourChange(e: React.FormEvent<HTMLInputElement>) {
         const newValue = parseInt((e.target as HTMLSelectElement).value);
         this.props.RestClient.updateModule({ ...this.props.Module, FailureBehaviour: newValue }).then((d) => this.props.onUpdateFailureBehaviour(this.props.Module.Name, newValue));
+    }
+
+    private openNotificationDetailsDialog(e: React.MouseEvent<HTMLElement>, notification: NotificationModel) {
+        this.setState({ IsNotificationDialogOpened: true, SelectedNotification: notification });
+    }
+
+    private closeNotificationDetailsDialog() {
+        this.setState({ IsNotificationDialogOpened: false, SelectedNotification: null });
+    }
+
+    private preRenderInnerException(exception: SerializableException): React.ReactNode {
+        return (
+            <div style={{margin: "0px 0px 0px 5px"}}>
+                <Container fluid={true}>
+                    <Row>
+                        <Col md={2}><span className="font-bold">Type</span></Col>
+                        <Col md={10}>
+                            <span>{exception.ExceptionTypeName}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={2}><span className="font-bold">Message</span></Col>
+                        <Col md={10}><span className="font-italic">{exception.Message}</span></Col>
+                    </Row>
+                </Container>
+                {exception.InnerException != null &&
+                    this.preRenderInnerException(exception.InnerException)
+                }
+            </div>
+        );
     }
 
     public render() {
@@ -190,36 +229,77 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 {this.props.Module.Notifications.length == 0 ? (
                                     <span className="font-italic font-small">No notifications detected.</span>
                                 ) : (
-                                <Table striped={true}>
-                                    <thead>
-                                        <tr>
-                                            <th>Type</th>
-                                            <th>Message</th>
-                                            <th>Level</th>
-                                            <th>Stack trace</th>
-                                            <th>Inner exception message</th>
-                                            <th>Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                    <Container fluid={true}>
+                                        <Row style={{background: "lightgray"}}>
+                                            <Col md={3}><span className="font-bold">Type</span></Col>
+                                            <Col md={6}><span className="font-bold">Message</span></Col>
+                                            <Col md={1}><span className="font-bold">Level</span></Col>
+                                            <Col md={2}></Col>
+                                        </Row>
                                         {
                                             this.props.Module.Notifications.map((notification, idx) =>
-                                            <tr key={idx}>
-                                                <td>{notification.Exception.ExceptionTypeName}</td>
-                                                <td>{notification.Exception.Message}</td>
-                                                <td>{notification.NotificationType}</td>
-                                                <td>{notification.Exception.StackTrace}</td>
-                                                <td>{notification.Exception.InnerException != null ? notification.Exception.InnerException.Message : "No inner exception"}</td>
-                                                <td>{notification.Timestamp}</td>
-                                            </tr>)
+                                                <Row key={idx} style={{background: idx % 2 == 0 ? "#f2f2f2" : "white", alignItems: "center"}}>
+                                                    <Col md={3}><span className="align-self-center">{notification.Exception.ExceptionTypeName}</span></Col>
+                                                    <Col md={6}><span className="align-self-center">{notification.Exception.Message}</span></Col>
+                                                    <Col md={1}>
+                                                        <span className="align-self-center" style={this.moduleNotificationTypeConverter.Convert(notification.NotificationType)}>
+                                                            {ModuleNotificationType[notification.NotificationType]}
+                                                        </span>
+                                                    </Col>
+                                                    <Col md={1}>
+                                                        <Button color="primary" style={{margin: "3px 0px 3px 0px"}} onClick={(e: React.MouseEvent<HTMLElement>) => this.openNotificationDetailsDialog(e, notification)}>Details</Button>
+                                                    </Col>
+                                                </Row>,
+                                            )
                                         }
-                                    </tbody>
-                                </Table>
+                                    </Container>
                                 )}
                             </Col>
                         </Row>
                     </Container>
                 </CardBody>
+                <Modal isOpen={this.state.IsNotificationDialogOpened} className="notification-modal-dialog">
+                    <ModalHeader tag="h2">Notification details</ModalHeader>
+                    <ModalBody>
+                        {this.state.SelectedNotification != null &&
+                            <Container fluid={true}>
+                                <Row>
+                                    <Col md={2}><span className="font-bold">Type</span></Col>
+                                    <Col md={10}>
+                                        <span style={this.moduleNotificationTypeConverter.Convert(this.state.SelectedNotification.NotificationType)}>
+                                            {this.state.SelectedNotification.Exception.ExceptionTypeName}
+                                        </span>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={2}><span className="font-bold">Message</span></Col>
+                                    <Col md={10}><span className="font-italic">{this.state.SelectedNotification.Exception.Message}</span></Col>
+                                </Row>
+                                <Row>
+                                    <Col md={2}><span className="font-bold">Stack trace</span></Col>
+                                    <Col md={10}>{this.state.SelectedNotification.Exception.StackTrace}</Col>
+                                </Row>
+                                <Row>
+                                    <Col md={12}>
+                                        { this.state.SelectedNotification.Exception.InnerException == null ? (
+                                            <span className="font-italic">No inner exception found.</span>
+                                        ) : (
+                                            <span className="font-bold">Inner exception</span>
+                                        )}
+                                    </Col>
+                                </Row>
+                                { this.state.SelectedNotification.Exception.InnerException != null &&
+                                    <Row>
+                                        <Col md={12}>{this.preRenderInnerException(this.state.SelectedNotification.Exception.InnerException)}</Col>
+                                    </Row>
+                                }
+                            </Container>
+                        }
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.closeNotificationDetailsDialog.bind(this)}>Close</Button>
+                    </ModalFooter>
+                </Modal>
             </Card>
         );
     }
