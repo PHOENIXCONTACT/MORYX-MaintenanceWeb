@@ -361,8 +361,16 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                     <Row className="up-space-lg">
                                         <Col md={12}>
                                             <ButtonGroup>
-                                                <Button color="primary" onClick={this.onExecuteDump.bind(this)}>Create a backup</Button>
-                                                <Button color="primary" disabled={this.state.selectedBackup == ""} onClick={this.onExecuteRestore.bind(this)}>Restore selected backup</Button>
+                                                <Button color="primary"
+                                                        disabled={this.state.testConnectionResult != TestConnectionResult.Success}
+                                                        onClick={this.onExecuteDump.bind(this)}>
+                                                    Create a backup
+                                                </Button>
+                                                <Button color="primary"
+                                                        disabled={this.state.selectedBackup == "" || this.state.testConnectionResult != TestConnectionResult.Success}
+                                                        onClick={this.onExecuteRestore.bind(this)}>
+                                                    Restore selected backup
+                                                </Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
@@ -377,8 +385,16 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                         <Row>
                             <Col md={6}>
                                 <ButtonGroup>
-                                    <Button color="primary" onClick={() => this.onCreateDatabase()} disabled={this.state.database == ""}>Create database</Button>
-                                    <Button color="primary" onClick={() => this.onEraseDatabase()} disabled={this.state.database == ""}>Erase database</Button>
+                                    <Button color="primary"
+                                            onClick={() => this.onCreateDatabase()}
+                                            disabled={this.state.testConnectionResult != TestConnectionResult.ConnectionOkDbDoesNotExist}>
+                                        Create database
+                                    </Button>
+                                    <Button color="primary"
+                                            onClick={() => this.onEraseDatabase()}
+                                            disabled={this.state.testConnectionResult != TestConnectionResult.Success}>
+                                        Erase database
+                                    </Button>
                                 </ButtonGroup>
                             </Col>
                         </Row>
@@ -418,8 +434,16 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                 <Row className="up-space-lg">
                                                     <Col md={12}>
                                                         <ButtonGroup>
-                                                            <Button color="primary" onClick={() => this.onApplyMigration()} disabled={this.state.selectedMigration == ""}>Apply selected migration</Button>
-                                                            <Button color="primary" onClick={() => this.onRollbackDatabase()} disabled={this.props.DataModel.AvailableMigrations.length == 0}>Rollback all migrations</Button>
+                                                            <Button color="primary"
+                                                                    onClick={() => this.onApplyMigration()}
+                                                                    disabled={this.state.selectedMigration == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                Apply selected migration
+                                                            </Button>
+                                                            <Button color="primary"
+                                                                    onClick={() => this.onRollbackDatabase()}
+                                                                    disabled={this.props.DataModel.AvailableMigrations.length == 0 || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                Rollback all migrations
+                                                            </Button>
                                                         </ButtonGroup>
                                                     </Col>
                                                 </Row>
@@ -450,7 +474,11 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                 </Row>
                                                 <Row className="up-space-lg">
                                                     <Col md={12}>
-                                                        <Button color="primary" onClick={() => this.onExecuteSetup()} disabled={this.state.selectedSetup == ""}>Execute setup</Button>
+                                                        <Button color="primary"
+                                                                onClick={() => this.onExecuteSetup()}
+                                                                disabled={this.state.selectedSetup == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                            Execute setup
+                                                        </Button>
                                                     </Col>
                                                 </Row>
                                             </Container>
@@ -480,7 +508,11 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                 </Row>
                                                 <Row className="up-space-lg">
                                                     <Col md={12}>
-                                                        <Button color="primary" onClick={() => this.onExecuteScript()} disabled={this.state.selectedScript == ""}>Execute script</Button>
+                                                        <Button color="primary"
+                                                                onClick={() => this.onExecuteScript()}
+                                                                disabled={this.state.selectedScript == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                            Execute script
+                                                        </Button>
                                                     </Col>
                                                 </Row>
                                             </Container>
