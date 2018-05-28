@@ -111,7 +111,8 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
     private preRenderLogMessages() {
         return this.state.FilteredLogMessages.map((message, idx) =>
             <tr key={idx}
-                style={{background: this.logLevelCssConverter.Convert(message.LogLevel), cursor: "pointer"}}
+                className={"selectable"}
+                style={{background: this.logLevelCssConverter.Convert(message.LogLevel)}}
                 onClick={this.onShowLogMessageDetailed.bind(this, message)}>
                 <td>{moment(message.Timestamp).format("YYYY-MM-DD HH:mm:ss")}</td>
                 <td>{LogLevel[message.LogLevel]}</td>

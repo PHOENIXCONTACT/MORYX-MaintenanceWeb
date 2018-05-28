@@ -402,13 +402,13 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                             <Col md={12}>
                                 <Nav tabs={true}>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "1"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
+                                        <NavLink active={this.state.activeTab == "1"} className={"selectable"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "2"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
+                                        <NavLink active={this.state.activeTab == "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "3"} onClick={() => { this.activeTab("3"); }}>Scripts</NavLink>
+                                        <NavLink active={this.state.activeTab == "3"} className={"selectable"} onClick={() => { this.activeTab("3"); }}>Scripts</NavLink>
                                     </NavItem>
                                 </Nav>
                                 <TabContent activeTab={this.state.activeTab}>

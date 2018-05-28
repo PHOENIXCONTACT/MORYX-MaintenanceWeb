@@ -229,30 +229,31 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 {this.props.Module.Notifications.length == 0 ? (
                                     <span className="font-italic font-small">No notifications detected.</span>
                                 ) : (
-                                    <Container fluid={true}>
-                                        <Row style={{background: "lightgray"}}>
-                                            <Col md={3}><span className="font-bold">Type</span></Col>
-                                            <Col md={6}><span className="font-bold">Message</span></Col>
-                                            <Col md={1}><span className="font-bold">Level</span></Col>
-                                            <Col md={2}></Col>
-                                        </Row>
+                                    <Table>
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Message</th>
+                                                <th>Level</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                         {
                                             this.props.Module.Notifications.map((notification, idx) =>
-                                                <Row key={idx} style={{background: idx % 2 == 0 ? "#f2f2f2" : "white", alignItems: "center"}}>
-                                                    <Col md={3}><span className="align-self-center">{notification.Exception.ExceptionTypeName}</span></Col>
-                                                    <Col md={6}><span className="align-self-center">{notification.Exception.Message}</span></Col>
-                                                    <Col md={1}>
+                                                <tr key={idx} className={"selectable"} style={{alignItems: "center"}}
+                                                    onClick={(e: React.MouseEvent<HTMLElement>) => this.openNotificationDetailsDialog(e, notification)}>
+                                                    <td><span className="align-self-center">{notification.Exception.ExceptionTypeName}</span></td>
+                                                    <td><span className="align-self-center">{notification.Exception.Message}</span></td>
+                                                    <td>
                                                         <span className="align-self-center" style={this.moduleNotificationTypeConverter.Convert(notification.NotificationType)}>
                                                             {ModuleNotificationType[notification.NotificationType]}
                                                         </span>
-                                                    </Col>
-                                                    <Col md={1}>
-                                                        <Button color="primary" style={{margin: "3px 0px 3px 0px"}} onClick={(e: React.MouseEvent<HTMLElement>) => this.openNotificationDetailsDialog(e, notification)}>Details</Button>
-                                                    </Col>
-                                                </Row>,
+                                                    </td>
+                                                </tr>,
                                             )
                                         }
-                                    </Container>
+                                        </tbody>
+                                    </Table>
                                 )}
                             </Col>
                         </Row>

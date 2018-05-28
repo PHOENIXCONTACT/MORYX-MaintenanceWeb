@@ -148,7 +148,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
 
     private preRenderNavForTabs() {
         return this.state.LoggerTabs.map((logger, idx) =>
-            <NavItem key={idx} style={{cursor: "pointer"}}>
+            <NavItem key={idx} className={"selectable"}>
                 <NavLink className={this.state.ActiveTab == (idx + 1).toString() ? "active" : ""} onClick={() => { this.toggleTab((idx + 1).toString()); }}>
                     {this.shortLoggerName(logger)}
                 </NavLink>
@@ -193,7 +193,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
                         <CardBody>
                             <Nav tabs={true}>
                                 <NavItem>
-                                    <NavLink className={this.state.ActiveTab == "0" ? "active" : ""} onClick={() => { this.toggleTab("0"); }} style={{cursor: "pointer"}}>
+                                    <NavLink className={this.state.ActiveTab == "0" ? "active selectable" : "selectable"} onClick={() => { this.toggleTab("0"); }}>
                                         Overview
                                     </NavLink>
                                 </NavItem>
