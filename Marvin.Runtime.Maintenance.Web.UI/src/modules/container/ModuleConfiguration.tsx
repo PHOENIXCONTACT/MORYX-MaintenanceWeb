@@ -4,6 +4,7 @@ import { Action, Location, UnregisterCallback } from "history";
 import * as qs from "query-string";
 import * as React from "react";
 import * as Notifications from "react-notification-system";
+import NotificationSystem = require("react-notification-system");
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Row, Table } from "reactstrap";
 import ModulesRestClient from "../api/ModulesRestClient";
@@ -16,6 +17,7 @@ import { EntryValueType, toString } from "../models/EntryValueType";
 interface IModuleConfigurationPropModel {
     RestClient?: ModulesRestClient;
     ModuleName: string;
+    NotificationSystem: NotificationSystem.System;
 }
 
 interface IModuleConfigurationStateModel {
@@ -54,7 +56,7 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
     }
 
     public loadConfig() {
-        this.props.RestClient.moduleConfig(this.props.ModuleName)
+        return this.props.RestClient.moduleConfig(this.props.ModuleName)
                              .then((data) => {
                                  Config.patchConfig(data);
                                  this.setState(
@@ -70,16 +72,19 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
     }
 
     public onApply() {
-        this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.SaveAndReincarnate });
+        this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.SaveAndReincarnate })
+                             .then((result) => this.props.NotificationSystem.addNotification({ title: "Saved", message: "Configuration was saved successfully. Module is restarting...", level: "success", autoDismiss: 5 }));
     }
 
     public onSave() {
-        this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.OnlySave });
+        this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.OnlySave })
+                             .then((result) => this.props.NotificationSystem.addNotification({ title: "Saved", message: "Configuration was saved successfully", level: "success", autoDismiss: 5 }));
     }
 
     public onRevert() {
         this.setState({ ConfigIsLoading: true });
-        this.loadConfig();
+        this.loadConfig()
+            .then((result) => this.props.NotificationSystem.addNotification({ title: "Reverted", message: "Configuration was reverted", level: "success", autoDismiss: 3 }));
     }
 
     public onClickBreadcrumb(entry: Entry) {

@@ -1,6 +1,7 @@
 import { faCogs, faComment, faSitemap, faSquare } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
+import NotificationSystem = require("react-notification-system");
 import { connect, Dispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
@@ -21,6 +22,7 @@ interface IModulesPropModel {
     RestClient: ModulesRestClient;
     Modules: ServerModuleModel[];
     Configs: IConfig[];
+    NotificationSystem?: NotificationSystem.System;
 }
 
 interface IModulesDispatchPropModel {
@@ -38,6 +40,7 @@ const mapStateToProps = (state: IAppState): IModulesPropModel => {
         RestClient: state.Modules.RestClient,
         Modules: state.Modules.Modules,
         Configs: state.Modules.Configs,
+        NotificationSystem: state.Common.NotificationSystem,
     };
 };
 
@@ -95,7 +98,9 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
 
             menuItem.SubMenuItems.forEach((subMenuItem) => {
                 routes.push(<Route key={idx} path={subMenuItem.NavPath} exact={true}
-                                   render={() => <ModuleConfiguration ModuleName={module.Name} RestClient={this.props.RestClient} />}/>);
+                                   render={() => <ModuleConfiguration ModuleName={module.Name}
+                                                                      RestClient={this.props.RestClient}
+                                                                      NotificationSystem={this.props.NotificationSystem} />}/>);
                 ++idx;
             });
 
