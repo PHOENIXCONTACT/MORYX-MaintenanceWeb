@@ -10,14 +10,14 @@ import HostInformationResponse from "../../common/api/responses/HostInformationR
 import WrapPanel from "../../common/components/Panels/WrapPanel";
 import kbToString from "../../common/converter/ByteConverter";
 import SystemLoadSample from "../../common/models/SystemLoadSample";
-import { IAppState } from "../../common/redux/AppState";
+import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import ServerModuleModel from "../../modules/models/ServerModuleModel";
 import { updateModules } from "../../modules/redux/ModulesActions";
 import { CPUMemoryChart } from "../components/CPUMemoryChart";
 import { Module } from "../components/Module";
 
-interface IDashboardPropModel {
+interface DashboardPropModel {
     ApplicationInfo: ApplicationInformationResponse;
     HostInfo: HostInformationResponse;
     ApplicationLoad: ApplicationLoadResponse;
@@ -26,7 +26,7 @@ interface IDashboardPropModel {
     RestClient: CommonRestClient;
 }
 
-const mapStateToProps = (state: IAppState): IDashboardPropModel => {
+const mapStateToProps = (state: AppState): DashboardPropModel => {
     return {
         ApplicationInfo: state.Dashboard.ApplicationInfo,
         HostInfo: state.Dashboard.HostInfo,
@@ -37,24 +37,24 @@ const mapStateToProps = (state: IAppState): IDashboardPropModel => {
     };
 };
 
-class Dashboard extends React.Component<IDashboardPropModel> {
+class Dashboard extends React.Component<DashboardPropModel> {
     private restCallDate: number;
 
-    constructor(props: IDashboardPropModel) {
+    constructor(props: DashboardPropModel) {
         super(props);
 
         this.restCallDate = Date.now();
     }
 
-    public calculateMemoryUsagePercentage() {
+    public calculateMemoryUsagePercentage(): number {
         return Math.round((this.props.ApplicationLoad.WorkingSet / this.props.ApplicationLoad.SystemMemory) * 100.0);
     }
 
-    public preRenderModules() {
+    public preRenderModules(): React.ReactNode {
         return this.props.Modules.map((module, idx) => <Module key={idx} ServerModule={module} />);
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Card className="component">
                 <CardHeader tag="h2">
@@ -84,14 +84,14 @@ class Dashboard extends React.Component<IDashboardPropModel> {
                                         <Col md={8}><span className="font-small">{this.props.ApplicationLoad.CPULoad}%</span></Col>
                                     </Row>
                                     <Row>
-                                        <Col md={12}><Progress value={this.props.ApplicationLoad.CPULoad}></Progress></Col>
+                                        <Col md={12}><Progress value={this.props.ApplicationLoad.CPULoad} /></Col>
                                     </Row>
                                     <Row>
                                         <Col md={4}><span className="font-bold font-small">Memory usage:</span></Col>
                                         <Col md={8}><span className="font-small">{kbToString(this.props.ApplicationLoad.WorkingSet)} ({kbToString(this.props.ApplicationLoad.SystemMemory)})</span></Col>
                                     </Row>
                                     <Row>
-                                        <Col md={12}><Progress value={this.calculateMemoryUsagePercentage()}></Progress></Col>
+                                        <Col md={12}><Progress value={this.calculateMemoryUsagePercentage()} /></Col>
                                     </Row>
                                 </Container>
                             </Col>
@@ -132,4 +132,4 @@ class Dashboard extends React.Component<IDashboardPropModel> {
     }
 }
 
-export default connect<IDashboardPropModel>(mapStateToProps)(Dashboard);
+export default connect<DashboardPropModel>(mapStateToProps)(Dashboard);

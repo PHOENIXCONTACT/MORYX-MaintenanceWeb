@@ -4,11 +4,11 @@ export default class Config {
     public Module: string;
     public Entries: Entry[];
 
-    public static patchConfig(config: Config) {
+    public static patchConfig(config: Config): void {
         config.Entries.forEach((entry) => this.patchParent(entry, null));
     }
 
-    public static patchParent(entry: Entry, parentEntry: Entry) {
+    public static patchParent(entry: Entry, parentEntry: Entry): void {
         entry.Parent = parentEntry;
         entry.SubEntries.forEach((subEntry) => this.patchParent(subEntry, entry));
     }

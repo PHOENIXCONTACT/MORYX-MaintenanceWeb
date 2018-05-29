@@ -3,16 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Button, ButtonGroup, Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Row } from "reactstrap";
 import Entry from "../../models/Entry";
-import CollapsibleEntryEditorBase, { ICollapsibleEntryEditorBasePropModel } from "./CollapsibleEntryEditorBase";
+import CollapsibleEntryEditorBase, { CollapsibleEntryEditorBasePropModel } from "./CollapsibleEntryEditorBase";
 import ConfigEditor from "./ConfigEditor";
 
-interface ICollectionEditorStateModel {
+interface CollectionEditorStateModel {
     SelectedEntry: string;
     ExpandedEntryNames: string[];
 }
 
-export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollectionEditorStateModel> {
-    constructor(props: ICollapsibleEntryEditorBasePropModel) {
+export default class CollectionEditor extends CollapsibleEntryEditorBase<CollectionEditorStateModel> {
+    constructor(props: CollapsibleEntryEditorBasePropModel) {
         super(props);
         this.state = {
             SelectedEntry: props.Entry.Value.Possible[0],
@@ -20,24 +20,24 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
         };
     }
 
-    public toggleCollapsible(entryName: string) {
+    public toggleCollapsible(entryName: string): void {
         if (this.isExpanded(entryName)) {
-            this.setState((prevState) => ({ ExpandedEntryNames: prevState.ExpandedEntryNames.filter((name) => name != entryName) }));
+            this.setState((prevState) => ({ ExpandedEntryNames: prevState.ExpandedEntryNames.filter((name) => name !== entryName) }));
         } else {
             this.setState((prevState) => ({ ExpandedEntryNames: [...prevState.ExpandedEntryNames, entryName] }));
         }
     }
 
-    public isExpanded(entryName: string) {
-        return this.state.ExpandedEntryNames.find((e: string) => e == entryName) != undefined;
+    public isExpanded(entryName: string): boolean {
+        return this.state.ExpandedEntryNames.find((e: string) => e === entryName) != undefined;
     }
 
-    public onSelect(e: React.FormEvent<HTMLInputElement>) {
+    public onSelect(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({ SelectedEntry: e.currentTarget.value });
     }
 
-    public addEntry() {
-        const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.Key.Name == this.state.SelectedEntry);
+    public addEntry(): void {
+        const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.Key.Name === this.state.SelectedEntry);
         const entryClone = JSON.parse(JSON.stringify(prototype));
         entryClone.Parent = this.props.Entry;
         this.props.Entry.SubEntries.push(entryClone);
@@ -45,12 +45,12 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
         this.forceUpdate();
     }
 
-    public removeEntry(entry: Entry) {
+    public removeEntry(entry: Entry): void {
         this.props.Entry.SubEntries.splice(this.props.Entry.SubEntries.indexOf(entry), 1);
         this.forceUpdate();
     }
 
-    public preRenderOptions() {
+    public preRenderOptions(): React.ReactNode {
         const options: React.ReactNode[] = [];
         this.props.Entry.Value.Possible.map((colEntry, idx) =>
         (
@@ -63,7 +63,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
         return <ConfigEditor ParentEntry={entry} Entries={entry.SubEntries} navigateToEntry={this.props.navigateToEntry} />;
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <div className="up-space">
                 <Collapse isOpen={this.props.IsExpanded}>
@@ -71,7 +71,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<ICollec
                         {
                             this.props.Entry.SubEntries.map((entry, idx) =>
                                 <div key={idx}>
-                                    <Row style={{background: idx % 2 == 0 ? "#f2f2f2" : "white"}}>
+                                    <Row style={{background: idx % 2 === 0 ? "#f2f2f2" : "white"}}>
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
                                             <ButtonGroup>

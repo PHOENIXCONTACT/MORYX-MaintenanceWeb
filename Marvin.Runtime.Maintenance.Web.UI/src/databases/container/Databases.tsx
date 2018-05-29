@@ -8,24 +8,24 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import RoutingMenu from "../../common/components/Menu/RoutingMenu";
 import IMenuItemModel from "../../common/models/IMenuItemModel";
 import IMenuModel from "../../common/models/IMenuModel";
-import { IAppState } from "../../common/redux/AppState";
+import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import DatabasesRestClient from "../api/DatabasesRestClient";
 import DataModel from "../models/DataModel";
 import { updateDatabaseConfigs } from "../redux/DatabaseActions";
 import DatabaseModel from "./DatabaseModel";
 
-interface IDatabasesPropsModel {
+interface DatabasesPropsModel {
     RestClient?: DatabasesRestClient;
     DatabaseConfigs?: DataModel[];
     NotificationSystem?: NotificationSystem.System;
 }
 
-interface IDatabasesDispatchPropModel {
-    onUpdateDatabaseConfigs?: (databaseConfigs: DataModel[]) => void;
+interface DatabasesDispatchPropModel {
+    onUpdateDatabaseConfigs?(databaseConfigs: DataModel[]): void;
 }
 
-const mapStateToProps = (state: IAppState): IDatabasesPropsModel => {
+const mapStateToProps = (state: AppState): DatabasesPropsModel => {
     return {
         RestClient: state.Databases.RestClient,
         DatabaseConfigs: state.Databases.DatabaseConfigs,
@@ -33,37 +33,37 @@ const mapStateToProps = (state: IAppState): IDatabasesPropsModel => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): IDatabasesDispatchPropModel => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): DatabasesDispatchPropModel => {
     return {
         onUpdateDatabaseConfigs: (databaseConfigs: DataModel[]) => dispatch(updateDatabaseConfigs(databaseConfigs)),
     };
 };
 
-interface IDatabaseStateModel {
+interface DatabaseStateModel {
     MenuModel: IMenuModel;
     IsLoading: boolean;
 }
 
-class Database extends React.Component<IDatabasesPropsModel & IDatabasesDispatchPropModel, IDatabaseStateModel> {
-    constructor(props: IDatabasesPropsModel & IDatabasesDispatchPropModel) {
+class Database extends React.Component<DatabasesPropsModel & DatabasesDispatchPropModel, DatabaseStateModel> {
+    constructor(props: DatabasesPropsModel & DatabasesDispatchPropModel) {
         super(props);
         this.state = { MenuModel: { MenuItems: [] }, IsLoading: false };
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.loadDatabases();
     }
 
-    private loadDatabases() {
+    private loadDatabases(): void {
         this.setState({ IsLoading: true });
 
         this.props.RestClient.databaseModels().then((data) => {
             this.props.onUpdateDatabaseConfigs(data);
-            this.setState({ MenuModel: { MenuItems: data.map((dataModel, idx) => this.createMenuItem(dataModel)) }, IsLoading: false });
+            this.setState({ MenuModel: { MenuItems: data.map((dataModel, idx) => Database.createMenuItem(dataModel)) }, IsLoading: false });
         });
     }
 
-    public createMenuItem(dataModel: DataModel): IMenuItemModel {
+    private static createMenuItem(dataModel: DataModel): IMenuItemModel {
         return {
             Name: dataModel.TargetModel,
             NavPath: "/databases/" + dataModel.TargetModel,
@@ -72,7 +72,7 @@ class Database extends React.Component<IDatabasesPropsModel & IDatabasesDispatch
         };
     }
 
-    public preRenderRoutesList() {
+    public preRenderRoutesList(): any[] {
         const routes: any[] = [];
         let idx = 0;
 
@@ -84,7 +84,7 @@ class Database extends React.Component<IDatabasesPropsModel & IDatabasesDispatch
         return routes;
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Row>
                 <Col md={3}>
@@ -123,4 +123,4 @@ class Database extends React.Component<IDatabasesPropsModel & IDatabasesDispatch
     }
 }
 
-export default connect<IDatabasesPropsModel, IDatabasesDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Database);
+export default connect<DatabasesPropsModel, DatabasesDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Database);

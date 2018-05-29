@@ -4,17 +4,17 @@ import DatabasesRestClient from "../api/DatabasesRestClient";
 import DataModel from "../models/DataModel";
 import { UPDATE_DATABASE_CONFIG, UPDATE_DATABASE_CONFIGS } from "./DatabaseActions";
 
-export interface IDatabaseState {
+export interface DatabaseState {
     RestClient: DatabasesRestClient;
     DatabaseConfigs: DataModel[];
 }
 
-export const initialDatabaseState: IDatabaseState = {
-    RestClient: new DatabasesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
+export const initialDatabaseState: DatabaseState = {
     DatabaseConfigs: [],
+    RestClient: new DatabasesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT, 10)),
 };
 
-export function getDatabaseReducer(state: IDatabaseState = initialDatabaseState, action: ActionType<{}>): IDatabaseState {
+export function getDatabaseReducer(state: DatabaseState = initialDatabaseState, action: ActionType<{}>): DatabaseState {
   switch (action.type) {
     case UPDATE_DATABASE_CONFIGS:
     {

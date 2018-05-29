@@ -3,32 +3,32 @@ import * as React from "react";
 import { ChartData, Line } from "react-chartjs-2";
 import SystemLoadSample from "../../common/models/SystemLoadSample";
 
-interface ICPUMemoryPropsModel {
+interface CPUMemoryPropsModel {
     Samples: SystemLoadSample[];
 }
 
-interface ICPUMemoryStateModel {
+interface CPUMemoryStateModel {
     chartData: any;
 }
 
-export class CPUMemoryChart extends React.Component<ICPUMemoryPropsModel, ICPUMemoryStateModel> {
-    constructor(props: ICPUMemoryPropsModel) {
+export class CPUMemoryChart extends React.Component<CPUMemoryPropsModel, CPUMemoryStateModel> {
+    constructor(props: CPUMemoryPropsModel) {
         super(props);
         this.state = {
-            chartData: this.createChartData(),
+            chartData: CPUMemoryChart.createChartData(),
         };
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.updateChartData(this.props);
     }
 
-    public componentWillReceiveProps(nextProps: ICPUMemoryPropsModel) {
+    public componentWillReceiveProps(nextProps: CPUMemoryPropsModel): void {
         this.updateChartData(nextProps);
     }
 
-    public updateChartData(nextProps: ICPUMemoryPropsModel) {
-        const chartData = this.createChartData();
+    public updateChartData(nextProps: CPUMemoryPropsModel): void {
+        const chartData = CPUMemoryChart.createChartData();
         nextProps.Samples.forEach((sample) => {
             chartData.labels.push(sample.Date);
             chartData.datasets[0].data.push(sample.CPULoad);
@@ -38,7 +38,7 @@ export class CPUMemoryChart extends React.Component<ICPUMemoryPropsModel, ICPUMe
         this.setState({chartData});
     }
 
-    public createChartData(): any {
+    private static createChartData(): any {
         const chartData: ChartData<chartjs.ChartData> = {
             labels: [],
             datasets:
@@ -62,7 +62,7 @@ export class CPUMemoryChart extends React.Component<ICPUMemoryPropsModel, ICPUMe
         return chartData;
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Line  data={this.state.chartData} />
         );

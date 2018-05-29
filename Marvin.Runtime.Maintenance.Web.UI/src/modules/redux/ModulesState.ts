@@ -9,19 +9,19 @@ import NotificationModel from "../models/NotificationModel";
 import ServerModuleModel from "../models/ServerModuleModel";
 import { UPDATE_FAILURE_BEHAVIOUR, UPDATE_HEALTHSTATE, UPDATE_MODULES, UPDATE_NOTIFICATIONS, UPDATE_START_BEHAVIOUR } from "./ModulesActions";
 
-export interface IModulesState {
+export interface ModulesState {
   RestClient: ModulesRestClient;
   Modules: ServerModuleModel[];
   Configs: Config[];
 }
 
-export const initialModulesState: IModulesState = {
-  RestClient: new ModulesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
-  Modules: [],
+export const initialModulesState: ModulesState = {
   Configs: [],
+  Modules: [],
+  RestClient: new ModulesRestClient(window.location.hostname, parseInt(RESTSERVER_PORT, 10)),
 };
 
-export function getModulesReducer(state: IModulesState = initialModulesState, action: ActionType<{}>): IModulesState {
+export function getModulesReducer(state: ModulesState = initialModulesState, action: ActionType<{}>): ModulesState {
   switch (action.type) {
     case UPDATE_MODULES:
     {

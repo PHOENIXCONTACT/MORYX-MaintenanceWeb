@@ -7,7 +7,7 @@ export interface ForegroundBackgroundCssClass {
 }
 
 export class HealthStateToCssClassConverter {
-    public Convert(healthState: ModuleServerModuleState): ForegroundBackgroundCssClass {
+    public static Convert(healthState: ModuleServerModuleState): ForegroundBackgroundCssClass {
         switch (healthState) {
             case ModuleServerModuleState.Failure: {
                 return { Background: "danger", Foreground: "normal" };

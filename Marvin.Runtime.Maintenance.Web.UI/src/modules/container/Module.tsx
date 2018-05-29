@@ -16,88 +16,76 @@ import SerializableException from "../models/SerializableException";
 import ServerModuleModel from "../models/ServerModuleModel";
 import { updateFailureBehaviour, updateStartBehaviour } from "../redux/ModulesActions";
 
-interface IModulePropModel {
+interface ModulePropModel {
     RestClient?: ModulesRestClient;
     Module: ServerModuleModel;
 }
 
-interface IModuleStateModel {
+interface ModuleStateModel {
     HasWarnings: boolean;
     IsNotificationDialogOpened: boolean;
     SelectedNotification: NotificationModel;
 }
 
-interface IModuleDispatchPropModel {
-    onUpdateStartBehaviour?: (moduleName: string, startBehaviour: ModuleStartBehaviour) => void;
-    onUpdateFailureBehaviour?: (moduleName: string, failureBehaviour: FailureBehaviour) => void;
+interface ModuleDispatchPropModel {
+    onUpdateStartBehaviour?(moduleName: string, startBehaviour: ModuleStartBehaviour): void;
+    onUpdateFailureBehaviour?(moduleName: string, failureBehaviour: FailureBehaviour): void;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): IModuleDispatchPropModel => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): ModuleDispatchPropModel => {
     return {
         onUpdateStartBehaviour: (moduleName: string, startBehaviour: ModuleStartBehaviour) => dispatch(updateStartBehaviour(moduleName, startBehaviour)),
         onUpdateFailureBehaviour: (moduleName: string, failureBehaviour: FailureBehaviour) => dispatch(updateFailureBehaviour(moduleName, failureBehaviour)),
     };
 };
 
-class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel, IModuleStateModel> {
-    private moduleNotificationTypeConverter: ModuleNotificationTypeToCssClassConverter;
-
-    constructor(props: IModulePropModel & IModuleDispatchPropModel) {
+class Module extends React.Component<ModulePropModel & ModuleDispatchPropModel, ModuleStateModel> {
+    constructor(props: ModulePropModel & ModuleDispatchPropModel) {
         super(props);
 
         this.state = { HasWarnings: false, IsNotificationDialogOpened: false, SelectedNotification: null };
-
-        this.moduleNotificationTypeConverter = new ModuleNotificationTypeToCssClassConverter();
     }
 
-    public componentWillReceiveProps(nextProps: IModulePropModel) {
-        const warnings = nextProps.Module.Notifications.filter(function(element, index, array) { return element.NotificationType == ModuleNotificationType.Warning; });
-        this.setState({ HasWarnings: warnings.length != 0 });
+    public componentWillReceiveProps(nextProps: ModulePropModel): void {
+        const warnings = nextProps.Module.Notifications.filter(function(element: NotificationModel, index: number, array: NotificationModel[]): boolean { return element.NotificationType === ModuleNotificationType.Warning; });
+        this.setState({ HasWarnings: warnings.length !== 0 });
     }
 
-    public preRenderModuleDependencyRows(dependencies: ServerModuleModel[]) {
-        return dependencies.map((module, idx) =>
-        <tr>
-            <td>{module.Name}</td>
-            <td><HealthStateBadge HealthState={module.HealthState} /></td>
-        </tr>);
-    }
-
-    public startModule() {
+    public startModule(): void {
         this.props.RestClient.startModule(this.props.Module.Name);
     }
 
-    public stopModule() {
+    public stopModule(): void {
         this.props.RestClient.stopModule(this.props.Module.Name);
     }
 
-    public reincarnateModule() {
+    public reincarnateModule(): void {
         this.props.RestClient.reincarnateModule(this.props.Module.Name);
     }
 
-    public confirmModuleWarning() {
+    public confirmModuleWarning(): void {
         this.props.RestClient.confirmModuleWarning(this.props.Module.Name);
     }
 
-    public onStartBehaviourChange(e: React.FormEvent<HTMLInputElement>) {
-        const newValue = parseInt((e.target as HTMLSelectElement).value);
+    public onStartBehaviourChange(e: React.FormEvent<HTMLInputElement>): void {
+        const newValue = parseInt((e.target as HTMLSelectElement).value, 10);
         this.props.RestClient.updateModule({ ...this.props.Module, StartBehaviour: newValue }).then((d) => this.props.onUpdateStartBehaviour(this.props.Module.Name, newValue));
     }
 
-    public onFailureBehaviourChange(e: React.FormEvent<HTMLInputElement>) {
-        const newValue = parseInt((e.target as HTMLSelectElement).value);
+    public onFailureBehaviourChange(e: React.FormEvent<HTMLInputElement>): void {
+        const newValue = parseInt((e.target as HTMLSelectElement).value, 10);
         this.props.RestClient.updateModule({ ...this.props.Module, FailureBehaviour: newValue }).then((d) => this.props.onUpdateFailureBehaviour(this.props.Module.Name, newValue));
     }
 
-    private openNotificationDetailsDialog(e: React.MouseEvent<HTMLElement>, notification: NotificationModel) {
+    private openNotificationDetailsDialog(e: React.MouseEvent<HTMLElement>, notification: NotificationModel): void {
         this.setState({ IsNotificationDialogOpened: true, SelectedNotification: notification });
     }
 
-    private closeNotificationDetailsDialog() {
+    private closeNotificationDetailsDialog(): void {
         this.setState({ IsNotificationDialogOpened: false, SelectedNotification: null });
     }
 
-    private preRenderInnerException(exception: SerializableException): React.ReactNode {
+    private static preRenderInnerException(exception: SerializableException): React.ReactNode {
         return (
             <div style={{margin: "0px 0px 0px 5px"}}>
                 <Container fluid={true}>
@@ -113,13 +101,13 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                     </Row>
                 </Container>
                 {exception.InnerException != null &&
-                    this.preRenderInnerException(exception.InnerException)
+                    Module.preRenderInnerException(exception.InnerException)
                 }
             </div>
         );
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Card>
                 <CardHeader tag="h2">
@@ -170,7 +158,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                             </Col>
                             <Col md={6}>
                                 <h3>Dependencies</h3>
-                                {this.props.Module.Dependencies.length == 0 ? (
+                                {this.props.Module.Dependencies.length === 0 ? (
                                     <span className="font-italic font-small">This module has no dependencies.</span>
                                 ) : (
                                     <Table striped={true}>
@@ -226,7 +214,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                         <Row className="up-space-lg">
                             <Col md={12}>
                                 <h3>Notifications</h3>
-                                {this.props.Module.Notifications.length == 0 ? (
+                                {this.props.Module.Notifications.length === 0 ? (
                                     <span className="font-italic font-small">No notifications detected.</span>
                                 ) : (
                                     <Table>
@@ -245,7 +233,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                                     <td><span className="align-self-center">{notification.Exception.ExceptionTypeName}</span></td>
                                                     <td><span className="align-self-center">{notification.Exception.Message}</span></td>
                                                     <td>
-                                                        <span className="align-self-center" style={this.moduleNotificationTypeConverter.Convert(notification.NotificationType)}>
+                                                        <span className="align-self-center" style={ModuleNotificationTypeToCssClassConverter.Convert(notification.NotificationType)}>
                                                             {ModuleNotificationType[notification.NotificationType]}
                                                         </span>
                                                     </td>
@@ -267,7 +255,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 <Row>
                                     <Col md={2}><span className="font-bold">Type</span></Col>
                                     <Col md={10}>
-                                        <span style={this.moduleNotificationTypeConverter.Convert(this.state.SelectedNotification.NotificationType)}>
+                                        <span style={ModuleNotificationTypeToCssClassConverter.Convert(this.state.SelectedNotification.NotificationType)}>
                                             {this.state.SelectedNotification.Exception.ExceptionTypeName}
                                         </span>
                                     </Col>
@@ -291,7 +279,7 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
                                 </Row>
                                 { this.state.SelectedNotification.Exception.InnerException != null &&
                                     <Row>
-                                        <Col md={12}>{this.preRenderInnerException(this.state.SelectedNotification.Exception.InnerException)}</Col>
+                                        <Col md={12}>{Module.preRenderInnerException(this.state.SelectedNotification.Exception.InnerException)}</Col>
                                     </Row>
                                 }
                             </Container>
@@ -306,4 +294,4 @@ class Module extends React.Component<IModulePropModel & IModuleDispatchPropModel
     }
 }
 
-export default connect<{}, IModuleDispatchPropModel>(null, mapDispatchToProps)(Module);
+export default connect<{}, ModuleDispatchPropModel>(null, mapDispatchToProps)(Module);

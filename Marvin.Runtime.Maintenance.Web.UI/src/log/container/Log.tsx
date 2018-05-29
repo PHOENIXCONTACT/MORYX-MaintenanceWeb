@@ -8,7 +8,7 @@ import { Link, Route, RouteComponentProps, Switch, withRouter } from "react-rout
 import { Card, CardBody, CardHeader, Col, Container, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import TreeMenu from "../../common/components/Menu/TreeMenu";
 import IMenuModel from "../../common/models/IMenuModel";
-import { IAppState } from "../../common/redux/AppState";
+import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import LogRestClient from "../api/LogRestClient";
 import Logger from "../components/Logger";
@@ -17,17 +17,17 @@ import LoggerModel from "../models/LoggerModel";
 import { LogLevel } from "../models/LogLevel";
 import { updateLoggers } from "../redux/LogActions";
 
-interface ILogPropsModel {
+interface LogPropsModel {
     RestClient?: LogRestClient;
     Loggers?: LoggerModel[];
     NotificationSystem?: NotificationSystem.System;
 }
 
-interface ILogDispatchPropModel {
-    onUpdateLoggers?: (loggers: LoggerModel[]) => void;
+interface LogDispatchPropModel {
+    onUpdateLoggers?(loggers: LoggerModel[]): void;
 }
 
-const mapStateToProps = (state: IAppState): ILogPropsModel => {
+const mapStateToProps = (state: AppState): LogPropsModel => {
     return {
         RestClient: state.Log.RestClient,
         Loggers: state.Log.Loggers,
@@ -35,23 +35,23 @@ const mapStateToProps = (state: IAppState): ILogPropsModel => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): ILogDispatchPropModel => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): LogDispatchPropModel => {
     return {
         onUpdateLoggers: (loggers: LoggerModel[]) => dispatch(updateLoggers(loggers)),
     };
 };
 
-interface ILogStateModel {
+interface LogStateModel {
     ActiveTab: string;
     Menu: IMenuModel;
     LoggerTabs: LoggerModel[];
 }
 
-class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogStateModel> {
+class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogStateModel> {
 
     public overviewLogger: LoggerModel;
 
-    constructor(props: ILogPropsModel & ILogDispatchPropModel) {
+    constructor(props: LogPropsModel & LogDispatchPropModel) {
         super(props);
         this.state = { ActiveTab: "0", Menu: { MenuItems: [] }, LoggerTabs: [] };
 
@@ -59,7 +59,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
         this.overviewLogger.Name = "";
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.props.RestClient.loggers().then((data) => {
             this.props.onUpdateLoggers(data);
             this.setState({Menu: { MenuItems: data.map((logger, idx) => this.createMenuItem(logger)) } });
@@ -68,7 +68,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
 
     public createMenuItem(logger: LoggerModel): ILogMenuItem {
         const menuItem: ILogMenuItem = {
-                Name: this.shortLoggerName(logger),
+                Name: Log.shortLoggerName(logger),
                 NavPath: "/log",
                 Icon: faList,
                 Logger: logger,
@@ -79,7 +79,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
         return menuItem;
     }
 
-    public preRenderActiveLogLevel(menuItem: ILogMenuItem) {
+    public preRenderActiveLogLevel(menuItem: ILogMenuItem): React.ReactNode {
         return (
             <Input type="select" className="font-bold"
                    style={{width: "100%", height: "1.5rem !important", fontSize: "10px", padding: "2px"}}
@@ -94,10 +94,10 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
             </Input>);
     }
 
-    private onActiveLogLevelChange(e: React.FormEvent<HTMLInputElement>, logger: LoggerModel) {
+    private onActiveLogLevelChange(e: React.FormEvent<HTMLInputElement>, logger: LoggerModel): void {
         e.preventDefault();
 
-        const newValue = parseInt((e.target as HTMLSelectElement).value);
+        const newValue = parseInt((e.target as HTMLSelectElement).value, 10);
         this.props.RestClient.logLevel(logger.Name, newValue).then((data) => {
             if (data.Success) {
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Log level for '" + logger.Name +  "' was set successfully", level: "success", autoDismiss: 5 });
@@ -110,18 +110,18 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
         this.forceUpdate();
     }
 
-    private toggleTab(tabName: string) {
+    private toggleTab(tabName: string): void {
         this.setState({ActiveTab: tabName});
     }
 
-    private shortLoggerName(logger: LoggerModel) {
+    private static shortLoggerName(logger: LoggerModel): string {
         const splittedLoggerPath = logger.Name.split(".");
         return splittedLoggerPath[splittedLoggerPath.length - 1];
     }
 
-    private onMenuItemClicked(menuItem: ILogMenuItem) {
+    private onMenuItemClicked(menuItem: ILogMenuItem): void {
        const idx = this.state.LoggerTabs.indexOf(menuItem.Logger);
-       if (idx == -1) {
+       if (idx === -1) {
             this.setState((prevState) => ({
                 LoggerTabs: [...prevState.LoggerTabs, menuItem.Logger],
                 ActiveTab: (prevState.LoggerTabs.length + 1).toString(),
@@ -131,10 +131,10 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
        }
     }
 
-    private onCloseTab(logger: LoggerModel) {
+    private onCloseTab(logger: LoggerModel): void {
         const idx = this.state.LoggerTabs.indexOf(logger);
-        if (idx != -1) {
-            let activeTab = parseInt(this.state.ActiveTab);
+        if (idx !== -1) {
+            let activeTab = parseInt(this.state.ActiveTab, 10);
             if (activeTab >= this.state.LoggerTabs.length) {
                 activeTab -= 1;
             }
@@ -146,17 +146,17 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
         }
     }
 
-    private preRenderNavForTabs() {
+    private preRenderNavForTabs(): React.ReactNode {
         return this.state.LoggerTabs.map((logger, idx) =>
             <NavItem key={idx} className={"selectable"}>
-                <NavLink className={this.state.ActiveTab == (idx + 1).toString() ? "active" : ""} onClick={() => { this.toggleTab((idx + 1).toString()); }}>
-                    {this.shortLoggerName(logger)}
+                <NavLink className={this.state.ActiveTab === (idx + 1).toString() ? "active" : ""} onClick={() => { this.toggleTab((idx + 1).toString()); }}>
+                    {Log.shortLoggerName(logger)}
                 </NavLink>
             </NavItem>,
         );
     }
 
-    private preRenderTabs() {
+    private preRenderTabs(): React.ReactNode {
         return this.state.LoggerTabs.map((logger, idx) =>
             <TabPane key={idx} tabId={(idx + 1).toString()}>
                 <Row>
@@ -168,7 +168,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
         );
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Row>
                 <Col md={3}>
@@ -193,7 +193,7 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
                         <CardBody>
                             <Nav tabs={true}>
                                 <NavItem>
-                                    <NavLink className={this.state.ActiveTab == "0" ? "active selectable" : "selectable"} onClick={() => { this.toggleTab("0"); }}>
+                                    <NavLink className={this.state.ActiveTab === "0" ? "active selectable" : "selectable"} onClick={() => { this.toggleTab("0"); }}>
                                         Overview
                                     </NavLink>
                                 </NavItem>
@@ -217,4 +217,4 @@ class Log extends React.Component<ILogPropsModel & ILogDispatchPropModel, ILogSt
     }
 }
 
-export default connect<ILogPropsModel, ILogDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Log);
+export default connect<LogPropsModel, LogDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Log);

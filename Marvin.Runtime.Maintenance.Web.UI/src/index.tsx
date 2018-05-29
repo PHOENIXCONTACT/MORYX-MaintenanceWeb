@@ -6,10 +6,10 @@ import { HashRouter, Router } from "react-router-dom";
 import { ConnectedRouter, routerMiddleware, routerReducer } from "react-router-redux";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import App from "./common/container/App";
-import { getAppReducer, IAppState, initialAppState } from "./common/redux/AppState";
+import { AppState, getAppReducer, initialAppState } from "./common/redux/AppState";
 
 export const history = createHashHistory();
-const store = createStore<IAppState>(getAppReducer, initialAppState);
+const store = createStore<AppState>(getAppReducer, initialAppState);
 
 ReactDOM.render(
     <Provider store={store}>

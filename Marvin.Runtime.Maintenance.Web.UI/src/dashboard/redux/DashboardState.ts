@@ -6,21 +6,21 @@ import SystemLoadSample from "../../common/models/SystemLoadSample";
 import { ActionType } from "../../common/redux/Types";
 import { UPDATE_APPLICATION_INFO, UPDATE_APPLICATION_LOAD, UPDATE_HOST_INFO, UPDATE_SYSTEM_LOAD } from "./DashboardActions";
 
-export interface IDashboardState {
+export interface DashboardState {
     ApplicationInfo: ApplicationInformationResponse;
     HostInfo: HostInformationResponse;
     ApplicationLoad: ApplicationLoadResponse;
     SystemLoad: SystemLoadSample[];
 }
 
-export const initialDashboardState: IDashboardState = {
+export const initialDashboardState: DashboardState = {
     ApplicationInfo: { AssemblyProduct: "", AssemblyVersion: "", AssemblyInformationalVersion: "", AssemblyDescription: "" },
     HostInfo: { MachineName: "", OSInformation: "", UpTime: 0 },
     ApplicationLoad: { CPULoad: 0, SystemMemory: 0, WorkingSet: 0 },
     SystemLoad: [],
 };
 
-export function getDashboardReducer(state: IDashboardState = initialDashboardState, action: ActionType<{}>): IDashboardState {
+export function getDashboardReducer(state: DashboardState = initialDashboardState, action: ActionType<{}>): DashboardState {
   switch (action.type) {
     case UPDATE_APPLICATION_INFO:
     {
@@ -38,7 +38,7 @@ export function getDashboardReducer(state: IDashboardState = initialDashboardSta
     {
         const systemLoadResponse = action.payload as SystemLoadResponse;
         const samples = state.SystemLoad.slice();
-        if (samples.length == 5) {
+        if (samples.length === 5) {
             samples.shift();
         }
 

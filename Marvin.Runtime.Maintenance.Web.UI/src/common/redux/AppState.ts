@@ -1,20 +1,20 @@
 import { routerReducer, RouterState } from "react-router-redux";
-import { getDashboardReducer, IDashboardState, initialDashboardState } from "../../dashboard/redux/DashboardState";
-import { getDatabaseReducer, IDatabaseState, initialDatabaseState } from "../../databases/redux/DatabaseState";
-import { getLogReducer, ILogState, initialLogState } from "../../log/redux/LogState";
-import { getModulesReducer, IModulesState, initialModulesState } from "../../modules/redux/ModulesState";
-import { getCommonReducer, ICommonState, initialCommonState } from "./CommonState";
+import { DashboardState, getDashboardReducer, initialDashboardState } from "../../dashboard/redux/DashboardState";
+import { DatabaseState, getDatabaseReducer, initialDatabaseState } from "../../databases/redux/DatabaseState";
+import { getLogReducer, initialLogState, LogState } from "../../log/redux/LogState";
+import { getModulesReducer, initialModulesState, ModulesState } from "../../modules/redux/ModulesState";
+import { CommonState, getCommonReducer, initialCommonState } from "./CommonState";
 import { ActionType } from "./Types";
 
-export interface IAppState {
-    Common: ICommonState;
-    Dashboard: IDashboardState;
-    Modules: IModulesState;
-    Databases: IDatabaseState;
-    Log: ILogState;
+export interface AppState {
+    Common: CommonState;
+    Dashboard: DashboardState;
+    Modules: ModulesState;
+    Databases: DatabaseState;
+    Log: LogState;
 }
 
-export const initialAppState: IAppState = {
+export const initialAppState: AppState = {
     Common: initialCommonState,
     Dashboard: initialDashboardState,
     Modules: initialModulesState,
@@ -22,7 +22,7 @@ export const initialAppState: IAppState = {
     Log: initialLogState,
 };
 
-export function getAppReducer(state: IAppState = initialAppState, action: ActionType<{}>): IAppState {
+export function getAppReducer(state: AppState = initialAppState, action: ActionType<{}>): AppState {
     return {
         Common: getCommonReducer(state.Common, action),
         Dashboard: getDashboardReducer(state.Dashboard, action),

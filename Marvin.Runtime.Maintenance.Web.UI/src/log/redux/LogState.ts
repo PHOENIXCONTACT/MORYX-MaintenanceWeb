@@ -4,17 +4,17 @@ import LogRestClient from "../api/LogRestClient";
 import LoggerModel from "../models/LoggerModel";
 import { UPDATE_LOGGERS } from "./LogActions";
 
-export interface ILogState {
+export interface LogState {
     RestClient: LogRestClient;
     Loggers: LoggerModel[];
 }
 
-export const initialLogState: ILogState = {
-    RestClient: new LogRestClient(window.location.hostname, parseInt(RESTSERVER_PORT)),
+export const initialLogState: LogState = {
     Loggers: [],
+    RestClient: new LogRestClient(window.location.hostname, parseInt(RESTSERVER_PORT, 10)),
 };
 
-export function getLogReducer(state: ILogState = initialLogState, action: ActionType<{}>): ILogState {
+export function getLogReducer(state: LogState = initialLogState, action: ActionType<{}>): LogState {
   switch (action.type) {
     case UPDATE_LOGGERS:
     {

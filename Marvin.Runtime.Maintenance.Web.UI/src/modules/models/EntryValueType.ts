@@ -15,7 +15,7 @@ export enum EntryValueType {
     Collection,
 }
 
-export function toString(type: EntryValueType) {
+export function toString(type: EntryValueType): string {
     switch (type) {
         case EntryValueType.Byte: return "Byte";
         case EntryValueType.Boolean: return "Boolean";
@@ -31,5 +31,6 @@ export function toString(type: EntryValueType) {
         case EntryValueType.Enum: return "Enum";
         case EntryValueType.Class: return "Class";
         case EntryValueType.Collection: return "Collection";
+        default: return "";
     }
 }

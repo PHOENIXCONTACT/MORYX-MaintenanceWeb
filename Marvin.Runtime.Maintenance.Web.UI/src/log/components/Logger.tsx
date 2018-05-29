@@ -10,13 +10,13 @@ import LoggerModel from "../models/LoggerModel";
 import { LogLevel } from "../models/LogLevel";
 import LogMessageModel from "../models/LogMessageModel";
 
-interface ILogPropsModel {
+interface LogPropsModel {
     RestClient: LogRestClient;
     Logger: LoggerModel;
-    onCloseTab: (logger: LoggerModel) => void;
+    onCloseTab(logger: LoggerModel): void;
 }
 
-interface ILogStateModel {
+interface LogStateModel {
     LogMessages: LogMessageModel[];
     FilteredLogMessages: LogMessageModel[];
     AppenderId: number;
@@ -27,12 +27,10 @@ interface ILogStateModel {
     IsLogDetailDialogOpen: boolean;
 }
 
-export default class Logger extends React.Component<ILogPropsModel, ILogStateModel> {
-
-    private logLevelCssConverter: LogLevelToCssClassConverter;
+export default class Logger extends React.Component<LogPropsModel, LogStateModel> {
     private updateLogMessagesTimer: number;
 
-    constructor(props: ILogPropsModel) {
+    constructor(props: LogPropsModel) {
         super(props);
         this.state = {
             LogMessages: [],
@@ -44,11 +42,9 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
             SelectedLogMessage: null,
             IsLogDetailDialogOpen: false,
         };
-
-        this.logLevelCssConverter = new LogLevelToCssClassConverter();
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.props.RestClient.addRemoteAppender(this.props.Logger.Name, this.props.Logger.ActiveLevel).then((data) => {
             this.setState({ AppenderId: data.AppenderId });
             this.onUpdateLogMessages();
@@ -56,73 +52,12 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
         });
     }
 
-    public componentWillUnmount() {
+    public componentWillUnmount(): void {
         clearInterval(this.updateLogMessagesTimer);
         this.props.RestClient.removeRemoteAppender(this.state.AppenderId);
     }
 
-    private onUpdateLogMessages() {
-        this.props.RestClient.messages(this.state.AppenderId).then((data) => this.updateLogMessages(data));
-    }
-
-    private updateLogMessages(logMessages: LogMessageModel[]) {
-        logMessages.reverse();
-        const newLogMessageList = logMessages.concat(this.state.LogMessages);
-        this.setState({ LogMessages: newLogMessageList, FilteredLogMessages: this.applyFilter(newLogMessageList, this.state.FilterLogLevel, this.state.MaxLogEntries) });
-    }
-
-    private clearLogMessages() {
-        this.setState({ LogMessages: [], FilteredLogMessages: [] });
-    }
-
-    private onFilterLogLevelChange(e: React.FormEvent<HTMLInputElement>) {
-        const newValue = parseInt((e.target as HTMLSelectElement).value);
-        this.setState({ FilterLogLevel: newValue, FilteredLogMessages: this.applyFilter(this.state.LogMessages, newValue, this.state.MaxLogEntries) });
-    }
-
-    private onChangeMaxEntries(e: React.FormEvent<HTMLInputElement>) {
-        this.setState({ IntermediateMaxLogEntries: parseInt(e.currentTarget.value) });
-    }
-
-    private onApplyMaxEntries() {
-        this.setState({ MaxLogEntries: this.state.IntermediateMaxLogEntries, FilteredLogMessages: this.applyFilter(this.state.LogMessages, this.state.FilterLogLevel, this.state.IntermediateMaxLogEntries) });
-    }
-
-    private applyFilter(logMessages: LogMessageModel[], logLevel: LogLevel, maxEntries: number) {
-        return logMessages.filter((logMessage: LogMessageModel) => logMessage.LogLevel >= logLevel).slice(0, maxEntries);
-    }
-
-    private onShowLogMessageDetailed(logMessage: LogMessageModel) {
-        this.setState({ SelectedLogMessage: logMessage, IsLogDetailDialogOpen: true });
-    }
-
-    private cutMessage(message: string): string {
-        const lines: string[] = message.split("\n");
-        let cutted = lines.length > 0 ? lines[0] : message;
-        cutted = cutted.slice(0, 150);
-
-        if (cutted.length < message.length) {
-            cutted += "...";
-        }
-
-        return cutted;
-    }
-
-    private preRenderLogMessages() {
-        return this.state.FilteredLogMessages.map((message, idx) =>
-            <tr key={idx}
-                className={"selectable"}
-                style={{background: this.logLevelCssConverter.Convert(message.LogLevel)}}
-                onClick={this.onShowLogMessageDetailed.bind(this, message)}>
-                <td>{moment(message.Timestamp).format("YYYY-MM-DD HH:mm:ss")}</td>
-                <td>{LogLevel[message.LogLevel]}</td>
-                <td>{this.cutMessage(message.Message)}</td>
-                <td>{message.ClassName}</td>
-            </tr>,
-        );
-    }
-
-    public render() {
+    public render(): React.ReactNode {
         return (
             <div>
                 <Container fluid={true}>
@@ -142,14 +77,13 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
                         <Col md={2} className="font-bold font-small">Max. log entries:</Col>
                         <Col md={2}>
                             <Input type="text" value={this.state.IntermediateMaxLogEntries}
-                                onChange={(e: React.FormEvent<HTMLInputElement>) => this.onChangeMaxEntries(e)}
-                                onBlur={this.onApplyMaxEntries.bind(this)}>
-                            </Input>
+                                   onChange={(e: React.FormEvent<HTMLInputElement>) => this.onChangeMaxEntries(e)}
+                                   onBlur={this.onApplyMaxEntries.bind(this)} />
                         </Col>
                         <Col md={1} />
                         <Col md={3}>
                             <ButtonGroup className="float-right">
-                                <Button color="primary" onClick={this.clearLogMessages.bind(this)} disabled={this.state.LogMessages.length == 0}>Clear log messages</Button>
+                                <Button color="primary" onClick={this.clearLogMessages.bind(this)} disabled={this.state.LogMessages.length === 0}>Clear log messages</Button>
                                 { this.props.onCloseTab != null &&
                                     <Button color="primary" onClick={() => this.props.onCloseTab(this.props.Logger)}>Close tab</Button>
                                 }
@@ -168,11 +102,11 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    { this.state.LogMessages.length != 0 && (
+                                    { this.state.LogMessages.length !== 0 && (
                                         this.preRenderLogMessages()
                                     )}
                                 </tbody>
-                                { this.state.LogMessages.length == 0 && (
+                                { this.state.LogMessages.length === 0 && (
                                         <span className="font-normal font-italic">No log messages found for this logger.</span>
                                 )}
                             </Table>
@@ -181,7 +115,7 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
                 </Container>
                 { this.state.SelectedLogMessage != null &&
                     <Modal isOpen={this.state.IsLogDetailDialogOpen} className="log-modal-dialog">
-                        <ModalHeader tag="h2" style={{background: this.logLevelCssConverter.Convert(this.state.SelectedLogMessage.LogLevel)}}>
+                        <ModalHeader tag="h2" style={{background: LogLevelToCssClassConverter.Convert(this.state.SelectedLogMessage.LogLevel)}}>
                             Log message from {moment(this.state.SelectedLogMessage.Timestamp).format("YYYY-MM-DD HH:mm:ss")} ({this.state.SelectedLogMessage.ClassName})
                         </ModalHeader>
                         <ModalBody>
@@ -199,6 +133,67 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
                     </Modal>
                 }
             </div>
+        );
+    }
+
+    private onUpdateLogMessages(): void {
+        this.props.RestClient.messages(this.state.AppenderId).then((data) => this.updateLogMessages(data));
+    }
+
+    private updateLogMessages(logMessages: LogMessageModel[]): void {
+        logMessages.reverse();
+        const newLogMessageList = logMessages.concat(this.state.LogMessages);
+        this.setState({ LogMessages: newLogMessageList, FilteredLogMessages: Logger.applyFilter(newLogMessageList, this.state.FilterLogLevel, this.state.MaxLogEntries) });
+    }
+
+    private clearLogMessages(): void {
+        this.setState({ LogMessages: [], FilteredLogMessages: [] });
+    }
+
+    private onFilterLogLevelChange(e: React.FormEvent<HTMLInputElement>): void {
+        const newValue = parseInt((e.target as HTMLSelectElement).value, 10);
+        this.setState({ FilterLogLevel: newValue, FilteredLogMessages: Logger.applyFilter(this.state.LogMessages, newValue, this.state.MaxLogEntries) });
+    }
+
+    private onChangeMaxEntries(e: React.FormEvent<HTMLInputElement>): void {
+        this.setState({ IntermediateMaxLogEntries: parseInt(e.currentTarget.value, 10) });
+    }
+
+    private onApplyMaxEntries(): void {
+        this.setState({ MaxLogEntries: this.state.IntermediateMaxLogEntries, FilteredLogMessages: Logger.applyFilter(this.state.LogMessages, this.state.FilterLogLevel, this.state.IntermediateMaxLogEntries) });
+    }
+
+    private static applyFilter(logMessages: LogMessageModel[], logLevel: LogLevel, maxEntries: number): LogMessageModel[] {
+        return logMessages.filter((logMessage: LogMessageModel) => logMessage.LogLevel >= logLevel).slice(0, maxEntries);
+    }
+
+    private onShowLogMessageDetailed(logMessage: LogMessageModel): void {
+        this.setState({ SelectedLogMessage: logMessage, IsLogDetailDialogOpen: true });
+    }
+
+    private static cutMessage(message: string): string {
+        const lines: string[] = message.split("\n");
+        let cutted = lines.length > 0 ? lines[0] : message;
+        cutted = cutted.slice(0, 150);
+
+        if (cutted.length < message.length) {
+            cutted += "...";
+        }
+
+        return cutted;
+    }
+
+    private preRenderLogMessages(): React.ReactNode {
+        return this.state.FilteredLogMessages.map((message, idx) =>
+            <tr key={idx}
+                className={"selectable"}
+                style={{background: LogLevelToCssClassConverter.Convert(message.LogLevel)}}
+                onClick={this.onShowLogMessageDetailed.bind(this, message)}>
+                <td>{moment(message.Timestamp).format("YYYY-MM-DD HH:mm:ss")}</td>
+                <td>{LogLevel[message.LogLevel]}</td>
+                <td>{Logger.cutMessage(message.Message)}</td>
+                <td>{message.ClassName}</td>
+            </tr>,
         );
     }
 }

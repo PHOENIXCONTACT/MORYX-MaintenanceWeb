@@ -7,7 +7,7 @@ import { connect, Dispatch } from "react-redux";
 import { Link, Route, Switch } from "react-router-dom";
 import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane, UncontrolledTooltip } from "reactstrap";
 import kbToString from "../../common/converter/ByteConverter";
-import { IAppState } from "../../common/redux/AppState";
+import { AppState } from "../../common/redux/AppState";
 import { updateShowWaitDialog } from "../../common/redux/CommonActions";
 import { ActionType } from "../../common/redux/Types";
 import "../../common/scss/Theme.scss";
@@ -20,25 +20,25 @@ import SetupModel from "../models/SetupModel";
 import { TestConnectionResult } from "../models/TestConnectionResult";
 import { updateDatabaseConfig } from "../redux/DatabaseActions";
 
-interface IDatabaseModelPropsModel {
+interface DatabaseModelPropsModel {
     RestClient: DatabasesRestClient;
     DataModel: DataModel;
     NotificationSystem: NotificationSystem.System;
 }
 
-interface IDatabaseModelDispatchPropsModel {
-    onUpdateDatabaseConfig?: (databaseConfig: DataModel) => void;
-    onShowWaitDialog?: (showWaitDialog: boolean) => void;
+interface DatabaseModelDispatchPropsModel {
+    onUpdateDatabaseConfig?(databaseConfig: DataModel): void;
+    onShowWaitDialog?(showWaitDialog: boolean): void;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): IDatabaseModelDispatchPropsModel => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): DatabaseModelDispatchPropsModel => {
     return {
         onUpdateDatabaseConfig: (databaseConfig: DataModel) => dispatch(updateDatabaseConfig(databaseConfig)),
         onShowWaitDialog: (showWaitDialog: boolean) => dispatch(updateShowWaitDialog(showWaitDialog)),
     };
 };
 
-interface IDatabaseModelStateModel {
+interface DatabaseModelStateModel {
     activeTab: string;
     host: string;
     port: number;
@@ -53,8 +53,8 @@ interface IDatabaseModelStateModel {
     testConnectionResult: TestConnectionResult;
 }
 
-class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabaseModelDispatchPropsModel, IDatabaseModelStateModel> {
-    constructor(props: IDatabaseModelPropsModel & IDatabaseModelDispatchPropsModel) {
+class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseModelDispatchPropsModel, DatabaseModelStateModel> {
+    constructor(props: DatabaseModelPropsModel & DatabaseModelDispatchPropsModel) {
         super(props);
         this.state = {
             activeTab: "1",
@@ -63,16 +63,16 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
             database: this.props.DataModel.Config.Database,
             username: this.props.DataModel.Config.User,
             password: this.props.DataModel.Config.Password,
-            selectedMigration: (this.props.DataModel.AvailableMigrations.length != 0 ? this.props.DataModel.AvailableMigrations[0].Name : ""),
-            selectedSetup : (this.props.DataModel.Setups.length != 0 ? this.props.DataModel.Setups[0].Name : ""),
-            selectedScript : (this.props.DataModel.Scripts.length != 0 ? this.props.DataModel.Scripts[0].Name : ""),
-            selectedBackup : (this.props.DataModel.Backups.length != 0 ? this.props.DataModel.Backups[0].FileName : ""),
+            selectedMigration: (this.props.DataModel.AvailableMigrations.length !== 0 ? this.props.DataModel.AvailableMigrations[0].Name : ""),
+            selectedSetup : (this.props.DataModel.Setups.length !== 0 ? this.props.DataModel.Setups[0].Name : ""),
+            selectedScript : (this.props.DataModel.Scripts.length !== 0 ? this.props.DataModel.Scripts[0].Name : ""),
+            selectedBackup : (this.props.DataModel.Backups.length !== 0 ? this.props.DataModel.Backups[0].FileName : ""),
             testConnectionPending: false,
             testConnectionResult: TestConnectionResult.ConfigurationError,
         };
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.onTestConnection();
     }
 
@@ -86,47 +86,47 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         };
     }
 
-    public activeTab(tabId: string) {
+    public activeTab(tabId: string): void {
         this.setState({activeTab: tabId});
     }
 
-    public onSelectMigration(e: React.FormEvent<HTMLInputElement>) {
+    public onSelectMigration(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({selectedMigration: (e.target as HTMLSelectElement).value});
     }
 
-    public onSelectSetup(e: React.FormEvent<HTMLInputElement>) {
+    public onSelectSetup(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({selectedSetup: (e.target as HTMLSelectElement).value});
     }
 
-    public onSelectScript(e: React.FormEvent<HTMLInputElement>) {
+    public onSelectScript(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({selectedScript: (e.target as HTMLSelectElement).value});
     }
 
-    public onSelectBackup(e: React.FormEvent<HTMLInputElement>) {
+    public onSelectBackup(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({selectedBackup: (e.target as HTMLSelectElement).value});
     }
 
-    public onChangeHost(e: React.FormEvent<HTMLInputElement>) {
+    public onChangeHost(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({host: (e.target as HTMLInputElement).value});
     }
 
-    public onChangePort(e: React.FormEvent<HTMLInputElement>) {
-        this.setState({port: parseInt((e.target as HTMLInputElement).value)});
+    public onChangePort(e: React.FormEvent<HTMLInputElement>): void {
+        this.setState({port: parseInt((e.target as HTMLInputElement).value, 10)});
     }
 
-    public onChangeDatabase(e: React.FormEvent<HTMLInputElement>) {
+    public onChangeDatabase(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({database: (e.target as HTMLInputElement).value});
     }
 
-    public onChangeUsername(e: React.FormEvent<HTMLInputElement>) {
+    public onChangeUsername(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({username: (e.target as HTMLInputElement).value});
     }
 
-    public onChangePassword(e: React.FormEvent<HTMLInputElement>) {
+    public onChangePassword(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({password: (e.target as HTMLInputElement).value});
     }
 
-    public onSave() {
+    public onSave(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.saveDatabaseConfig(this.createConfigModel(), this.props.DataModel.TargetModel).then(() => {
@@ -137,7 +137,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onTestConnection() {
+    public onTestConnection(): void {
         this.setState({ testConnectionPending: true });
         this.props.RestClient.testDatabaseConfig(this.createConfigModel(), this.props.DataModel.TargetModel)
                              .then((response) => this.setState({ testConnectionPending: false,
@@ -145,14 +145,14 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                      }));
     }
 
-    public onCreateDatabase() {
+    public onCreateDatabase(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.createDatabase(this.createConfigModel(), this.props.DataModel.TargetModel).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
-                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((data) => this.props.onUpdateDatabaseConfig(data));
+                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Database created successfully", level: "success", autoDismiss: 5 });
            } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: "Database not created: " + data.ErrorMessage, level: "error", autoDismiss: 5 });
@@ -161,14 +161,14 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onEraseDatabase() {
+    public onEraseDatabase(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.eraseDatabase(this.createConfigModel(), this.props.DataModel.TargetModel).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
-                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((data) => this.props.onUpdateDatabaseConfig(data));
+                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Database deleted successfully", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: "Database not deleted: " + data.ErrorMessage, level: "error", autoDismiss: 5 });
@@ -177,7 +177,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onExecuteDump() {
+    public onExecuteDump(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.dumpDatabase(this.createConfigModel(), this.props.DataModel.TargetModel).then((data) => {
@@ -191,7 +191,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onExecuteRestore() {
+    public onExecuteRestore(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.restoreDatabase({ Config: this.createConfigModel(), BackupFileName: this.state.selectedBackup }, this.props.DataModel.TargetModel).then((data) => {
@@ -205,14 +205,14 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onApplyMigration() {
+    public onApplyMigration(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.applyMigration(this.props.DataModel.TargetModel, this.state.selectedMigration, this.createConfigModel()).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.WasUpdated) {
-                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((data) => this.props.onUpdateDatabaseConfig(data));
+                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Migration applied", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: "Migration not applied", level: "error", autoDismiss: 5 });
@@ -220,14 +220,14 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onRollbackDatabase() {
+    public onRollbackDatabase(): void {
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.rollbackDatabase(this.props.DataModel.TargetModel, this.createConfigModel()).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
-                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((data) => this.props.onUpdateDatabaseConfig(data));
+                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Database rollback completed successfully", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: "Database rollback failed: " + data.ErrorMessage, level: "error", autoDismiss: 5 });
@@ -235,10 +235,10 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onExecuteSetup() {
+    public onExecuteSetup(): void {
         this.props.onShowWaitDialog(true);
 
-        this.props.RestClient.executeSetup(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Setup: this.props.DataModel.Setups.find((setup: SetupModel) => setup.Name == this.state.selectedSetup) }).then((data) => {
+        this.props.RestClient.executeSetup(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Setup: this.props.DataModel.Setups.find((setup: SetupModel) => setup.Name === this.state.selectedSetup) }).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
@@ -249,10 +249,10 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onExecuteScript() {
+    public onExecuteScript(): void {
         this.props.onShowWaitDialog(true);
 
-        this.props.RestClient.executeScript(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Script: this.props.DataModel.Scripts.find((script: ScriptModel) => script.Name == this.state.selectedScript) }).then((data) => {
+        this.props.RestClient.executeScript(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Script: this.props.DataModel.Scripts.find((script: ScriptModel) => script.Name === this.state.selectedScript) }).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
@@ -263,7 +263,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    private preRenderConnectionCheckIcon() {
+    private preRenderConnectionCheckIcon(): React.ReactNode {
         switch (this.state.testConnectionResult) {
             case TestConnectionResult.Success:
                 return (<FontAwesomeIcon icon={faCheck} style={{color: "green"}} />);
@@ -291,10 +291,12 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                             The connection to the database could be established but the database could not be found. Please check the name of the database or create it before.
                         </UncontrolledTooltip>
                     </div>);
+            default:
+                return (<div />);
         }
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Card>
                 <CardHeader tag="h2">
@@ -362,12 +364,12 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                         <Col md={12}>
                                             <ButtonGroup>
                                                 <Button color="primary"
-                                                        disabled={this.state.testConnectionResult != TestConnectionResult.Success}
+                                                        disabled={this.state.testConnectionResult !== TestConnectionResult.Success}
                                                         onClick={this.onExecuteDump.bind(this)}>
                                                     Create a backup
                                                 </Button>
                                                 <Button color="primary"
-                                                        disabled={this.state.selectedBackup == "" || this.state.testConnectionResult != TestConnectionResult.Success}
+                                                        disabled={this.state.selectedBackup === "" || this.state.testConnectionResult !== TestConnectionResult.Success}
                                                         onClick={this.onExecuteRestore.bind(this)}>
                                                     Restore selected backup
                                                 </Button>
@@ -387,12 +389,12 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                 <ButtonGroup>
                                     <Button color="primary"
                                             onClick={() => this.onCreateDatabase()}
-                                            disabled={this.state.testConnectionResult != TestConnectionResult.ConnectionOkDbDoesNotExist}>
+                                            disabled={this.state.testConnectionResult !== TestConnectionResult.ConnectionOkDbDoesNotExist}>
                                         Create database
                                     </Button>
                                     <Button color="primary"
                                             onClick={() => this.onEraseDatabase()}
-                                            disabled={this.state.testConnectionResult != TestConnectionResult.Success}>
+                                            disabled={this.state.testConnectionResult !== TestConnectionResult.Success}>
                                         Erase database
                                     </Button>
                                 </ButtonGroup>
@@ -402,18 +404,18 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                             <Col md={12}>
                                 <Nav tabs={true}>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "1"} className={"selectable"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
+                                        <NavLink active={this.state.activeTab === "1"} className={"selectable"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
+                                        <NavLink active={this.state.activeTab === "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab == "3"} className={"selectable"} onClick={() => { this.activeTab("3"); }}>Scripts</NavLink>
+                                        <NavLink active={this.state.activeTab === "3"} className={"selectable"} onClick={() => { this.activeTab("3"); }}>Scripts</NavLink>
                                     </NavItem>
                                 </Nav>
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        { this.props.DataModel.AvailableMigrations.length != 0 ?
+                                        { this.props.DataModel.AvailableMigrations.length !== 0 ?
                                             (
                                             <Container fluid={true}>
                                                 <Row>
@@ -422,7 +424,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                             onChange={(e: React.FormEvent<HTMLInputElement>) => this.onSelectMigration(e)}>
                                                         {
                                                             this.props.DataModel.AvailableMigrations.map((migration, idx) => {
-                                                                const installed = this.props.DataModel.AppliedMigrations.find((installedMigration: DbMigrationsModel) => installedMigration.Name == migration.Name);
+                                                                const installed = this.props.DataModel.AppliedMigrations.find((installedMigration: DbMigrationsModel) => installedMigration.Name === migration.Name);
                                                                 const option = migration.Name + " (" + (installed ? "Installed" : "Not installed") + ")";
 
                                                                 return (<option key={idx} value={migration.Name}>{option}</option>);
@@ -436,12 +438,12 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                         <ButtonGroup>
                                                             <Button color="primary"
                                                                     onClick={() => this.onApplyMigration()}
-                                                                    disabled={this.state.selectedMigration == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                    disabled={this.state.selectedMigration === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
                                                                 Apply selected migration
                                                             </Button>
                                                             <Button color="primary"
                                                                     onClick={() => this.onRollbackDatabase()}
-                                                                    disabled={this.props.DataModel.AvailableMigrations.length == 0 || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                    disabled={this.props.DataModel.AvailableMigrations.length === 0 || this.state.testConnectionResult !== TestConnectionResult.Success}>
                                                                 Rollback all migrations
                                                             </Button>
                                                         </ButtonGroup>
@@ -457,7 +459,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                             )}
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        { this.props.DataModel.Setups.length != 0 ?
+                                        { this.props.DataModel.Setups.length !== 0 ?
                                             (
                                             <Container fluid={true}>
                                                 <Row>
@@ -476,7 +478,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                     <Col md={12}>
                                                         <Button color="primary"
                                                                 onClick={() => this.onExecuteSetup()}
-                                                                disabled={this.state.selectedSetup == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                disabled={this.state.selectedSetup === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
                                                             Execute setup
                                                         </Button>
                                                     </Col>
@@ -491,7 +493,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                             )}
                                     </TabPane>
                                     <TabPane tabId="3">
-                                        { this.props.DataModel.Scripts.length != 0 ?
+                                        { this.props.DataModel.Scripts.length !== 0 ?
                                             (
                                             <Container fluid={true}>
                                                 <Row>
@@ -510,7 +512,7 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
                                                     <Col md={12}>
                                                         <Button color="primary"
                                                                 onClick={() => this.onExecuteScript()}
-                                                                disabled={this.state.selectedScript == "" || this.state.testConnectionResult != TestConnectionResult.Success}>
+                                                                disabled={this.state.selectedScript === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
                                                             Execute script
                                                         </Button>
                                                     </Col>
@@ -534,4 +536,4 @@ class DatabaseModel extends React.Component<IDatabaseModelPropsModel & IDatabase
     }
 }
 
-export default connect<{}, IDatabaseModelDispatchPropsModel>(null, mapDispatchToProps)(DatabaseModel);
+export default connect<{}, DatabaseModelDispatchPropsModel>(null, mapDispatchToProps)(DatabaseModel);

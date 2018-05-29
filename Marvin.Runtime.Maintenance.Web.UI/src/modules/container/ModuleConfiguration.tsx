@@ -14,13 +14,13 @@ import { ConfigUpdateMode } from "../models/ConfigUpdateMode";
 import Entry from "../models/Entry";
 import { EntryValueType, toString } from "../models/EntryValueType";
 
-interface IModuleConfigurationPropModel {
+interface ModuleConfigurationPropModel {
     RestClient?: ModulesRestClient;
     ModuleName: string;
     NotificationSystem: NotificationSystem.System;
 }
 
-interface IModuleConfigurationStateModel {
+interface ModuleConfigurationStateModel {
     ModuleConfig: Config;
     ConfigIsLoading: boolean;
     ParentEntry: Entry;
@@ -28,10 +28,10 @@ interface IModuleConfigurationStateModel {
     EntryChain: Entry[];
 }
 
-class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel & RouteComponentProps<{}>, IModuleConfigurationStateModel> {
+class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel & RouteComponentProps<{}>, ModuleConfigurationStateModel> {
     public unregisterListener: UnregisterCallback;
 
-    constructor(props: IModuleConfigurationPropModel & RouteComponentProps<{}>) {
+    constructor(props: ModuleConfigurationPropModel & RouteComponentProps<{}>) {
         super(props);
 
         this.state = {
@@ -45,17 +45,17 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
         this.navigateToEntry = this.navigateToEntry.bind(this);
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.unregisterListener = this.props.history.listen(this.onHistoryChanged.bind(this));
 
         this.loadConfig();
     }
 
-    public componentWillUnmount() {
+    public componentWillUnmount(): void {
         this.unregisterListener();
     }
 
-    public loadConfig() {
+    public loadConfig(): Promise<void> {
         return this.props.RestClient.moduleConfig(this.props.ModuleName)
                              .then((data) => {
                                  Config.patchConfig(data);
@@ -71,23 +71,23 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
                                 });
     }
 
-    public onApply() {
+    public onApply(): void {
         this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.SaveAndReincarnate })
                              .then((result) => this.props.NotificationSystem.addNotification({ title: "Saved", message: "Configuration was saved successfully. Module is restarting...", level: "success", autoDismiss: 5 }));
     }
 
-    public onSave() {
+    public onSave(): void {
         this.props.RestClient.saveModuleConfig(this.props.ModuleName, { Config: this.state.ModuleConfig, UpdateMode: ConfigUpdateMode.OnlySave })
                              .then((result) => this.props.NotificationSystem.addNotification({ title: "Saved", message: "Configuration was saved successfully", level: "success", autoDismiss: 5 }));
     }
 
-    public onRevert() {
+    public onRevert(): void {
         this.setState({ ConfigIsLoading: true });
         this.loadConfig()
             .then((result) => this.props.NotificationSystem.addNotification({ title: "Reverted", message: "Configuration was reverted", level: "success", autoDismiss: 3 }));
     }
 
-    public onClickBreadcrumb(entry: Entry) {
+    public onClickBreadcrumb(entry: Entry): void {
         if (entry == null) {
             this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
 
@@ -101,29 +101,29 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
         }
     }
 
-    public preRenderBreadcrumb() {
+    public preRenderBreadcrumb(): React.ReactNode {
         const entryChainButtons = this.state.EntryChain.map((entry, idx) =>
         (
-            <Button key={idx} color="light" onClick={() => this.onClickBreadcrumb(entry)} disabled={idx == this.state.EntryChain.length - 1}>{entry.Key.Name}</Button>
+            <Button key={idx} color="light" onClick={() => this.onClickBreadcrumb(entry)} disabled={idx === this.state.EntryChain.length - 1}>{entry.Key.Name}</Button>
         ));
 
         return (
             <ButtonGroup>
-                <Button color="dark" disabled={this.state.EntryChain.length == 0} onClick={() => this.onClickBreadcrumb(null)}>Home</Button>
+                <Button color="dark" disabled={this.state.EntryChain.length === 0} onClick={() => this.onClickBreadcrumb(null)}>Home</Button>
                 {entryChainButtons}
             </ButtonGroup>
         );
     }
 
-    public navigateToEntry(entry: Entry) {
+    public navigateToEntry(entry: Entry): void {
         this.updatePath(Entry.entryChain(entry));
     }
 
-    private updatePath(entryChain: Entry[]) {
+    private updatePath(entryChain: Entry[]): void {
         this.props.history.push("?path=" + entryChain.map((entry) => entry.Key.Name).join(","));
     }
 
-    private resolveEntryChainByPath(location: Location) {
+    private resolveEntryChainByPath(location: Location): void {
         const query = qs.parse(location.search);
         if (query != null && "path" in query) {
             const entryChain: Entry[] = [];
@@ -131,7 +131,7 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
 
             query.path.split(",").forEach((element: string) => {
                 const searchableEntries: Entry[] = currentEntry != null ? currentEntry.SubEntries : this.state.ModuleConfig.Entries;
-                const filtered = searchableEntries.filter((entry) => entry.Key.Name == element);
+                const filtered = searchableEntries.filter((entry) => entry.Key.Name === element);
 
                 if (filtered.length > 0) {
                     currentEntry = filtered[0];
@@ -145,11 +145,11 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
         }
     }
 
-    private onHistoryChanged(location: Location, action: Action) {
+    private onHistoryChanged(location: Location, action: Action): void {
         this.resolveEntryChainByPath(location);
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Card>
                 <CardHeader tag="h2">
@@ -190,4 +190,4 @@ class ModuleConfiguration extends React.Component<IModuleConfigurationPropModel 
     }
 }
 
-export default withRouter<IModuleConfigurationPropModel & RouteComponentProps<{}>>(ModuleConfiguration);
+export default withRouter<ModuleConfigurationPropModel & RouteComponentProps<{}>>(ModuleConfiguration);

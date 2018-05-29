@@ -2,7 +2,7 @@ import * as React from "react";
 import { ModuleNotificationType } from "../models/ModuleNotificationType";
 
 export class ModuleNotificationTypeToCssClassConverter {
-    public Convert(healthState: ModuleNotificationType): React.CSSProperties {
+    public static Convert(healthState: ModuleNotificationType): React.CSSProperties {
         switch (healthState) {
             case ModuleNotificationType.Info: {
                 return { color: "black" };

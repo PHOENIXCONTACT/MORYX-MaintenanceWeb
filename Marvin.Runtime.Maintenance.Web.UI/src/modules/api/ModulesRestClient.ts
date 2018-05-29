@@ -43,11 +43,11 @@ export default class ModulesRestClient extends RestClientBase {
     }
 
     public saveModuleConfig(moduleName: string, request: SaveConfigRequest): Promise<Response> {
-        return this.post<SaveConfigRequest, Response>("/ModuleMaintenance/modules/" + moduleName + "/config", request, new Response(), this.entryReplacer);
+        return this.post<SaveConfigRequest, Response>("/ModuleMaintenance/modules/" + moduleName + "/config", request, new Response(), ModulesRestClient.entryReplacer);
     }
 
-    private entryReplacer(key: string, value: any) {
-        if (key == "Parent") { return undefined; }
+    private static entryReplacer(key: string, value: any): any {
+        if (key === "Parent") { return undefined; }
         return value;
     }
 }

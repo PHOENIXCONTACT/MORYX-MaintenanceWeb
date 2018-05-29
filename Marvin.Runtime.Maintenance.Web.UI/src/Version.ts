@@ -1,1 +1,1 @@
-export const Version = "%VERSION%";
+export const VERSION = "%VERSION%";

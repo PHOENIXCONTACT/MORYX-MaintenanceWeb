@@ -12,37 +12,39 @@ import EnumEditor from "./EnumEditor";
 import NumberEditor from "./NumberEditor";
 import StringEditor from "./StringEditor";
 
-interface IConfigEditorPropModel {
+interface ConfigEditorPropModel {
     ParentEntry: Entry;
     Entries: Entry[];
-    navigateToEntry: (entry: Entry) => void;
+    navigateToEntry(entry: Entry): void;
 }
 
-interface IConfigEditorStateModel {
+interface ConfigEditorStateModel {
     ExpandedEntryNames: string[];
 }
 
-export default class ConfigEditor extends React.Component<IConfigEditorPropModel, IConfigEditorStateModel> {
-    constructor(props: IConfigEditorPropModel) {
+export default class ConfigEditor extends React.Component<ConfigEditorPropModel, ConfigEditorStateModel> {
+    private static divider: number = 2;
+
+    constructor(props: ConfigEditorPropModel) {
         super(props);
         this.state = {
             ExpandedEntryNames: [],
         };
     }
 
-    public toggleCollapsible(entryName: string) {
+    public toggleCollapsible(entryName: string): void {
         if (this.isExpanded(entryName)) {
-            this.setState((prevState) => ({ ExpandedEntryNames: prevState.ExpandedEntryNames.filter((name) => name != entryName) }));
+            this.setState((prevState) => ({ ExpandedEntryNames: prevState.ExpandedEntryNames.filter((name) => name !== entryName) }));
         } else {
             this.setState((prevState) => ({ ExpandedEntryNames: [...prevState.ExpandedEntryNames, entryName] }));
         }
     }
 
-    public isExpanded(entryName: string) {
-        return this.state.ExpandedEntryNames.find((e: string) => e == entryName) != undefined;
+    public isExpanded(entryName: string): boolean {
+        return this.state.ExpandedEntryNames.find((e: string) => e === entryName) != undefined;
     }
 
-    public selectPropertyByType(entry: Entry) {
+    public selectPropertyByType(entry: Entry): React.ReactNode {
         switch (entry.Value.Type) {
             case EntryValueType.Byte:
             {
@@ -92,11 +94,11 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
         return (<span>Not implemented yet: {toString(entry.Value.Type)}</span>);
     }
 
-    public preRenderEntries(entries: Entry[]) {
+    public preRenderEntries(entries: Entry[]): React.ReactNode {
         return entries.map((subEntry, idx) =>
         (
             <div key={idx}>
-                <Row style={{background: idx % 2 == 0 ? "#f2f2f2" : "white", alignItems: "center", padding: "5px 0px 5px 0px"}}>
+                <Row style={{background: idx % ConfigEditor.divider === 0 ? "#f2f2f2" : "white", alignItems: "center", padding: "5px 0px 5px 0px"}}>
                     <Col md={7}>
                         <Container fluid={true}>
                             <Row>
@@ -113,7 +115,7 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
                     }
                     </Col>
                 </Row>
-                { subEntry.Value.Type == EntryValueType.Collection &&
+                { subEntry.Value.Type === EntryValueType.Collection &&
                     (
                         <Row>
                             <Col md={12}>
@@ -122,7 +124,7 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
                         </Row>
                     )
                 }
-                { subEntry.Value.Type == EntryValueType.Class &&
+                { subEntry.Value.Type === EntryValueType.Class &&
                     (
                         <Row>
                             <Col md={12}>
@@ -135,9 +137,9 @@ export default class ConfigEditor extends React.Component<IConfigEditorPropModel
         ));
     }
 
-    public render() {
+    public render(): React.ReactNode {
         let entries: any;
-        if (this.props.ParentEntry != null && this.props.ParentEntry.Value.Type == EntryValueType.Collection) {
+        if (this.props.ParentEntry != null && this.props.ParentEntry.Value.Type === EntryValueType.Collection) {
             entries = (
                 <Row>
                     <Col md={12}>

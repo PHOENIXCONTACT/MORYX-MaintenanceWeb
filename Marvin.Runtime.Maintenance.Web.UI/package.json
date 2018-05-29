@@ -31,6 +31,7 @@
         "bootstrap-toggle": "^2.2.2",
         "chart.js": "^2.7.2",
         "css-loader": "^0.28.11",
+        "history": "^4.7.2",
         "html-webpack-plugin": "^3.0.7",
         "moment": "^2.22.0",
         "node-sass": "^4.8.3",

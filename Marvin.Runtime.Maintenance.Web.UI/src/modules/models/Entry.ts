@@ -11,7 +11,7 @@ export default class Entry {
     public Validation: EntryValidation;
     public Parent: Entry;
 
-    public static entryChain(entry: Entry) {
+    public static entryChain(entry: Entry): Entry[] {
         const entryChain: Entry[] = [entry];
         let currentEntry = entry;
         while (currentEntry != null) {

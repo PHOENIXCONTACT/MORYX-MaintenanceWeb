@@ -2,7 +2,7 @@ import * as React from "react";
 import { LogLevel } from "../models/LogLevel";
 
 export default class LogLevelToCssClassConverter {
-    public Convert(logLevel: LogLevel) {
+    public static Convert(logLevel: LogLevel): string {
         switch (logLevel) {
             case LogLevel.Trace: {
                 return "#e9e9e9";

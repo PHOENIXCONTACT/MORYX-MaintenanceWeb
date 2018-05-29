@@ -7,22 +7,20 @@ import ServerModuleModel from "../../modules/models/ServerModuleModel";
 import { HealthStateBadge } from "../components/HealthStateBadge";
 import { HealthStateToCssClassConverter } from "../converter/HealthStateToCssClassConverter";
 
-interface IModulePropsModel {
+interface ModulePropsModel {
     ServerModule: ServerModuleModel;
 }
 
-export class Module extends React.Component<IModulePropsModel, {}> {
+export class Module extends React.Component<ModulePropsModel, {}> {
     private healthStateCssConverter: HealthStateToCssClassConverter;
 
-    constructor(props: IModulePropsModel) {
+    constructor(props: ModulePropsModel) {
         super(props);
         this.state = {};
-
-        this.healthStateCssConverter = new HealthStateToCssClassConverter();
     }
 
-    public render() {
-        const stateCssClass = this.healthStateCssConverter.Convert(this.props.ServerModule.HealthState);
+    public render(): React.ReactNode {
+        const stateCssClass = HealthStateToCssClassConverter.Convert(this.props.ServerModule.HealthState);
 
         return (
             <div className="modulebox-container">

@@ -5,32 +5,32 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
 import IMenuItemModel from "../../models/IMenuItemModel";
 
-interface IMenuItemProps {
+interface MenuItemProps {
     MenuItem: IMenuItemModel;
     Level: number;
-    onMenuItemClicked?: (menuItem: IMenuItemModel) => void;
+    onMenuItemClicked?(menuItem: IMenuItemModel): void;
 }
 
-interface IMenuItemState {
+interface MenuItemState {
     IsOpened: boolean;
 }
 
-export default class TreeMenuItem extends React.Component<IMenuItemProps, IMenuItemState> {
-    constructor(props: IMenuItemProps) {
+export default class TreeMenuItem extends React.Component<MenuItemProps, MenuItemState> {
+    constructor(props: MenuItemProps) {
         super (props);
         this.state = { IsOpened: false };
 
         this.onMenuItemClicked = this.onMenuItemClicked.bind(this);
     }
 
-    private handleMenuItemClick(e: React.MouseEvent<HTMLElement>) {
+    private handleMenuItemClick(e: React.MouseEvent<HTMLElement>): void {
         e.preventDefault();
 
         this.setState((prevState) => ({ IsOpened: !prevState.IsOpened }));
         this.onMenuItemClicked(this.props.MenuItem);
     }
 
-    private onMenuItemClicked(menuItem: IMenuItemModel) {
+    private onMenuItemClicked(menuItem: IMenuItemModel): void {
         if (this.props.onMenuItemClicked != null) {
             this.props.onMenuItemClicked(menuItem);
         }
@@ -45,7 +45,7 @@ export default class TreeMenuItem extends React.Component<IMenuItemProps, IMenuI
                           />);
     }
 
-    public render() {
+    public render(): React.ReactNode {
         const hasSubItems = this.props.MenuItem.SubMenuItems.length > 0;
 
         return (

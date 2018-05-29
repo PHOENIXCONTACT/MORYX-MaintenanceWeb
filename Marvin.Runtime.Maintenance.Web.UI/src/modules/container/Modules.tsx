@@ -8,7 +8,7 @@ import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import RoutingMenu from "../../common/components/Menu/RoutingMenu";
 import IMenuItemModel from "../../common/models/IMenuItemModel";
 import IMenuModel from "../../common/models/IMenuModel";
-import { IAppState } from "../../common/redux/AppState";
+import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import { HealthStateBadge } from "../../dashboard/components/HealthStateBadge";
 import ModulesRestClient from "../api/ModulesRestClient";
@@ -18,24 +18,24 @@ import { updateModules } from "../redux/ModulesActions";
 import Module from "./Module";
 import ModuleConfiguration from "./ModuleConfiguration";
 
-interface IModulesPropModel {
+interface ModulesPropModel {
     RestClient: ModulesRestClient;
     Modules: ServerModuleModel[];
     Configs: IConfig[];
     NotificationSystem?: NotificationSystem.System;
 }
 
-interface IModulesDispatchPropModel {
-    onUpdateModules?: (modules: ServerModuleModel[]) => void;
+interface ModulesDispatchPropModel {
+    onUpdateModules?(modules: ServerModuleModel[]): void;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): IModulesDispatchPropModel => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): ModulesDispatchPropModel => {
     return {
         onUpdateModules: (modules: ServerModuleModel[]) => dispatch(updateModules(modules)),
     };
 };
 
-const mapStateToProps = (state: IAppState): IModulesPropModel => {
+const mapStateToProps = (state: AppState): ModulesPropModel => {
     return {
         RestClient: state.Modules.RestClient,
         Modules: state.Modules.Modules,
@@ -44,33 +44,33 @@ const mapStateToProps = (state: IAppState): IModulesPropModel => {
     };
 };
 
-interface IModulesStateModel {
+interface ModulesStateModel {
     MenuModel: IMenuModel;
 }
 
-class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropModel, IModulesStateModel> {
+class Modules extends React.Component<ModulesPropModel & ModulesDispatchPropModel, ModulesStateModel> {
     private updateModulesTimer: number;
 
-    constructor(props: IModulesPropModel & IModulesDispatchPropModel) {
+    constructor(props: ModulesPropModel & ModulesDispatchPropModel) {
         super(props);
-        this.state = { MenuModel: { MenuItems: props.Modules.map((module, idx) => this.createMenuItem(module)) } };
+        this.state = { MenuModel: { MenuItems: props.Modules.map((module, idx) => Modules.createMenuItem(module)) } };
 
         this.modulesUpdater = this.modulesUpdater.bind(this);
     }
 
-    public componentDidMount() {
+    public componentDidMount(): void {
         this.updateModulesTimer = setInterval(this.modulesUpdater, 5000);
     }
 
-    public componentWillReceiveProps(nextProps: IModulesPropModel) {
-        this.setState({ MenuModel: { ...this.state.MenuModel, MenuItems: nextProps.Modules.map((module, idx) => this.createMenuItem(module)) } });
+    public componentWillReceiveProps(nextProps: ModulesPropModel): void {
+        this.setState({ MenuModel: { ...this.state.MenuModel, MenuItems: nextProps.Modules.map((module, idx) => Modules.createMenuItem(module)) } });
     }
 
-    public modulesUpdater() {
+    public modulesUpdater(): void {
         this.props.RestClient.modules().then((data) => this.props.onUpdateModules(data));
     }
 
-    public createMenuItem(moduleModel: ServerModuleModel): IMenuItemModel {
+    private static createMenuItem(moduleModel: ServerModuleModel): IMenuItemModel {
         return {
             Name: moduleModel.Name,
             NavPath: "/modules/" + moduleModel.Name,
@@ -88,12 +88,12 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
         };
     }
 
-    public preRenderRoutesList() {
+    public preRenderRoutesList(): any[] {
         const routes: any[] = [];
         let idx = 0;
 
         this.state.MenuModel.MenuItems.forEach((menuItem) => {
-            const module = this.props.Modules.filter(function(element, index, array) { return element.Name == menuItem.Name; })[0];
+            const module = this.props.Modules.filter(function(element: ServerModuleModel, index: number, array: ServerModuleModel[]): boolean { return element.Name === menuItem.Name; })[0];
             routes.push(<Route key={idx} path={menuItem.NavPath} exact={true} render={() => <Module Module={module} RestClient={this.props.RestClient} />}/>);
 
             menuItem.SubMenuItems.forEach((subMenuItem) => {
@@ -110,7 +110,7 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
         return routes;
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <Row>
                 <Col md={3}>
@@ -145,4 +145,4 @@ class Modules extends React.Component<IModulesPropModel & IModulesDispatchPropMo
     }
 }
 
-export default connect<IModulesPropModel, IModulesDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Modules);
+export default connect<ModulesPropModel, ModulesDispatchPropModel>(mapStateToProps, mapDispatchToProps)(Modules);

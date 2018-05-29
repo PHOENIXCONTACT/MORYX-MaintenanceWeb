@@ -3,25 +3,25 @@ import * as React from "react";
 import BootstrapToggle from "react-bootstrap-toggle";
 import { Input } from "reactstrap";
 import Entry from "../../models/Entry";
-import InputEditorBase, { IInputEditorBasePropModel } from "./InputEditorBase";
+import InputEditorBase, { InputEditorBasePropModel } from "./InputEditorBase";
 
 export default class ByteEditor extends InputEditorBase {
-    constructor(props: IInputEditorBasePropModel) {
+    constructor(props: InputEditorBasePropModel) {
         super(props);
         this.state = { };
     }
 
-    public onToggle(e: React.MouseEvent<HTMLElement>) {
-        this.props.Entry.Value.Current = this.props.Entry.Value.Current === "True" ? this.props.Entry.Value.Current = "False" : this.props.Entry.Value.Current = "True";
-        this.forceUpdate();
-    }
-
-    public render() {
+    public render(): React.ReactNode {
         return (
             <BootstrapToggle active={this.props.Entry.Value.Current.toLowerCase() === "true"}
                              disabled={this.props.Entry.Value.IsReadOnly}
                              onClick={(e: React.MouseEvent<HTMLElement>) => this.onToggle(e)}
                              height="35px" />
         );
+    }
+
+    private onToggle(e: React.MouseEvent<HTMLElement>): void {
+        this.props.Entry.Value.Current = this.props.Entry.Value.Current === "True" ? this.props.Entry.Value.Current = "False" : this.props.Entry.Value.Current = "True";
+        this.forceUpdate();
     }
 }

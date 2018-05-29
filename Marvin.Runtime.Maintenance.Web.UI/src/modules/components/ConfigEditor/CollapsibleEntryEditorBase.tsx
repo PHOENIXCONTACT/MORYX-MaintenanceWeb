@@ -2,18 +2,18 @@ import * as React from "react";
 import { Collapse } from "reactstrap";
 import Entry from "../../models/Entry";
 
-export interface ICollapsibleEntryEditorBasePropModel {
+export interface CollapsibleEntryEditorBasePropModel {
     Entry: Entry;
     IsExpanded: boolean;
-    navigateToEntry: (entry: Entry) => void;
+    navigateToEntry(entry: Entry): void;
 }
 
-export default class CollapsibleEntryEditorBase<T> extends React.Component<ICollapsibleEntryEditorBasePropModel, T> {
-    constructor(props: ICollapsibleEntryEditorBasePropModel) {
+export default class CollapsibleEntryEditorBase<T> extends React.Component<CollapsibleEntryEditorBasePropModel, T> {
+    constructor(props: CollapsibleEntryEditorBasePropModel) {
         super(props);
     }
 
-    public render() {
+    public render(): React.ReactNode {
         return (
             <div>
                 <Collapse isOpen={this.props.IsExpanded}>

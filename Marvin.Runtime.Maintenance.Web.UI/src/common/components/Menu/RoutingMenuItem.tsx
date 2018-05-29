@@ -6,20 +6,20 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
 import IMenuItemModel from "../../models/IMenuItemModel";
 
-interface IMenuItemProps {
+interface MenuItemProps {
     MenuItem: IMenuItemModel;
     Level: number;
-    onMenuItemClicked?: (menuItem: IMenuItemModel) => void;
+    onMenuItemClicked?(menuItem: IMenuItemModel): void;
 }
 
-interface IMenuItemState {
+interface MenuItemState {
     IsOpened: boolean;
 }
 
-class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuItemProps, IMenuItemState> {
+class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & MenuItemProps, MenuItemState> {
     private unregisterListenerCallback: UnregisterCallback;
 
-    constructor(props: RouteComponentProps<{}> & IMenuItemProps) {
+    constructor(props: RouteComponentProps<{}> & MenuItemProps) {
         super (props);
         this.state = { IsOpened: this.isOpened(this.props.location) };
 
@@ -27,26 +27,26 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuIte
         this.onMenuItemClicked = this.onMenuItemClicked.bind(this);
     }
 
-    public componentWillUnmount() {
+    public componentWillUnmount(): void {
         this.unregisterListenerCallback();
     }
 
-    private isOpened(location: Location) {
+    private isOpened(location: Location): boolean {
         return location.pathname.startsWith(this.props.MenuItem.NavPath);
     }
 
-    private onRouteChanged(location: Location, action: string) {
+    private onRouteChanged(location: Location, action: string): void {
         this.setState({ IsOpened: this.isOpened(location) });
     }
 
-    private handleMenuItemClick(e: React.MouseEvent<HTMLElement>) {
+    private handleMenuItemClick(e: React.MouseEvent<HTMLElement>): void {
         e.preventDefault();
 
         this.setState((prevState) => ({ IsOpened: !prevState.IsOpened }));
         this.onMenuItemClicked(this.props.MenuItem);
     }
 
-    private onMenuItemClicked(menuItem: IMenuItemModel) {
+    private onMenuItemClicked(menuItem: IMenuItemModel): void {
         if (this.props.onMenuItemClicked != null) {
             this.props.onMenuItemClicked(menuItem);
         }
@@ -64,8 +64,8 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuIte
                              staticContext={this.props.staticContext} />);
     }
 
-    public render() {
-        const bold = this.props.location.pathname == this.props.MenuItem.NavPath ? "font-bold" : "";
+    public render(): React.ReactNode {
+        const bold = this.props.location.pathname === this.props.MenuItem.NavPath ? "font-bold" : "";
         const hasSubItems = this.props.MenuItem.SubMenuItems.length > 0;
 
         return (
@@ -96,4 +96,4 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & IMenuIte
     }
 }
 
-export default withRouter<RouteComponentProps<{}> & IMenuItemProps>(RoutingMenuItem);
+export default withRouter<RouteComponentProps<{}> & MenuItemProps>(RoutingMenuItem);
