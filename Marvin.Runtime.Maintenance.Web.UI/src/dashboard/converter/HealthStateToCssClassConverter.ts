@@ -16,7 +16,7 @@ export class HealthStateToCssClassConverter {
                 return { Background: "info", Foreground: "normal" };
             }
             case ModuleServerModuleState.Ready: {
-                return { Background: "secondary", Foreground: "normal" };
+                return { Background: "secondary", Foreground: "composite" };
             }
             case ModuleServerModuleState.Running: {
                 return { Background: "success", Foreground: "normal" };
