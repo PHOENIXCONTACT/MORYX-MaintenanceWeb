@@ -40,7 +40,7 @@ export default class Logger extends React.Component<ILogPropsModel, ILogStateMod
             AppenderId: -1,
             MaxLogEntries: 20,
             IntermediateMaxLogEntries: 20,
-            FilterLogLevel: LogLevel.Trace,
+            FilterLogLevel: LogLevel.Info,
             SelectedLogMessage: null,
             IsLogDetailDialogOpen: false,
         };
