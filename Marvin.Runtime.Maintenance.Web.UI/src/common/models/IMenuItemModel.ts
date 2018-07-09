@@ -1,9 +1,15 @@
 import * as React from "react";
 
-export default interface IMenuItemModel {
+export const enum IconType {
+    Image,
+    FontAwesome
+}
+
+export default interface MenuItemModel {
     Name: string;
     NavPath: string;
-    SubMenuItems: IMenuItemModel[];
+    SubMenuItems: MenuItemModel[];
     Icon?: any;
-    Content? : React.ReactNode;
+    IconType?: IconType;
+    Content?: React.ReactNode;
 }

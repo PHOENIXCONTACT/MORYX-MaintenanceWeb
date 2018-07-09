@@ -6,7 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import RoutingMenu from "../../common/components/Menu/RoutingMenu";
-import IMenuItemModel from "../../common/models/IMenuItemModel";
+import MenuItemModel from "../../common/models/IMenuItemModel";
 import IMenuModel from "../../common/models/IMenuModel";
 import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
@@ -70,7 +70,7 @@ class Modules extends React.Component<ModulesPropModel & ModulesDispatchPropMode
         this.props.RestClient.modules().then((data) => this.props.onUpdateModules(data));
     }
 
-    private static createMenuItem(moduleModel: ServerModuleModel): IMenuItemModel {
+    private static createMenuItem(moduleModel: ServerModuleModel): MenuItemModel {
         return {
             Name: moduleModel.Name,
             NavPath: "/modules/" + moduleModel.Name,

@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
-import IMenuItemModel from "../../models/IMenuItemModel";
+import MenuItemModel, { IconType } from "../../models/IMenuItemModel";
 
 interface MenuItemProps {
-    MenuItem: IMenuItemModel;
+    MenuItem: MenuItemModel;
     Level: number;
-    onMenuItemClicked?(menuItem: IMenuItemModel): void;
+    onMenuItemClicked?(menuItem: MenuItemModel): void;
 }
 
 interface MenuItemState {
@@ -30,7 +30,7 @@ export default class TreeMenuItem extends React.Component<MenuItemProps, MenuIte
         this.onMenuItemClicked(this.props.MenuItem);
     }
 
-    private onMenuItemClicked(menuItem: IMenuItemModel): void {
+    private onMenuItemClicked(menuItem: MenuItemModel): void {
         if (this.props.onMenuItemClicked != null) {
             this.props.onMenuItemClicked(menuItem);
         }
@@ -47,21 +47,36 @@ export default class TreeMenuItem extends React.Component<MenuItemProps, MenuIte
 
     public render(): React.ReactNode {
         const hasSubItems = this.props.MenuItem.SubMenuItems.length > 0;
+        const iconType = this.props.MenuItem.IconType == undefined ? IconType.FontAwesome : IconType.Image;
+        const defaultContent = (
+            <div>
+                { this.props.MenuItem.Icon !== undefined && iconType === IconType.FontAwesome &&
+
+                    <FontAwesomeIcon icon={this.props.MenuItem.Icon} style={{marginRight: "4px"}} />
+                }
+                { this.props.MenuItem.Icon !== undefined && iconType === IconType.Image &&
+                    <img src={this.props.MenuItem.Icon} style={{marginRight: "4px"}} />
+                }
+                <FontAwesomeIcon icon={this.props.MenuItem.Icon} style={{marginRight: "4px"}} />
+                <span style={{wordBreak: "break-all"}}>{this.props.MenuItem.Name}</span>
+            </div>
+        );
 
         return (
             <div style={{paddingLeft: this.props.Level * 10 + "px", margin: "5px 0px 5px 0px"}}>
-                <Container fluid={true} className="menu-item" onClick={(e: React.MouseEvent<HTMLElement>) => this.handleMenuItemClick(e)}>
+                <Container fluid={true} className="menu-item">
                     <Row>
                         <Col md={10}>
                             <div>
-                                { this.props.MenuItem.Icon != undefined &&
-                                    <FontAwesomeIcon icon={this.props.MenuItem.Icon} style={{marginRight: "4px"}} />
+                                { this.props.MenuItem.Content === undefined &&
+                                    defaultContent
                                 }
-                                <span style={{wordBreak: "break-all"}}>{this.props.MenuItem.Name}</span>
-                                {this.props.MenuItem.Content}
+                                { this.props.MenuItem.Content !== undefined &&
+                                    this.props.MenuItem.Content
+                                }
                             </div>
                         </Col>
-                        <Col md={2}>
+                        <Col md={2} onClick={(e: React.MouseEvent<HTMLElement>) => this.handleMenuItemClick(e)}>
                             { hasSubItems &&
                                 <FontAwesomeIcon icon={this.state.IsOpened ? faAngleDown : faAngleRight} />
                             }

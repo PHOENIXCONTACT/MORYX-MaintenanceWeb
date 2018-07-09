@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Collapse } from "reactstrap";
-import IMenuItemModel from "../../models/IMenuItemModel";
+import MenuItemModel from "../../models/IMenuItemModel";
 import IMenuModel from "../../models/IMenuModel";
 import TreeMenuItem from "./TreeMenuItem";
 
 export interface MenuProps {
     Menu: IMenuModel;
-    onActiveMenuItemChanged?(menuItem: IMenuItemModel): void;
+    onActiveMenuItemChanged?(menuItem: MenuItemModel): void;
 }
 
 export default class TreeMenu extends React.Component<MenuProps, {}> {
@@ -16,13 +16,13 @@ export default class TreeMenu extends React.Component<MenuProps, {}> {
         this.state = {};
     }
 
-    protected handleMenuItemClick(menuItem: IMenuItemModel): void {
+    protected handleMenuItemClick(menuItem: MenuItemModel): void {
         if (this.props.onActiveMenuItemChanged != null) {
             this.props.onActiveMenuItemChanged(menuItem);
         }
     }
 
-    protected renderMenu(menuItems: IMenuItemModel[]): React.ReactNode {
+    protected renderMenu(menuItems: MenuItemModel[]): React.ReactNode {
         return menuItems.map ((menuItem, idx) => {
             return (
                 <TreeMenuItem key={idx} MenuItem={menuItem} Level={0} onMenuItemClicked={this.handleMenuItemClick.bind(this)} />

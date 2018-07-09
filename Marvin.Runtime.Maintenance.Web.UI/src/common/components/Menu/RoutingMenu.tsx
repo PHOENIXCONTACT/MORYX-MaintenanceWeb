@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Collapse } from "reactstrap";
-import IMenuItemModel from "../../models/IMenuItemModel";
+import MenuItemModel from "../../models/IMenuItemModel";
 import IMenuModel from "../../models/IMenuModel";
 import RoutingMenuItem from "./RoutingMenuItem";
 import { MenuProps } from "./TreeMenu";
@@ -13,13 +13,13 @@ class RoutingMenu extends React.Component<RouteComponentProps<{}> & MenuProps, {
         this.state = {};
     }
 
-    protected handleMenuItemClick(menuItem: IMenuItemModel): void {
+    protected handleMenuItemClick(menuItem: MenuItemModel): void {
         if (this.props.onActiveMenuItemChanged != null) {
             this.props.onActiveMenuItemChanged(menuItem);
         }
     }
 
-    protected renderMenu(menuItems: IMenuItemModel[]): React.ReactNode {
+    protected renderMenu(menuItems: MenuItemModel[]): React.ReactNode {
         return menuItems.map ((menuItem, idx) => {
             return (
                 <RoutingMenuItem key={idx} MenuItem={menuItem} Level={0} onMenuItemClicked={this.handleMenuItemClick.bind(this)} />

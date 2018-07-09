@@ -19,5 +19,9 @@ namespace Marvin.Runtime.Maintenance.Web
         [OperationContract]
         [WebGet(UriTemplate = "bundle.js")]
         Stream BundleJs();
+
+        [OperationContract]
+        [WebGet(UriTemplate = "favicon.ico")]
+        Stream FavIcon();
     }
 }

@@ -4,12 +4,12 @@ import { Location, UnregisterCallback } from "history";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
-import IMenuItemModel from "../../models/IMenuItemModel";
+import MenuItemModel from "../../models/IMenuItemModel";
 
 interface MenuItemProps {
-    MenuItem: IMenuItemModel;
+    MenuItem: MenuItemModel;
     Level: number;
-    onMenuItemClicked?(menuItem: IMenuItemModel): void;
+    onMenuItemClicked?(menuItem: MenuItemModel): void;
 }
 
 interface MenuItemState {
@@ -46,7 +46,7 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & MenuItem
         this.onMenuItemClicked(this.props.MenuItem);
     }
 
-    private onMenuItemClicked(menuItem: IMenuItemModel): void {
+    private onMenuItemClicked(menuItem: MenuItemModel): void {
         if (this.props.onMenuItemClicked != null) {
             this.props.onMenuItemClicked(menuItem);
         }

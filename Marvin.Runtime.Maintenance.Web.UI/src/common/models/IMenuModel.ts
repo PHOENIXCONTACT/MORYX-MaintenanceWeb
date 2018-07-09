@@ -1,5 +1,5 @@
-import IMenuItemModel from "./IMenuItemModel"
+import MenuItemModel from "./IMenuItemModel"
 
 export default interface IMenuModel {
-    MenuItems: IMenuItemModel[];
+    MenuItems: MenuItemModel[];
 }

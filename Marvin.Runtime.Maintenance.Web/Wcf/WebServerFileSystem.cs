@@ -32,6 +32,12 @@ namespace Marvin.Runtime.Maintenance.Web
             return GetResourceByName($"{AssemblyName}.wwwroot.bundle.js");
         }
 
+        public Stream FavIcon()
+        {
+            WebOperationContext.Current.OutgoingResponse.ContentType = "image/x-icon";
+            return GetResourceByName($"{AssemblyName}.wwwroot.favicon.ico");
+        }
+
         private static Stream GetResourceByName(string resourceName)
         {
             return Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);

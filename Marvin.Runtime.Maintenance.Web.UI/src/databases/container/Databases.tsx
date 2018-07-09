@@ -6,7 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { Link, Route, Switch } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import RoutingMenu from "../../common/components/Menu/RoutingMenu";
-import IMenuItemModel from "../../common/models/IMenuItemModel";
+import MenuItemModel from "../../common/models/IMenuItemModel";
 import IMenuModel from "../../common/models/IMenuModel";
 import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
@@ -63,7 +63,7 @@ class Database extends React.Component<DatabasesPropsModel & DatabasesDispatchPr
         });
     }
 
-    private static createMenuItem(dataModel: DataModel): IMenuItemModel {
+    private static createMenuItem(dataModel: DataModel): MenuItemModel {
         return {
             Name: dataModel.TargetModel,
             NavPath: "/databases/" + dataModel.TargetModel,

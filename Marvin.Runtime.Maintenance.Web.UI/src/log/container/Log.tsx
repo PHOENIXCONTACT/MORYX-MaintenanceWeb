@@ -7,12 +7,14 @@ import { connect, Dispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch, withRouter } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import TreeMenu from "../../common/components/Menu/TreeMenu";
+import { IconType } from "../../common/models/IMenuItemModel";
 import IMenuModel from "../../common/models/IMenuModel";
 import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import LogRestClient from "../api/LogRestClient";
 import Logger from "../components/Logger";
-import ILogMenuItem from "../models/ILogMenuItem";
+import LogMenuItemContent from "../components/LogMenuItemContent";
+import LogMenuItem from "../models/ILogMenuItem";
 import LoggerModel from "../models/LoggerModel";
 import { LogLevel } from "../models/LogLevel";
 import { updateLoggers } from "../redux/LogActions";
@@ -49,7 +51,7 @@ interface LogStateModel {
 
 class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogStateModel> {
 
-    public overviewLogger: LoggerModel;
+    private overviewLogger: LoggerModel;
 
     constructor(props: LogPropsModel & LogDispatchPropModel) {
         super(props);
@@ -66,32 +68,18 @@ class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogState
         });
     }
 
-    public createMenuItem(logger: LoggerModel): ILogMenuItem {
-        const menuItem: ILogMenuItem = {
-                Name: Log.shortLoggerName(logger),
+    public createMenuItem(logger: LoggerModel): LogMenuItem {
+        const menuItem: LogMenuItem = {
+                Name: LoggerModel.shortLoggerName(logger),
                 NavPath: "/log",
-                Icon: faList,
                 Logger: logger,
                 SubMenuItems: logger.ChildLogger.map((childLogger, idx) => this.createMenuItem(childLogger)),
             };
 
-        menuItem.Content = (<span className="font-small" style={{float: "right"}}>{this.preRenderActiveLogLevel(menuItem)}</span>);
+        menuItem.Content = (<LogMenuItemContent Logger={menuItem.Logger}
+                                                onActiveLogLevelChange={this.onActiveLogLevelChange.bind(this)}
+                                                onLabelClicked={this.onMenuItemClicked.bind(this)} />);
         return menuItem;
-    }
-
-    public preRenderActiveLogLevel(menuItem: ILogMenuItem): React.ReactNode {
-        return (
-            <Input type="select" className="font-bold"
-                   style={{width: "100%", height: "1.5rem !important", fontSize: "10px", padding: "2px"}}
-                   value={menuItem.Logger.ActiveLevel}
-                   onChange={(e: React.FormEvent<HTMLInputElement>) => this.onActiveLogLevelChange(e, menuItem.Logger)}>
-                        <option value={LogLevel.Trace}>Trace</option>
-                        <option value={LogLevel.Debug}>Debug</option>
-                        <option value={LogLevel.Info}>Info</option>
-                        <option value={LogLevel.Warning}>Warning</option>
-                        <option value={LogLevel.Error}>Error</option>
-                        <option value={LogLevel.Fatal}>Fatal</option>
-            </Input>);
     }
 
     private onActiveLogLevelChange(e: React.FormEvent<HTMLInputElement>, logger: LoggerModel): void {
@@ -100,30 +88,36 @@ class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogState
         const newValue = parseInt((e.target as HTMLSelectElement).value, 10);
         this.props.RestClient.logLevel(logger.Name, newValue).then((data) => {
             if (data.Success) {
+                logger.ActiveLevel = newValue;
+                Log.changeActiveLogLevel(logger, newValue);
+                this.forceUpdate();
+
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Log level for '" + logger.Name +  "' was set successfully", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: data.ErrorMessage, level: "error", autoDismiss: 5 });
             }
         });
-        logger.ActiveLevel = newValue;
+    }
 
-        this.forceUpdate();
+    private static changeActiveLogLevel(logger: LoggerModel, logLevel: LogLevel): void {
+        if (logger.ActiveLevel > logLevel) {
+            logger.ActiveLevel = logLevel;
+        }
+
+        for (const childLogger of logger.ChildLogger) {
+            Log.changeActiveLogLevel(childLogger, logLevel);
+        }
     }
 
     private toggleTab(tabName: string): void {
         this.setState({ActiveTab: tabName});
     }
 
-    private static shortLoggerName(logger: LoggerModel): string {
-        const splittedLoggerPath = logger.Name.split(".");
-        return splittedLoggerPath[splittedLoggerPath.length - 1];
-    }
-
-    private onMenuItemClicked(menuItem: ILogMenuItem): void {
-       const idx = this.state.LoggerTabs.indexOf(menuItem.Logger);
+    private onMenuItemClicked(logger: LoggerModel): void {
+       const idx = this.state.LoggerTabs.indexOf(logger);
        if (idx === -1) {
             this.setState((prevState) => ({
-                LoggerTabs: [...prevState.LoggerTabs, menuItem.Logger],
+                LoggerTabs: [...prevState.LoggerTabs, logger],
                 ActiveTab: (prevState.LoggerTabs.length + 1).toString(),
             }));
        } else {
@@ -150,7 +144,7 @@ class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogState
         return this.state.LoggerTabs.map((logger, idx) =>
             <NavItem key={idx} className={"selectable"}>
                 <NavLink className={this.state.ActiveTab === (idx + 1).toString() ? "active" : ""} onClick={() => { this.toggleTab((idx + 1).toString()); }}>
-                    {Log.shortLoggerName(logger)}
+                    {LoggerModel.shortLoggerName(logger)}
                 </NavLink>
             </NavItem>,
         );
@@ -179,7 +173,7 @@ class Log extends React.Component<LogPropsModel & LogDispatchPropModel, LogState
                         </CardHeader>
                         <CardBody>
                             <Container fluid={true}>
-                                <TreeMenu Menu={this.state.Menu} onActiveMenuItemChanged={this.onMenuItemClicked.bind(this)} />
+                                <TreeMenu Menu={this.state.Menu} />
                             </Container>
                         </CardBody>
                     </Card>

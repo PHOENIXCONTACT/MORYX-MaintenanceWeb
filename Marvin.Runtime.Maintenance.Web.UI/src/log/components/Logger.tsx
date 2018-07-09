@@ -107,7 +107,13 @@ export default class Logger extends React.Component<LogPropsModel, LogStateModel
                                     )}
                                 </tbody>
                                 { this.state.LogMessages.length === 0 && (
-                                        <span className="font-normal font-italic">No log messages found for this logger.</span>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span className="font-normal font-italic">No log messages found for this logger.</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 )}
                             </Table>
                         </Col>
