@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Collapse } from "reactstrap";
-import MenuItemModel from "../../models/IMenuItemModel";
-import IMenuModel from "../../models/IMenuModel";
+import MenuItemModel from "../../models/MenuItemModel";
+import MenuModel from "../../models/MenuModel";
 import TreeMenuItem from "./TreeMenuItem";
 
 export interface MenuProps {
-    Menu: IMenuModel;
+    Menu: MenuModel;
     onActiveMenuItemChanged?(menuItem: MenuItemModel): void;
 }
 

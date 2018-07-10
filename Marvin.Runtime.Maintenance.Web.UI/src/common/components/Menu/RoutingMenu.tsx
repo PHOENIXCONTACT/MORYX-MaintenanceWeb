@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Collapse } from "reactstrap";
-import MenuItemModel from "../../models/IMenuItemModel";
-import IMenuModel from "../../models/IMenuModel";
+import MenuItemModel from "../../models/MenuItemModel";
+import MenuModel from "../../models/MenuModel";
 import RoutingMenuItem from "./RoutingMenuItem";
 import { MenuProps } from "./TreeMenu";
 

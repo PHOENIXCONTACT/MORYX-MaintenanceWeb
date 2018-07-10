@@ -6,8 +6,8 @@ import { connect, Dispatch } from "react-redux";
 import { Link, Route, Switch } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import RoutingMenu from "../../common/components/Menu/RoutingMenu";
-import MenuItemModel from "../../common/models/IMenuItemModel";
-import IMenuModel from "../../common/models/IMenuModel";
+import MenuItemModel from "../../common/models/MenuItemModel";
+import MenuModel from "../../common/models/MenuModel";
 import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import DatabasesRestClient from "../api/DatabasesRestClient";
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): DatabasesDispat
 };
 
 interface DatabaseStateModel {
-    MenuModel: IMenuModel;
+    MenuModel: MenuModel;
     IsLoading: boolean;
 }
 

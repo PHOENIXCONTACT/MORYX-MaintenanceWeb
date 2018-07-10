@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
-import MenuItemModel, { IconType } from "../../models/IMenuItemModel";
+import MenuItemModel, { IconType } from "../../models/MenuItemModel";
 
 interface MenuItemProps {
     MenuItem: MenuItemModel;

@@ -1,11 +1,11 @@
 import InvocationResponse from "../../common/api/responses/InvocationResponse";
 import RestClientBase from "../../common/api/RestClientBase";
-import AddRemoteAppenderRequest from "../api/requests/AddRemoteAppenderRequest";
-import SetLogLevelRequest from "../api/requests/SetLogLevelRequest";
-import AddAppenderResponse from "../api/responses/AddAppenderResponse";
 import LoggerModel from "../models/LoggerModel";
 import { LogLevel } from "../models/LogLevel";
 import LogMessageModel from "../models/LogMessageModel";
+import AddRemoteAppenderRequest from "./requests/AddRemoteAppenderRequest";
+import SetLogLevelRequest from "./requests/SetLogLevelRequest";
+import AddAppenderResponse from "./responses/AddAppenderResponse";
 
 export default class LogRestClient extends RestClientBase {
     public loggers(): Promise<LoggerModel[]> {

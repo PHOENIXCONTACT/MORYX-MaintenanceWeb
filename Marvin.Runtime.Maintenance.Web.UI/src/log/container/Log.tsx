@@ -7,16 +7,16 @@ import { connect, Dispatch } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch, withRouter } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import TreeMenu from "../../common/components/Menu/TreeMenu";
-import { IconType } from "../../common/models/IMenuItemModel";
-import IMenuModel from "../../common/models/IMenuModel";
+import { IconType } from "../../common/models/MenuItemModel";
+import MenuModel from "../../common/models/MenuModel";
 import { AppState } from "../../common/redux/AppState";
 import { ActionType } from "../../common/redux/Types";
 import LogRestClient from "../api/LogRestClient";
 import Logger from "../components/Logger";
 import LogMenuItemContent from "../components/LogMenuItemContent";
-import LogMenuItem from "../models/ILogMenuItem";
 import LoggerModel from "../models/LoggerModel";
 import { LogLevel } from "../models/LogLevel";
+import LogMenuItem from "../models/LogMenuItem";
 import { updateLoggers } from "../redux/LogActions";
 
 interface LogPropsModel {
@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch<ActionType<{}>>): LogDispatchProp
 
 interface LogStateModel {
     ActiveTab: string;
-    Menu: IMenuModel;
+    Menu: MenuModel;
     LoggerTabs: LoggerModel[];
 }
 

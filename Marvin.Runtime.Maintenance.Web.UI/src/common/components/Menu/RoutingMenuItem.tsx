@@ -4,7 +4,7 @@ import { Location, UnregisterCallback } from "history";
 import * as React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { Col, Collapse, Container, Row } from "reactstrap";
-import MenuItemModel from "../../models/IMenuItemModel";
+import MenuItemModel from "../../models/MenuItemModel";
 
 interface MenuItemProps {
     MenuItem: MenuItemModel;

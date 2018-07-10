@@ -4,8 +4,8 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Progress, Row } from "reactstrap";
 import ServerModuleModel from "../../modules/models/ServerModuleModel";
-import { HealthStateBadge } from "../components/HealthStateBadge";
 import { HealthStateToCssClassConverter } from "../converter/HealthStateToCssClassConverter";
+import { HealthStateBadge } from "./HealthStateBadge";
 
 interface ModulePropsModel {
     ServerModule: ServerModuleModel;
