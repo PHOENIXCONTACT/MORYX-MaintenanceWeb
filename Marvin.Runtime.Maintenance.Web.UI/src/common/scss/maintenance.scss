@@ -197,13 +197,20 @@ body {
   }
 }
 
+.no-padding {
+  padding: 0px;
+}
+
+.no-margin {
+  margin: 0px;
+}
+
 /*
  * Config Editor
  */
 .config-editor {
   margin-top: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
@@ -216,33 +223,20 @@ body {
     min-width: auto;
   }
   
-  // Nested sub config
-  .config-editor {
-    padding-left: 20px;
-  }
-  
   .row {
     margin-right: 0px;
     margin-left: 0px;
   }
   
-  .table-header {
-    font-weight: bold;
-    border-bottom: 2px solid #ddd;
-
-    padding: 10px 10px 10px 0px;
-  }
-  
   .table-row {
-    border-bottom: 1px solid #ddd;
-    min-height: 50px;
-    
+    align-items: "center";
+
     &:nth-child(even){
-      background-color: white;
+      background-color: #f2f2f2;
     }
     
     &:nth-child(odd){
-      background-color: #edf0f3;
+      background-color: white;
     }
   }
   

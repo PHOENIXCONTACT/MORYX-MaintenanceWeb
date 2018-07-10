@@ -71,7 +71,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                         {
                             this.props.Entry.SubEntries.map((entry, idx) =>
                                 <div key={idx}>
-                                    <Row style={{background: idx % 2 === 0 ? "#f2f2f2" : "white"}}>
+                                    <Row className="table-row">
                                         <Col md={4}>{entry.Key.Name}</Col>
                                         <Col>
                                             <ButtonGroup>

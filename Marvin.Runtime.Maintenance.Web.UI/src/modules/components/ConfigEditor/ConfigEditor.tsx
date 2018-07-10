@@ -97,9 +97,9 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
     public preRenderEntries(entries: Entry[]): React.ReactNode {
         return entries.map((subEntry, idx) =>
         (
-            <div key={idx}>
-                <Row style={{background: idx % ConfigEditor.divider === 0 ? "#f2f2f2" : "white", alignItems: "center", padding: "5px 0px 5px 0px"}}>
-                    <Col md={7}>
+            <div key={idx} className="table-row">
+                <Row style={{padding: "5px 0px 5px 0px", alignItems: "center"}}>
+                    <Col md={7} className="no-padding">
                         <Container fluid={true}>
                             <Row>
                                 <Col md={12}><span className="font-bold align-self-center">{subEntry.Key.Name}</span></Col>
@@ -152,7 +152,7 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
         }
 
         return (
-            <div>
+            <div className="config-editor">
                 {entries}
             </div>
         );
