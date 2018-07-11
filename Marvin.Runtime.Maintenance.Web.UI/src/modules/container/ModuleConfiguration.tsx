@@ -163,7 +163,7 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
                         this.preRenderBreadcrumb()
                     )}
                     <Container fluid={true} className="up-space-lg">
-                        <Row style={{background: "lightgray"}}>
+                        <Row className="config-editor-header">
                             <Col md={5}><span className="font-bold">Property</span></Col>
                             <Col md={7}><span className="font-bold">Value</span></Col>
                         </Row>
