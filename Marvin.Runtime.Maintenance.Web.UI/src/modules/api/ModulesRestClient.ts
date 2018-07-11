@@ -1,5 +1,7 @@
 import RestClientBase from "../../common/api/RestClientBase";
 import Config from "../models/Config";
+import Entry from "../models/Entry";
+import MethodEntry from "../models/MethodEntry";
 import { ModuleServerModuleState } from "../models/ModuleServerModuleState";
 import NotificationModel from "../models/NotificationModel";
 import ServerModuleModel from "../models/ServerModuleModel";
@@ -44,6 +46,14 @@ export default class ModulesRestClient extends RestClientBase {
 
     public saveModuleConfig(moduleName: string, request: SaveConfigRequest): Promise<Response> {
         return this.post<SaveConfigRequest, Response>("/ModuleMaintenance/modules/" + moduleName + "/config", request, new Response(), ModulesRestClient.entryReplacer);
+    }
+
+    public moduleMethods(moduleName: string): Promise<MethodEntry[]> {
+        return this.get<MethodEntry[]>("/ModuleMaintenance/modules/" + moduleName + "/console", []);
+    }
+
+    public invokeMethod(moduleName: string, request: MethodEntry): Promise<Entry> {
+        return this.post<MethodEntry, Entry>("/ModuleMaintenance/modules/" + moduleName + "/console", request, new Entry(), ModulesRestClient.entryReplacer);
     }
 
     private static entryReplacer(key: string, value: any): any {

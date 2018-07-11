@@ -38,8 +38,17 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
 
     public addEntry(): void {
         const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.Key.Name === this.state.SelectedEntry);
-        const entryClone = JSON.parse(JSON.stringify(prototype));
-        entryClone.Parent = this.props.Entry;
+        const entryClone = Entry.cloneFromPrototype(prototype, this.props.Entry);
+
+        let counter: number = 0;
+        let entryName: string = entryClone.Key.Name;
+
+        while (this.props.Entry.SubEntries.find((subEntry: Entry) => subEntry.Key.Name === entryName) !== undefined) {
+            ++counter;
+            entryName = entryClone.Key.Name + " " + counter.toString();
+        }
+
+        entryClone.Key.Name = entryName;
         this.props.Entry.SubEntries.push(entryClone);
 
         this.forceUpdate();
@@ -60,7 +69,11 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
     }
 
     public preRenderConfigEditor(entry: Entry): React.ReactNode {
-        return <ConfigEditor ParentEntry={entry} Entries={entry.SubEntries} navigateToEntry={this.props.navigateToEntry} />;
+        return <ConfigEditor ParentEntry={entry}
+                             Entries={entry.SubEntries}
+                             RootEntries={this.props.RootEntries}
+                             navigateToEntry={this.props.navigateToEntry}
+                             IsReadOnly={this.props.IsReadOnly} />;
     }
 
     public render(): React.ReactNode {
@@ -79,18 +92,18 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                                                     <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
                                                     Open
                                                 </Button>
-                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.UniqueIdentifier)}>
                                                     <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
                                                     Expand
                                                 </Button>
-                                                <Button color="secondary" onClick={() => this.removeEntry(entry)}>
+                                                <Button color="secondary" onClick={() => this.removeEntry(entry)} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
                                                     <FontAwesomeIcon icon={faTrash} className="right-space" />
                                                     Remove
                                                 </Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
-                                    <Collapse isOpen={this.isExpanded(entry.Key.Name)}>
+                                    <Collapse isOpen={this.isExpanded(entry.Key.UniqueIdentifier)}>
                                         {this.preRenderConfigEditor(entry)}
                                     </Collapse>
                                 </div>,
@@ -98,13 +111,14 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                         }
                         <Row className="up-space">
                             <Col md={4}>
-                                <Input type="select" value={this.props.Entry.Value.Current}
+                                <Input type="select" value={this.props.Entry.Value.Current === null ? "" : this.props.Entry.Value.Current}
+                                       disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
                                        onChange={(e: React.FormEvent<HTMLInputElement>) => this.onSelect(e)}>
                                     {this.preRenderOptions()}
                                 </Input>
                             </Col>
                             <Col md={8}>
-                                <Button color="primary" onClick={() => this.addEntry()}>
+                                <Button color="primary" onClick={() => this.addEntry()} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
                                     <FontAwesomeIcon icon={faPlus} className="right-space" />
                                     Add entry
                                 </Button>

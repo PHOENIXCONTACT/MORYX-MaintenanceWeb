@@ -4,6 +4,7 @@ import Entry from "../../models/Entry";
 
 export interface InputEditorBasePropModel {
     Entry: Entry;
+    IsReadOnly: boolean;
 }
 
 interface InputEditorBaseStateModel {

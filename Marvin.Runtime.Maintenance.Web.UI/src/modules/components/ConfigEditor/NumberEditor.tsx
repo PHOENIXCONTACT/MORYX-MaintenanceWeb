@@ -13,7 +13,7 @@ export default class NumberEditor extends InputEditorBase {
         return (<Input type="number"
                         onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}
                         placeholder={"Please enter a value of type: " + toString(this.props.Entry.Value.Type) + " ..."}
-                        disabled={this.props.Entry.Value.IsReadOnly}
+                        disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
                         value={this.props.Entry.Value.Current}
                 />);
     }

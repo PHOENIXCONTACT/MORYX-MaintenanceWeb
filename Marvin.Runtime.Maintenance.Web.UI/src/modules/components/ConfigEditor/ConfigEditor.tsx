@@ -15,11 +15,14 @@ import StringEditor from "./StringEditor";
 interface ConfigEditorPropModel {
     ParentEntry: Entry;
     Entries: Entry[];
+    IsReadOnly: boolean;
+    RootEntries: Entry[];
     navigateToEntry(entry: Entry): void;
 }
 
 interface ConfigEditorStateModel {
     ExpandedEntryNames: string[];
+    SelectedEntryType: string;
 }
 
 export default class ConfigEditor extends React.Component<ConfigEditorPropModel, ConfigEditorStateModel> {
@@ -29,10 +32,17 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
         super(props);
         this.state = {
             ExpandedEntryNames: [],
+            SelectedEntryType: this.props.ParentEntry != null ? this.props.ParentEntry.Value.Current : ""
         };
     }
 
-    public toggleCollapsible(entryName: string): void {
+    public componentWillReceiveProps(nextProps: ConfigEditorPropModel): void {
+        if (this.state.SelectedEntryType === "" && this.props.ParentEntry != null) {
+            this.setState({ SelectedEntryType: this.props.ParentEntry.Value.Current});
+        }
+    }
+
+    private toggleCollapsible(entryName: string): void {
         if (this.isExpanded(entryName)) {
             this.setState((prevState) => ({ ExpandedEntryNames: prevState.ExpandedEntryNames.filter((name) => name !== entryName) }));
         } else {
@@ -40,19 +50,61 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
         }
     }
 
-    public isExpanded(entryName: string): boolean {
+    private isExpanded(entryName: string): boolean {
         return this.state.ExpandedEntryNames.find((e: string) => e === entryName) != undefined;
+    }
+
+    private static isEntryTypeSettable(entry: Entry): boolean {
+        if (entry === null || entry === undefined || entry.Parent === null || entry.Parent === undefined) {
+            return false;
+        }
+
+        return entry.Value.Type === EntryValueType.Class &&
+               entry.Parent.Value.Type !== EntryValueType.Collection &&
+               entry.Value.Possible != null &&
+               entry.Value.Possible.length > 1;
+    }
+
+    private onEntryTypeChange(e: React.FormEvent<HTMLInputElement>): void {
+        this.setState({SelectedEntryType: e.currentTarget.value});
+    }
+
+    private onPatchToSelectedEntryType(): void {
+        let prototype: Entry = null;
+        let entryType: EntryValueType = EntryValueType.Class;
+        if (this.props.ParentEntry.Parent != null) {
+            entryType = this.props.ParentEntry.Parent.Value.Type;
+        }
+
+        switch (entryType) {
+            case EntryValueType.Class:
+                prototype = this.props.ParentEntry.Prototypes.find((proto: Entry) => proto.Key.Name === this.state.SelectedEntryType);
+        }
+
+        const clone = Entry.cloneFromPrototype(prototype, this.props.ParentEntry.Parent);
+
+        let subEntries: Entry[] = this.props.RootEntries;
+        if (this.props.ParentEntry.Parent != null) {
+            subEntries = this.props.ParentEntry.Parent.SubEntries;
+        }
+
+        const idx = subEntries.indexOf(this.props.ParentEntry);
+        if (idx !== -1) {
+            subEntries[idx] = clone;
+            this.setState({SelectedEntryType: this.props.ParentEntry.Value.Current});
+            this.props.navigateToEntry(this.props.ParentEntry);
+        }
     }
 
     public selectPropertyByType(entry: Entry): React.ReactNode {
         switch (entry.Value.Type) {
             case EntryValueType.Byte:
             {
-                return (<ByteEditor Entry={entry} />);
+                return (<ByteEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
             }
             case EntryValueType.Boolean:
             {
-                return (<BooleanEditor Entry={entry} />);
+                return (<BooleanEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
             }
             case EntryValueType.Int16:
             case EntryValueType.UInt16:
@@ -63,15 +115,15 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
             case EntryValueType.Single:
             case EntryValueType.Double:
             {
-                return (<NumberEditor Entry={entry} />);
+                return (<NumberEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
             }
             case EntryValueType.String:
             {
-                return (<StringEditor Entry={entry} />);
+                return (<StringEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
             }
             case EntryValueType.Enum:
             {
-                return (<EnumEditor Entry={entry} />);
+                return (<EnumEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
             }
             case EntryValueType.Collection:
             case EntryValueType.Class:
@@ -82,9 +134,9 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
                             <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
                             Open
                         </Button>
-                        <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.Name)}>
+                        <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.UniqueIdentifier)}>
                             <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
-                            {this.isExpanded(entry.Key.Name) ? "Collapse" : "Expand"}
+                            {this.isExpanded(entry.Key.UniqueIdentifier) ? "Collapse" : "Expand"}
                         </Button>
                     </ButtonGroup>
                 );
@@ -119,7 +171,11 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
                     (
                         <Row>
                             <Col md={12}>
-                                <CollectionEditor Entry={subEntry} IsExpanded={this.isExpanded(subEntry.Key.Name)} navigateToEntry={this.props.navigateToEntry} />
+                                <CollectionEditor Entry={subEntry}
+                                                  IsExpanded={this.isExpanded(subEntry.Key.UniqueIdentifier)}
+                                                  RootEntries={this.props.RootEntries}
+                                                  navigateToEntry={this.props.navigateToEntry}
+                                                  IsReadOnly={this.props.IsReadOnly} />
                             </Col>
                         </Row>
                     )
@@ -128,7 +184,11 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
                     (
                         <Row>
                             <Col md={12}>
-                                <ClassEditor Entry={subEntry} IsExpanded={this.isExpanded(subEntry.Key.Name)} navigateToEntry={this.props.navigateToEntry} />
+                                <ClassEditor Entry={subEntry}
+                                             IsExpanded={this.isExpanded(subEntry.Key.UniqueIdentifier)}
+                                             RootEntries={this.props.RootEntries}
+                                             navigateToEntry={this.props.navigateToEntry}
+                                             IsReadOnly={this.props.IsReadOnly} />
                             </Col>
                         </Row>
                     )
@@ -143,7 +203,11 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
             entries = (
                 <Row>
                     <Col md={12}>
-                        <CollectionEditor Entry={this.props.ParentEntry} IsExpanded={true} navigateToEntry={this.props.navigateToEntry} />
+                        <CollectionEditor Entry={this.props.ParentEntry}
+                                          IsExpanded={true}
+                                          RootEntries={this.props.RootEntries}
+                                          navigateToEntry={this.props.navigateToEntry}
+                                          IsReadOnly={this.props.IsReadOnly} />
                     </Col>
                 </Row>
             );
@@ -154,6 +218,31 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
         return (
             <div className="config-editor">
                 {entries}
+                { ConfigEditor.isEntryTypeSettable(this.props.ParentEntry) &&
+                    <Container fluid={true}
+                               style={{margin: "10px 0px 10px 0px"}}
+                               className="no-padding">
+                        <Row style={{alignItems: "center"}}>
+                            <Col md={4} className="no-padding">
+                                <Input type="select" value={this.state.SelectedEntryType}
+                                       onChange={(e: React.FormEvent<HTMLInputElement>) => this.onEntryTypeChange(e)}>
+                                    {
+                                        this.props.ParentEntry.Value.Possible.map((possibleValue, idx) => {
+                                            return (<option key={idx}>{possibleValue}</option>);
+                                        })
+                                    }
+                                </Input>
+                            </Col>
+                            <Col md={2}>
+                                <Button color="primary"
+                                        disabled={this.state.SelectedEntryType === "" || this.state.SelectedEntryType === this.props.ParentEntry.Value.Current}
+                                        onClick={() => this.onPatchToSelectedEntryType()}>
+                                    Set entry type
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Container>
+                }
             </div>
         );
     }

@@ -14,12 +14,12 @@ export default class StringEditor extends InputEditorBase {
         return (<Input type="text"
                         onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}
                         placeholder={"Please enter a string ..."}
-                        disabled={this.props.Entry.Value.IsReadOnly}
+                        disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
                         value={this.props.Entry.Value.Current == null ? "" : this.props.Entry.Value.Current} />);
     }
 
     private preRenderPossibleValueList(): React.ReactNode {
-        return (<EnumEditor Entry={this.props.Entry} />);
+        return (<EnumEditor Entry={this.props.Entry} IsReadOnly={this.props.IsReadOnly} />);
     }
 
     public render(): React.ReactNode {

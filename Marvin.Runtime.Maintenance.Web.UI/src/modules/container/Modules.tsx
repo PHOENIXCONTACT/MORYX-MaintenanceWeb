@@ -1,4 +1,4 @@
-import { faCogs, faComment, faSitemap, faSquare } from "@fortawesome/fontawesome-free-solid";
+import { faCogs, faComment, faSitemap, faSquare, faTerminal } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import NotificationSystem = require("react-notification-system");
@@ -17,6 +17,7 @@ import ServerModuleModel from "../models/ServerModuleModel";
 import { updateModules } from "../redux/ModulesActions";
 import Module from "./Module";
 import ModuleConfiguration from "./ModuleConfiguration";
+import ModuleConsole from "./ModuleConsole";
 
 interface ModulesPropModel {
     RestClient: ModulesRestClient;
@@ -84,6 +85,12 @@ class Modules extends React.Component<ModulesPropModel & ModulesDispatchPropMode
                     Icon: faCogs,
                     SubMenuItems: [],
                 },
+                {
+                    Name: "Console",
+                    NavPath: "/modules/" + moduleModel.Name + "/console",
+                    Icon: faTerminal,
+                    SubMenuItems: [],
+                },
             ],
         };
     }
@@ -97,10 +104,18 @@ class Modules extends React.Component<ModulesPropModel & ModulesDispatchPropMode
             routes.push(<Route key={idx} path={menuItem.NavPath} exact={true} render={() => <Module Module={module} RestClient={this.props.RestClient} />}/>);
 
             menuItem.SubMenuItems.forEach((subMenuItem) => {
-                routes.push(<Route key={idx} path={subMenuItem.NavPath} exact={true}
-                                   render={() => <ModuleConfiguration ModuleName={module.Name}
-                                                                      RestClient={this.props.RestClient}
-                                                                      NotificationSystem={this.props.NotificationSystem} />}/>);
+                if (subMenuItem.NavPath.endsWith("configuration")) {
+                    routes.push(<Route key={idx} path={subMenuItem.NavPath} exact={true}
+                                    render={() => <ModuleConfiguration ModuleName={module.Name}
+                                                                       RestClient={this.props.RestClient}
+                                                                       NotificationSystem={this.props.NotificationSystem} />}/>);
+                } else if (subMenuItem.NavPath.endsWith("console")) {
+                    routes.push(<Route key={idx} path={subMenuItem.NavPath} exact={true}
+                                    render={() => <ModuleConsole ModuleName={module.Name}
+                                                                 RestClient={this.props.RestClient}
+                                                                 NotificationSystem={this.props.NotificationSystem} />}/>);
+                }
+
                 ++idx;
             });
 

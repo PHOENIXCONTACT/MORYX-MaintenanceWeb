@@ -25,4 +25,16 @@ export default class Entry {
         entryChain.reverse();
         return entryChain;
     }
+
+    public static generateUniqueIdentifiers(entry: Entry): void {
+        EntryKey.updateUniqueIdentifier(entry.Key);
+        entry.SubEntries.forEach((subEntry: Entry) => Entry.generateUniqueIdentifiers(subEntry));
+    }
+
+    public static cloneFromPrototype(prototype: Entry, parent: Entry): Entry {
+        const entryClone = JSON.parse(JSON.stringify(prototype));
+        entryClone.Parent = parent;
+        Entry.generateUniqueIdentifiers(entryClone);
+        return entryClone;
+    }
 }

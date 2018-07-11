@@ -19,6 +19,7 @@ export default class ByteEditor extends InputEditorBase {
     public render(): React.ReactNode {
         return (
             <Input type="select" value={this.props.Entry.Value.Current}
+                   disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
                    onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}>
                    {ByteEditor.preRenderOptions()}
             </Input>

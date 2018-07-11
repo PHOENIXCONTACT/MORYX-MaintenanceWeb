@@ -1,18 +1,14 @@
 import { faCogs, faSave, faSync, faUndo } from "@fortawesome/fontawesome-free-solid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Action, Location, UnregisterCallback } from "history";
-import * as qs from "query-string";
 import * as React from "react";
-import * as Notifications from "react-notification-system";
 import NotificationSystem = require("react-notification-system");
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Row, Table } from "reactstrap";
+import { Button, ButtonGroup, Card, CardBody, CardHeader, Col, Container, Row } from "reactstrap";
 import ModulesRestClient from "../api/ModulesRestClient";
-import ConfigEditor from "../components/ConfigEditor/ConfigEditor";
+import NavigableConfigEditor from "../components/ConfigEditor/NavigableConfigEditor";
 import Config from "../models/Config";
 import { ConfigUpdateMode } from "../models/ConfigUpdateMode";
 import Entry from "../models/Entry";
-import { EntryValueType, toString } from "../models/EntryValueType";
 
 interface ModuleConfigurationPropModel {
     RestClient?: ModulesRestClient;
@@ -25,34 +21,26 @@ interface ModuleConfigurationStateModel {
     ConfigIsLoading: boolean;
     ParentEntry: Entry;
     CurrentSubEntries: Entry[];
-    EntryChain: Entry[];
 }
 
 class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel & RouteComponentProps<{}>, ModuleConfigurationStateModel> {
-    public unregisterListener: UnregisterCallback;
-
     constructor(props: ModuleConfigurationPropModel & RouteComponentProps<{}>) {
         super(props);
 
+        const config = new Config();
+        config.Module = this.props.ModuleName;
+        config.Entries = [];
+
         this.state = {
-            ModuleConfig: { Module: this.props.ModuleName, Entries: [] },
+            ModuleConfig: config,
             ConfigIsLoading: true,
             ParentEntry: null,
             CurrentSubEntries: [],
-            EntryChain: [],
         };
-
-        this.navigateToEntry = this.navigateToEntry.bind(this);
     }
 
     public componentDidMount(): void {
-        this.unregisterListener = this.props.history.listen(this.onHistoryChanged.bind(this));
-
         this.loadConfig();
-    }
-
-    public componentWillUnmount(): void {
-        this.unregisterListener();
     }
 
     public loadConfig(): Promise<void> {
@@ -65,9 +53,7 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
                                         ParentEntry: null,
                                         CurrentSubEntries: data.Entries,
                                         ConfigIsLoading: false,
-                                        EntryChain: [],
                                     });
-                                 this.resolveEntryChainByPath(this.props.location);
                                 });
     }
 
@@ -82,71 +68,10 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
     }
 
     public onRevert(): void {
+        this.props.history.push("?");
         this.setState({ ConfigIsLoading: true });
         this.loadConfig()
             .then((result) => this.props.NotificationSystem.addNotification({ title: "Reverted", message: "Configuration was reverted", level: "success", autoDismiss: 3 }));
-    }
-
-    public onClickBreadcrumb(entry: Entry): void {
-        if (entry == null) {
-            this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
-
-            this.updatePath([]);
-        } else {
-            const idx = this.state.EntryChain.indexOf(entry);
-            const updatedEntryChain = this.state.EntryChain.slice(0, idx + 1);
-            this.setState((prevState) => ({ EntryChain: updatedEntryChain, ParentEntry: entry, CurrentSubEntries: entry.SubEntries }));
-
-            this.updatePath(updatedEntryChain);
-        }
-    }
-
-    public preRenderBreadcrumb(): React.ReactNode {
-        const entryChainButtons = this.state.EntryChain.map((entry, idx) =>
-        (
-            <Button key={idx} color="light" onClick={() => this.onClickBreadcrumb(entry)} disabled={idx === this.state.EntryChain.length - 1}>{entry.Key.Name}</Button>
-        ));
-
-        return (
-            <ButtonGroup>
-                <Button color="dark" disabled={this.state.EntryChain.length === 0} onClick={() => this.onClickBreadcrumb(null)}>Home</Button>
-                {entryChainButtons}
-            </ButtonGroup>
-        );
-    }
-
-    public navigateToEntry(entry: Entry): void {
-        this.updatePath(Entry.entryChain(entry));
-    }
-
-    private updatePath(entryChain: Entry[]): void {
-        this.props.history.push("?path=" + entryChain.map((entry) => entry.Key.Name).join(","));
-    }
-
-    private resolveEntryChainByPath(location: Location): void {
-        const query = qs.parse(location.search);
-        if (query != null && "path" in query) {
-            const entryChain: Entry[] = [];
-            let currentEntry: Entry = null;
-
-            query.path.split(",").forEach((element: string) => {
-                const searchableEntries: Entry[] = currentEntry != null ? currentEntry.SubEntries : this.state.ModuleConfig.Entries;
-                const filtered = searchableEntries.filter((entry) => entry.Key.Name === element);
-
-                if (filtered.length > 0) {
-                    currentEntry = filtered[0];
-                    entryChain.push(currentEntry);
-                }
-            });
-
-            this.setState({ EntryChain: entryChain, ParentEntry: currentEntry, CurrentSubEntries: currentEntry != null ? currentEntry.SubEntries : this.state.ModuleConfig.Entries });
-        } else {
-            this.setState({ EntryChain: [], ParentEntry: null, CurrentSubEntries: this.state.ModuleConfig.Entries });
-        }
-    }
-
-    private onHistoryChanged(location: Location, action: Action): void {
-        this.resolveEntryChainByPath(location);
     }
 
     public render(): React.ReactNode {
@@ -157,18 +82,15 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
                     {this.props.ModuleName} - Configuration
                 </CardHeader>
                 <CardBody>
-                    {this.state.ConfigIsLoading ? (
+                    {this.state.ConfigIsLoading &&
                         <span className="font-bold font-small">Loading config ...</span>
-                    ) : (
-                        this.preRenderBreadcrumb()
-                    )}
-                    <Container fluid={true} className="up-space-lg">
-                        <Row className="config-editor-header">
-                            <Col md={5}><span className="font-bold">Property</span></Col>
-                            <Col md={7}><span className="font-bold">Value</span></Col>
-                        </Row>
-                        {<ConfigEditor ParentEntry={this.state.ParentEntry} Entries={this.state.CurrentSubEntries} navigateToEntry={this.navigateToEntry} />}
-                    </Container>
+                    }
+                    <NavigableConfigEditor ParentEntry={this.state.ParentEntry}
+                                           Entries={this.state.CurrentSubEntries}
+                                           RootEntries={this.state.ModuleConfig.Entries}
+                                           IsReadOnly={false}
+                                           History={this.props.history}
+                                           Location={this.props.location} />
 
                     <ButtonGroup className="up-space-lg">
                         <Button color="primary" onClick={() => this.onApply()}>

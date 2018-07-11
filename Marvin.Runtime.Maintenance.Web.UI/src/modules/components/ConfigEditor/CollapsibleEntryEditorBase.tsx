@@ -5,6 +5,8 @@ import Entry from "../../models/Entry";
 export interface CollapsibleEntryEditorBasePropModel {
     Entry: Entry;
     IsExpanded: boolean;
+    IsReadOnly: boolean;
+    RootEntries: Entry[];
     navigateToEntry(entry: Entry): void;
 }
 

@@ -3,6 +3,7 @@ import { ModuleStartBehaviour } from './ModuleStartBehaviour';
 import { FailureBehaviour } from './FailureBehaviour';
 import NotificationModel from './NotificationModel';
 import AssemblyModel from './AssemblyModel';
+import MethodEntry from './MethodEntry';
 
 export default class ServerModuleModel
 {
