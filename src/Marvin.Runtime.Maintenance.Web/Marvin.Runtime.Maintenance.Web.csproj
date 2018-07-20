@@ -32,19 +32,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Marvin, Version=3.0.0.1481, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Marvin.3.0.0-dev001481\lib\net461\Marvin.dll</HintPath>
+      <HintPath>..\..\packages\Marvin.3.0.0-dev001481\lib\net461\Marvin.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Marvin.Runtime, Version=3.0.0.1481, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Marvin.Runtime.3.0.0-dev001481\lib\net461\Marvin.Runtime.dll</HintPath>
+      <HintPath>..\..\packages\Marvin.Runtime.3.0.0-dev001481\lib\net461\Marvin.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Marvin.Runtime.Maintenance, Version=3.0.0.1481, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Marvin.Runtime.Maintenance.3.0.0-dev001481\lib\net461\Marvin.Runtime.Maintenance.dll</HintPath>
+      <HintPath>..\..\packages\Marvin.Runtime.Maintenance.3.0.0-dev001481\lib\net461\Marvin.Runtime.Maintenance.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Marvin.Tools.Wcf, Version=3.0.0.1481, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Marvin.Tools.Wcf.3.0.0-dev001481\lib\net461\Marvin.Tools.Wcf.dll</HintPath>
+      <HintPath>..\..\packages\Marvin.Tools.Wcf.3.0.0-dev001481\lib\net461\Marvin.Tools.Wcf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -54,7 +54,7 @@
     <Reference Include="System.ServiceModel.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="MaintenanceWebConfig.cs" />
