@@ -1,5 +1,10 @@
-import { faArrowsAltV, faFolderOpen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
+import { mdiChevronDown, mdiFolderOpen, mdiPlus, mdiTrashCanOutline } from "@mdi/js";
+import Icon from "@mdi/react";
 import * as React from "react";
 import { Button, ButtonGroup, Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Row } from "reactstrap";
 import Entry from "../../models/Entry";
@@ -37,18 +42,18 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
     }
 
     public addEntry(): void {
-        const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.Key.Name === this.state.SelectedEntry);
+        const prototype = this.props.Entry.Prototypes.find((proto: Entry) => proto.DisplayName === this.state.SelectedEntry);
         const entryClone = Entry.cloneFromPrototype(prototype, this.props.Entry);
 
         let counter: number = 0;
-        let entryName: string = entryClone.Key.Name;
+        let entryName: string = entryClone.DisplayName;
 
-        while (this.props.Entry.SubEntries.find((subEntry: Entry) => subEntry.Key.Name === entryName) !== undefined) {
+        while (this.props.Entry.SubEntries.find((subEntry: Entry) => subEntry.DisplayName === entryName) !== undefined) {
             ++counter;
-            entryName = entryClone.Key.Name + " " + counter.toString();
+            entryName = entryClone.DisplayName + " " + counter.toString();
         }
 
-        entryClone.Key.Name = entryName;
+        entryClone.DisplayName = entryName;
         this.props.Entry.SubEntries.push(entryClone);
 
         this.forceUpdate();
@@ -85,25 +90,25 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                             this.props.Entry.SubEntries.map((entry, idx) =>
                                 <div key={idx}>
                                     <Row className="table-row down-space">
-                                        <Col md={6} className="no-padding">{entry.Key.Name}</Col>
+                                        <Col md={6} className="no-padding">{entry.DisplayName}</Col>
                                         <Col md={6} className="no-padding">
                                             <ButtonGroup>
                                                 <Button color="secondary" onClick={() => this.props.navigateToEntry(entry)}>
-                                                    <FontAwesomeIcon icon={faFolderOpen} className="right-space" />
+                                                    <Icon path={mdiFolderOpen} className="icon right-space" />
                                                     Open
                                                 </Button>
-                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.Key.UniqueIdentifier)}>
-                                                    <FontAwesomeIcon icon={faArrowsAltV} className="right-space" />
+                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.UniqueIdentifier)}>
+                                                    <Icon path={mdiChevronDown} className="icon right-space" />
                                                     Expand
                                                 </Button>
                                                 <Button color="secondary" onClick={() => this.removeEntry(entry)} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
-                                                    <FontAwesomeIcon icon={faTrash} className="right-space" />
+                                                    <Icon path={mdiTrashCanOutline} className="icon right-space" />
                                                     Remove
                                                 </Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
-                                    <Collapse isOpen={this.isExpanded(entry.Key.UniqueIdentifier)}>
+                                    <Collapse isOpen={this.isExpanded(entry.UniqueIdentifier)}>
                                         {this.preRenderConfigEditor(entry)}
                                     </Collapse>
                                 </div>,
@@ -119,7 +124,7 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                                     {this.preRenderOptions()}
                                 </Input>
                                 <Button color="primary" onClick={() => this.addEntry()} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
-                                    <FontAwesomeIcon icon={faPlus} className="right-space" />
+                                    <Icon path={mdiPlus} className="icon-white right-space" />
                                     Add entry
                                 </Button>
                             </Col>

@@ -1,5 +1,10 @@
-import { faSitemap } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
+import { mdiHexagon } from "@mdi/js";
+import Icon from "@mdi/react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Container, Progress, Row } from "reactstrap";
@@ -27,7 +32,7 @@ export class Module extends React.Component<ModulePropsModel, {}> {
                 <Card className="modulebox">
                     <CardHeader tag="h3" className={"bg-" + stateCssClass.Background}>
                         <Link to={"/modules/" + this.props.ServerModule.Name} className={stateCssClass.Foreground}>
-                            <FontAwesomeIcon icon={faSitemap} className="right-space" />
+                            <Icon path={mdiHexagon} className="icon-white right-space" />
                             {this.props.ServerModule.Name}
                         </Link>
                     </CardHeader>

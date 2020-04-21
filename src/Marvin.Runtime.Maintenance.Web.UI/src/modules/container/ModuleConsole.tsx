@@ -1,5 +1,10 @@
-import { faTerminal } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
+import { mdiConsoleLine } from "@mdi/js";
+import Icon from "@mdi/react";
 import * as React from "react";
 import NotificationSystem = require("react-notification-system");
 import { connect } from "react-redux";
@@ -163,7 +168,7 @@ class ModuleConsole extends React.Component<ModuleConsolePropModel & ModuleConso
         return (
             <Card>
                 <CardHeader tag="h2">
-                    <FontAwesomeIcon icon={faTerminal} className="right-space" />
+                    <Icon path={mdiConsoleLine} className="icon right-space" />
                     {this.props.ModuleName} - Console
                 </CardHeader>
                 <CardBody>

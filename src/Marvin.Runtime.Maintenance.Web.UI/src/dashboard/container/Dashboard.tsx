@@ -1,5 +1,10 @@
-import { faCubes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
+import { mdiViewDashboard } from "@mdi/js";
+import Icon from "@mdi/react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Card, CardBody, CardHeader, Col, Container, Progress, Row } from "reactstrap";
@@ -58,7 +63,7 @@ class Dashboard extends React.Component<DashboardPropModel> {
         return (
             <Card className="component">
                 <CardHeader tag="h2">
-                    <FontAwesomeIcon icon={faCubes} className="right-space" />
+                    <Icon path={mdiViewDashboard} className="icon right-space" />
                     Dashboard
                 </CardHeader>
                 <CardBody>

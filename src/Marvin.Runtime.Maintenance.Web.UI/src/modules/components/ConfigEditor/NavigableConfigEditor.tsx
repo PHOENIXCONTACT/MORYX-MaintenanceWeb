@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
 import { Action, History, Location, UnregisterCallback } from "history";
 import * as qs from "query-string";
 import * as React from "react";
@@ -59,9 +64,9 @@ export default class NavigableConfigEditor extends React.Component<NavigableConf
                 const entryChain: Entry[] = [];
                 let currentEntry: Entry = null;
 
-                (query.path as string).split(",").forEach((element: string) => {
+                (query.path as string).split("/").forEach((element: string) => {
                     const searchableEntries: Entry[] = currentEntry != null ? currentEntry.SubEntries : entries;
-                    const filtered = searchableEntries.filter((entry) => entry.Key.Name === element);
+                    const filtered = searchableEntries.filter((entry) => entry.Identifier === element);
 
                     if (filtered.length > 0) {
                         currentEntry = filtered[0];
@@ -89,7 +94,7 @@ export default class NavigableConfigEditor extends React.Component<NavigableConf
     }
 
     private updatePath(entryChain: Entry[]): void {
-        this.props.History.push("?path=" + entryChain.map((entry) => entry.Key.Name).join(","));
+        this.props.History.push("?path=" + entryChain.map((entry) => entry.Identifier).join("/"));
     }
 
     private onClickBreadcrumb(entry: Entry): void {
@@ -107,7 +112,7 @@ export default class NavigableConfigEditor extends React.Component<NavigableConf
     private preRenderBreadcrumb(): React.ReactNode {
         const entryChainButtons = this.state.EntryChain.map((entry, idx) =>
         (
-            <Button key={idx} color="light" onClick={() => this.onClickBreadcrumb(entry)} disabled={idx === this.state.EntryChain.length - 1}>{entry.Key.Name}</Button>
+            <Button key={idx} color="light" onClick={() => this.onClickBreadcrumb(entry)} disabled={idx === this.state.EntryChain.length - 1}>{entry.DisplayName}</Button>
         ));
 
         return (

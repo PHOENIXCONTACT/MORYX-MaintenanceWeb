@@ -1,5 +1,10 @@
-import { faCogs, faSave, faSync, faUndo } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/*
+ * Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
+ * Licensed under the Apache License, Version 2.0
+*/
+
+import { mdiCogs, mdiContentSave, mdiSync, mdiUndo} from "@mdi/js";
+import Icon from "@mdi/react";
 import * as React from "react";
 import NotificationSystem = require("react-notification-system");
 import { RouteComponentProps, withRouter } from "react-router-dom";
@@ -78,7 +83,7 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
         return (
             <Card>
                 <CardHeader tag="h2">
-                    <FontAwesomeIcon icon={faCogs} className="right-space" />
+                    <Icon path={mdiCogs} className="icon right-space" />
                     {this.props.ModuleName} - Configuration
                 </CardHeader>
                 <CardBody>
@@ -94,15 +99,15 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
 
                     <ButtonGroup className="up-space-lg">
                         <Button color="primary" onClick={() => this.onApply()}>
-                            <FontAwesomeIcon icon={faSync} className="right-space" />
+                            <Icon path={mdiSync} className="icon-white right-space" />
                             Save &amp; Restart
                         </Button>
                         <Button color="primary" onClick={() => this.onSave()}>
-                            <FontAwesomeIcon icon={faSave} className="right-space" />
+                            <Icon path={mdiContentSave} className="icon-white right-space" />
                             Save only
                         </Button>
                         <Button color="dark" onClick={() => this.onRevert()}>
-                            <FontAwesomeIcon icon={faUndo} className="right-space" />
+                            <Icon path={mdiUndo} className="icon-white right-space" />
                             Revert
                         </Button>
                     </ButtonGroup>
