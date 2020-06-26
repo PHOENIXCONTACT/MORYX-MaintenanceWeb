@@ -7,8 +7,8 @@
     <ProjectGuid>{E1227A92-C942-42D3-A35A-D4C4C3574E78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Marvin.Runtime.Maintenance.Web</RootNamespace>
-    <AssemblyName>Marvin.Runtime.Maintenance.Web</AssemblyName>
+    <RootNamespace>Moryx.Runtime.Maintenance.Web</RootNamespace>
+    <AssemblyName>Moryx.Runtime.Maintenance.Web</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,17 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Marvin, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.3.0.0-dev010329\lib\netstandard2.0\Marvin.dll</HintPath>
+    <Reference Include="Moryx, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.3.0.0-dev.26\lib\netstandard2.0\Moryx.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Runtime, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Runtime.3.0.0-dev010329\lib\netstandard2.0\Marvin.Runtime.dll</HintPath>
+    <Reference Include="Moryx.Runtime, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Runtime.3.0.0-dev.26\lib\netstandard2.0\Moryx.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Runtime.Maintenance, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Runtime.Maintenance.3.0.0-dev010329\lib\net461\Marvin.Runtime.Maintenance.dll</HintPath>
+    <Reference Include="Moryx.Runtime.Maintenance, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Runtime.Maintenance.3.0.0-dev.26\lib\net461\Moryx.Runtime.Maintenance.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Tools.Wcf, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Tools.Wcf.3.0.0-dev010329\lib\net461\Marvin.Tools.Wcf.dll</HintPath>
+    <Reference Include="Moryx.Tools.Wcf, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Tools.Wcf.3.0.0-dev.26\lib\net461\Moryx.Tools.Wcf.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -68,19 +68,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Marvin.Runtime.Maintenance.Web.nuspec" />
+    <None Include="Moryx.Runtime.Maintenance.Web.nuspec" />
+    <None Include="Moryx.Runtime.Maintenance.Web.csproj.DotSettings" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Marvin.Runtime.Maintenance.Web.UI\dist\favicon.ico">
+    <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\favicon.ico">
       <Link>wwwroot\favicon.ico</Link>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Marvin.Runtime.Maintenance.Web.UI\dist\bundle.js">
+    <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\bundle.js">
       <Link>wwwroot\bundle.js</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Marvin.Runtime.Maintenance.Web.UI\dist\index.html">
+    <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\index.html">
       <Link>wwwroot\index.html</Link>
     </EmbeddedResource>
   </ItemGroup>

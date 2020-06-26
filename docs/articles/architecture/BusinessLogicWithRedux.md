@@ -14,7 +14,7 @@ Let's have a look an a small example how the minimal Redux setup looks like. Fir
 export const UPDATE_TIME = "UPDATE_TIME";
 
 // Action function that creates the update action object. The update action object contains the action name and the payload data
-// Note that ActionType is defined in in 'Marvin.Runtime.Maintenance.Web.UI' and not part of Redux. It simplifies our action calls in combination with
+// Note that ActionType is defined in in 'Moryx.Runtime.Maintenance.Web.UI' and not part of Redux. It simplifies our action calls in combination with
 // TypeScript
 export function updateTime(time: Date): ActionType<Date> {
     return { type: UPDATE_TIME, payload: time };

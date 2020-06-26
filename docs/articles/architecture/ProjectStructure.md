@@ -3,7 +3,7 @@ uid: ProjectStructure
 ---
 # Project structure
 
-This article explains the general structure of the `Marvin.Runtime.Maintenance.Web.UI` project. You'll see that the structure is very common compared to other open source web projects.
+This article explains the general structure of the `Moryx.Runtime.Maintenance.Web.UI` project. You'll see that the structure is very common compared to other open source web projects.
 
 ## Root
 
@@ -34,7 +34,7 @@ Root
 
 ## The src folder
 
-Here in the src folder is all the stuff for the `Marvin.Runtime.Maintenance.Web.UI`. The structure leans towards the application tabs. Every subfolder can be seen as module which should be "live" alone in future development.
+Here in the src folder is all the stuff for the `Moryx.Runtime.Maintenance.Web.UI`. The structure leans towards the application tabs. Every subfolder can be seen as module which should be "live" alone in future development.
 
 ````text
 src

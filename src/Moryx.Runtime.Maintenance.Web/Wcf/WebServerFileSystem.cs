@@ -5,9 +5,9 @@ using System.IO;
 using System.Reflection;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Marvin.Container;
+using Moryx.Container;
 
-namespace Marvin.Runtime.Maintenance.Web
+namespace Moryx.Runtime.Maintenance.Web
 {
     /// <summary>
     /// Service for the file system. 

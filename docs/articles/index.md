@@ -1,6 +1,6 @@
-# Welcome to Marvin.Runtime.Maintenance.Web
+# Welcome to Moryx.Runtime.Maintenance.Web
 
-## 1. What is *Marvin.Runtime.Maintenance.Web*
+## 1. What is *Moryx.Runtime.Maintenance.Web*
 
 This module provides the next generation Maintenance UI based on React/Typescript.
 
@@ -12,7 +12,7 @@ As a prerequisite, you need:
 - Visual Studio Code (latest)
 - Visual Studio > 2015
 
-*Step1.* `git clone http://gitlab-swtd.europe.phoenixcontact.com/marvinplatform/MaintenanceWeb.git` to get the latest code.
+*Step1.* `git clone https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb.git` to get the latest code.
 
 *Step2.* Open Visual Studio Code
 

@@ -62,23 +62,23 @@
       <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Marvin, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.3.0.0-dev010329\lib\netstandard2.0\Marvin.dll</HintPath>
+    <Reference Include="Moryx, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.3.0.0-dev.26\lib\netstandard2.0\Moryx.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Container, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Container.3.0.0-dev010329\lib\netstandard2.0\Marvin.Container.dll</HintPath>
+    <Reference Include="Moryx.Container, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Container.3.0.0-dev.26\lib\netstandard2.0\Moryx.Container.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Runtime, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Runtime.3.0.0-dev010329\lib\netstandard2.0\Marvin.Runtime.dll</HintPath>
+    <Reference Include="Moryx.Runtime, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Runtime.3.0.0-dev.26\lib\netstandard2.0\Moryx.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Runtime.Kernel, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Runtime.Kernel.3.0.0-dev010329\lib\net461\Marvin.Runtime.Kernel.dll</HintPath>
+    <Reference Include="Moryx.Runtime.Kernel, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Runtime.Kernel.3.0.0-dev.26\lib\net461\Moryx.Runtime.Kernel.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Runtime.Maintenance, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Runtime.Maintenance.3.0.0-dev010329\lib\net461\Marvin.Runtime.Maintenance.dll</HintPath>
+    <Reference Include="Moryx.Runtime.Maintenance, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Runtime.Maintenance.3.0.0-dev.26\lib\net461\Moryx.Runtime.Maintenance.dll</HintPath>
     </Reference>
-    <Reference Include="Marvin.Tools.Wcf, Version=3.0.0.10329, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Marvin.Tools.Wcf.3.0.0-dev010329\lib\net461\Marvin.Tools.Wcf.dll</HintPath>
+    <Reference Include="Moryx.Tools.Wcf, Version=3.0.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moryx.Tools.Wcf.3.0.0-dev.26\lib\net461\Moryx.Tools.Wcf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -112,9 +112,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Marvin.Runtime.Maintenance.Web\Marvin.Runtime.Maintenance.Web.csproj">
+    <ProjectReference Include="..\Moryx.Runtime.Maintenance.Web\Moryx.Runtime.Maintenance.Web.csproj">
       <Project>{e1227a92-c942-42d3-a35a-d4c4c3574e78}</Project>
-      <Name>Marvin.Runtime.Maintenance.Web</Name>
+      <Name>Moryx.Runtime.Maintenance.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

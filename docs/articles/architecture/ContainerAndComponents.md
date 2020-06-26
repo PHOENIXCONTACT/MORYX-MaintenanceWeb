@@ -3,7 +3,7 @@ uid: ContainerAndComponents
 ---
 # Container &amp; Components
 
-`Marvin.Runtime.Maintenance.Web.UI` follows the same approach as intended by React. Typical React applications are divided in containers and components.
+`Moryx.Runtime.Maintenance.Web.UI` follows the same approach as intended by React. Typical React applications are divided in containers and components.
 
 ## Container
 

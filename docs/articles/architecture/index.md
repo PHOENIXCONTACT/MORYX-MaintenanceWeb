@@ -2,21 +2,21 @@
 
 The `MaintenanceWeb` project is divided into two parts:
 
-- `Marvin.Runtime.Maintenance.Web`(*) - the web server which serves the web UI
-- `Marvin.Runtime.Maintenance.Web.UI` - the web UI
+- `Moryx.Runtime.Maintenance.Web`(*) - the web server which serves the web UI
+- `Moryx.Runtime.Maintenance.Web.UI` - the web UI
 
-*(***):Note that the REST endpoints are not served by the `Marvin.Runtime.Maintenance.Web`. The endpoints are served by the `MarvinPlatform`*
+*(***):Note that the REST endpoints are not served by the `Moryx.Runtime.Maintenance.Web`. The endpoints are served by the `MoryxPlatform`*
 
-## Marvin.Runtime.Maintenance.Web
+## Moryx.Runtime.Maintenance.Web
 
-This .NET C# project uses common `MarvinPlatform` technologies and is a lightweight web server that just serves two files:
+This .NET C# project uses common `MoryxPlatform` technologies and is a lightweight web server that just serves two files:
 
 - index.html
 - bundle.js
 
 Usually, you will find th web UI under [http://localhost/MaintenanceWeb](http://localhost/MaintenanceWeb). If you want another port or endpoint feel free to change modules config (`MaintenanceWebConfig`).
 
-## Marvin.Runtime.Maintenance.Web.UI
+## Moryx.Runtime.Maintenance.Web.UI
 
 This React project is the browser application to maintain and configure platform specific topics. In the JavaScript world there are many ways to create a JavaScript based client side UI. This plurality makes it difficult for rookies to decide which framework and libraries he should use. We did choose the following libraries to create the Maintenance Web UI:
 
