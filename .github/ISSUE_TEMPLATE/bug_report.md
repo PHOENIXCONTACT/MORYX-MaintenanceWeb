@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment:**
  - Hardware: [e.g. PLC, EdgePC, etc.]
  - OS: [e.g. Windows10]
- - Version [e.g. 5.0]
+ - Version [e.g. 1.0]
 
 **Additional context**
 Add any other context about the problem here.
