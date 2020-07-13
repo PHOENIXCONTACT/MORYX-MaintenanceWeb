@@ -78,9 +78,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\bundle.js">
-      <Link>wwwroot\bundle.js</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\index.html">
       <Link>wwwroot\index.html</Link>
     </EmbeddedResource>
