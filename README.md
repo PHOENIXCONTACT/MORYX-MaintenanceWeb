@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-    <!--<a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/workflows">
+    <a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/workflows">
         <img src="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/workflows/CI/badge.svg" alt="CI">
-    </a>-->
-    <!--<a href="https://www.myget.org/feed/Packages/moryx">
-        <img src="https://img.shields.io/myget/moryx/v/Moryx.Runtime.Maintenance.Web.UI" alt="MyGet">
-    </a>-->
+    </a>
+    <a href="https://www.myget.org/feed/Packages/moryx">
+        <img src="https://img.shields.io/myget/moryx/v/Moryx.Runtime.Maintenance.Web" alt="MyGet">
+    </a>
     <a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/blob/dev/LICENSE">
         <img src="https://img.shields.io/github/license/PHOENIXCONTACT/MORYX-MaintenanceWeb" alt="License">
     </a>
