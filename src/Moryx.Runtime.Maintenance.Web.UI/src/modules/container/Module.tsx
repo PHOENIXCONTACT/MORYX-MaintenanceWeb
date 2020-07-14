@@ -212,8 +212,6 @@ class Module extends React.Component<ModulePropModel & ModuleDispatchPropModel, 
                                                    onChange={(e: React.FormEvent<HTMLInputElement>) => this.onFailureBehaviourChange(e)}>
                                                 <option value={FailureBehaviour.Stop}>Stop</option>
                                                 <option value={FailureBehaviour.StopAndNotify}>Stop and notify</option>
-                                                <option value={FailureBehaviour.Reincarnate}>Reincarnate</option>
-                                                <option value={FailureBehaviour.ReincarnateAndNotify}>Reincarnate and notify</option>
                                             </Input>
                                         </Col>
                                     </Row>
