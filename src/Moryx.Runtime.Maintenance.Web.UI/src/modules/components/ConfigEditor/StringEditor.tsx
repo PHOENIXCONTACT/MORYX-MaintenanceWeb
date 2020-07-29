@@ -5,14 +5,12 @@
 
 import * as React from "react";
 import { Input } from "reactstrap";
-import { toString } from "../../models/EntryValueType";
-import EnumEditor from "./EnumEditor";
-import InputEditorBase, { InputEditorBasePropModel } from "./InputEditorBase";
+import { InputEditorBasePropModel } from "./InputEditorBase";
+import SelectionEditorBase from "./SelectionEditorBase";
 
-export default class StringEditor extends InputEditorBase {
+export default class StringEditor extends SelectionEditorBase {
     constructor(props: InputEditorBasePropModel) {
         super(props);
-        this.state = { };
     }
 
     private preRenderInput(): React.ReactNode {
@@ -24,7 +22,7 @@ export default class StringEditor extends InputEditorBase {
     }
 
     private preRenderPossibleValueList(): React.ReactNode {
-        return (<EnumEditor Entry={this.props.Entry} IsReadOnly={this.props.IsReadOnly} />);
+        return super.render();
     }
 
     public render(): React.ReactNode {

@@ -6,20 +6,25 @@
 import * as React from "react";
 import { Input } from "reactstrap";
 import { toString } from "../../models/EntryValueType";
-import InputEditorBase, { InputEditorBasePropModel } from "./InputEditorBase";
+import { InputEditorBasePropModel } from "./InputEditorBase";
+import SelectionEditorBase from "./SelectionEditorBase";
 
-export default class NumberEditor extends InputEditorBase {
+export default class NumberEditor extends SelectionEditorBase {
     constructor(props: InputEditorBasePropModel) {
         super(props);
-        this.state = { };
+    }
+
+    private preRenderInput(): React.ReactNode {
+        return (<Input type="number"
+                onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}
+                placeholder={"Please enter a value of type: " + toString(this.props.Entry.Value.Type) + " ..."}
+                disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
+                value={this.props.Entry.Value.Current}
+        />);
     }
 
     public render(): React.ReactNode {
-        return (<Input type="number"
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}
-                        placeholder={"Please enter a value of type: " + toString(this.props.Entry.Value.Type) + " ..."}
-                        disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
-                        value={this.props.Entry.Value.Current}
-                />);
+        return this.props.Entry.Value.Possible != null && this.props.Entry.Value.Possible.length > 0 ?
+                super.render() : this.preRenderInput();
     }
 }
