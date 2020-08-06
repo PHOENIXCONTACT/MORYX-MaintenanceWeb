@@ -20,7 +20,6 @@ import DatabasesRestClient from "../api/DatabasesRestClient";
 import DatabaseConfigModel from "../models/DatabaseConfigModel";
 import DataModel from "../models/DataModel";
 import DbMigrationsModel from "../models/DbMigrationsModel";
-import ScriptModel from "../models/ScriptModel";
 import SetupModel from "../models/SetupModel";
 import { TestConnectionResult } from "../models/TestConnectionResult";
 import { updateDatabaseConfig } from "../redux/DatabaseActions";
@@ -52,7 +51,6 @@ interface DatabaseModelStateModel {
     password: string;
     selectedMigration: string;
     selectedSetup: string;
-    selectedScript: string;
     selectedBackup: string;
     testConnectionPending: boolean;
     testConnectionResult: TestConnectionResult;
@@ -70,7 +68,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
             password: this.props.DataModel.Config.Password,
             selectedMigration: (this.props.DataModel.AvailableMigrations.length !== 0 ? this.props.DataModel.AvailableMigrations[0].Name : ""),
             selectedSetup : (this.props.DataModel.Setups.length !== 0 ? this.props.DataModel.Setups[0].Name : ""),
-            selectedScript : (this.props.DataModel.Scripts.length !== 0 ? this.props.DataModel.Scripts[0].Name : ""),
             selectedBackup : (this.props.DataModel.Backups.length !== 0 ? this.props.DataModel.Backups[0].FileName : ""),
             testConnectionPending: false,
             testConnectionResult: TestConnectionResult.ConfigurationError,
@@ -101,10 +98,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
 
     public onSelectSetup(e: React.FormEvent<HTMLInputElement>): void {
         this.setState({selectedSetup: (e.target as HTMLSelectElement).value});
-    }
-
-    public onSelectScript(e: React.FormEvent<HTMLInputElement>): void {
-        this.setState({selectedScript: (e.target as HTMLSelectElement).value});
     }
 
     public onSelectBackup(e: React.FormEvent<HTMLInputElement>): void {
@@ -248,20 +241,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
 
             if (data.Success) {
                 this.props.NotificationSystem.addNotification({ title: "Success", message: "Setup '" + this.state.selectedSetup + "' executed successfully", level: "success", autoDismiss: 5 });
-            } else {
-                this.props.NotificationSystem.addNotification({ title: "Error", message: data.ErrorMessage, level: "error", autoDismiss: 5 });
-            }
-        }).catch((d) => this.props.onShowWaitDialog(false));
-    }
-
-    public onExecuteScript(): void {
-        this.props.onShowWaitDialog(true);
-
-        this.props.RestClient.executeScript(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Script: this.props.DataModel.Scripts.find((script: ScriptModel) => script.Name === this.state.selectedScript) }).then((data) => {
-            this.props.onShowWaitDialog(false);
-
-            if (data.Success) {
-                this.props.NotificationSystem.addNotification({ title: "Success", message: "Script '" + this.state.selectedScript + "' executed successfully", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: data.ErrorMessage, level: "error", autoDismiss: 5 });
             }
@@ -414,9 +393,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                                     <NavItem>
                                         <NavLink active={this.state.activeTab === "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
                                     </NavItem>
-                                    <NavItem>
-                                        <NavLink active={this.state.activeTab === "3"} className={"selectable"} onClick={() => { this.activeTab("3"); }}>Scripts</NavLink>
-                                    </NavItem>
                                 </Nav>
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
@@ -493,40 +469,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                                                 <Row>
                                                     <Col>
                                                         <span className="font-italic">No setups found.</span>
-                                                    </Col>
-                                                </Row>
-                                            )}
-                                    </TabPane>
-                                    <TabPane tabId="3">
-                                        { this.props.DataModel.Scripts.length !== 0 ?
-                                            (
-                                            <Container fluid={true}>
-                                                <Row>
-                                                    <Col md={12}>
-                                                        <Input type="select" size={10} className="auto-height"
-                                                            onChange={(e: React.FormEvent<HTMLInputElement>) => this.onSelectScript(e)}>
-                                                        {
-                                                            this.props.DataModel.Scripts.map((script, idx) => {
-                                                                return (<option key={idx} value={script.Name}>{script.Name + (script.IsCreationScript ? " (IsCreationScript)" : "")}</option>);
-                                                            })
-                                                        }
-                                                        </Input>
-                                                    </Col>
-                                                </Row>
-                                                <Row className="up-space-lg">
-                                                    <Col md={12}>
-                                                        <Button color="primary"
-                                                                onClick={() => this.onExecuteScript()}
-                                                                disabled={this.state.selectedScript === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
-                                                            Execute script
-                                                        </Button>
-                                                    </Col>
-                                                </Row>
-                                            </Container>
-                                            ) : (
-                                                <Row>
-                                                    <Col>
-                                                        <span className="font-italic">No scripts found.</span>
                                                     </Col>
                                                 </Row>
                                             )}

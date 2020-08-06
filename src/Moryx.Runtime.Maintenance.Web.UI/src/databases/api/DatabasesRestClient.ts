@@ -9,7 +9,6 @@ import BackupModel from "../models/BackupModel";
 import DatabaseConfigModel from "../models/DatabaseConfigModel";
 import DataModel from "../models/DataModel";
 import { TestConnectionResult } from "../models/TestConnectionResult";
-import ExecuteScriptRequest from "./requests/ExecuteScriptRequest";
 import ExecuteSetupRequest from "./requests/ExecuteSetupRequest";
 import RestoreDatabaseRequest from "./requests/RestoreDatabaseRequest";
 import DatabaseUpdateSummary from "./responses/DatabaseUpdateSummary";
@@ -62,9 +61,5 @@ export default class DatabasesRestClient extends RestClientBase {
 
     public executeSetup(targetModel: string, request: ExecuteSetupRequest): Promise<InvocationResponse> {
         return this.post<ExecuteSetupRequest, InvocationResponse>("/DatabaseMaintenance/models/"  + targetModel + "/setup", request, new InvocationResponse());
-    }
-
-    public executeScript(targetModel: string, request: ExecuteScriptRequest): Promise<InvocationResponse> {
-        return this.post<ExecuteScriptRequest, InvocationResponse>("/DatabaseMaintenance/models/"  + targetModel + "/script", request, new InvocationResponse());
     }
 }
