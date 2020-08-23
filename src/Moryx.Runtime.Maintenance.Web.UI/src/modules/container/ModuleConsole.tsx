@@ -16,6 +16,7 @@ import ConsoleMethodConfigurator from "../components/ConsoleMethodConfigurator";
 import ConsoleMethodResult from "../components/ConsoleMethodResult";
 import Config from "../models/Config";
 import Entry from "../models/Entry";
+import { EntryValueType } from "../models/EntryValueType";
 import MethodEntry from "../models/MethodEntry";
 
 interface ModuleConsolePropModel {
@@ -85,11 +86,29 @@ class ModuleConsole extends React.Component<ModuleConsolePropModel & ModuleConso
 
             let resultEntry = data;
 
-            // Result of void functions is an empty entry
-            if (Object.keys(resultEntry).length > 0) {
-                Config.patchParent(resultEntry, null);
-            } else {
-                resultEntry = new Entry();
+            switch (resultEntry.Value.Type) {
+                case EntryValueType.Byte:
+                case EntryValueType.Boolean:
+                case EntryValueType.Int16:
+                case EntryValueType.UInt16:
+                case EntryValueType.Int32:
+                case EntryValueType.UInt32:
+                case EntryValueType.Int64:
+                case EntryValueType.UInt64:
+                case EntryValueType.Single:
+                case EntryValueType.Double:
+                case EntryValueType.String:
+                case EntryValueType.Enum:
+                    const simpleValueEntry = new Entry();
+                    simpleValueEntry.SubEntries.push(resultEntry);
+                    resultEntry = simpleValueEntry;
+                    break;
+                case EntryValueType.Collection:
+                case EntryValueType.Class:
+                    Config.patchParent(resultEntry, null);
+                    break;
+                default:
+                    resultEntry = new Entry();
             }
 
             this.onUpdateInvokeResults({ MethodName: methodEntry.Name, Result: resultEntry });
