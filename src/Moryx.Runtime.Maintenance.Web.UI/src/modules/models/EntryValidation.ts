@@ -4,8 +4,8 @@
 */
 
 export default class EntryValidation {
-    public MinLenght: number;
-    public MaxLenght: number;
+    public Minimum: number;
+    public Maximum: number;
     public Regex: string;
     public IsRequired: boolean;
     public IsPassword: boolean;
