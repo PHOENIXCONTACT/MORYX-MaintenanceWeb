@@ -15,15 +15,6 @@
     <a href="https://gitter.im/PHOENIXCONTACT/MORYX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
         <img src="https://badges.gitter.im/PHOENIXCONTACT/MORYX.svg" alt="Gitter">
     </a>
-    <a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/pulls">
-        <img src="https://img.shields.io/github/issues-pr/PHOENIXCONTACT/MORYX-MaintenanceWeb" alt="GitHub pull requests">
-    </a>
-    <a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/issues">
-        <img src="https://img.shields.io/github/issues/PHOENIXCONTACT/MORYX-MaintenanceWeb" alt="GitHub issues">
-    </a>
-    <a href="https://github.com/PHOENIXCONTACT/MORYX-MaintenanceWeb/graphs/contributors">
-        <img src="https://img.shields.io/github/contributors-anon/PHOENIXCONTACT/MORYX-MaintenanceWeb" alt="GitHub contributors">
-    </a>
 </p>
 
 # MORYX MaintenanceWeb
