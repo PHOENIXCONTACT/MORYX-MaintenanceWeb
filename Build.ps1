@@ -19,10 +19,8 @@ if ($SetAssemblyVersion) {
     # Patch version
     $versionFile = "src\Moryx.Runtime.Maintenance.Web.UI\src\Version.ts"
     (Get-Content $versionFile) | Foreach-Object {
-        $_ -replace '%VERSION%', "$env:MORYX_VERSION"
+        $_ -replace '%VERSION%', "$env:MORYX_INFORMATIONAL_VERSION"
     } | Set-Content $versionFile
-
-    Set-AssemblyVersions;
 }
 
 if ($BuildHtml) {
