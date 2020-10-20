@@ -152,10 +152,6 @@ class Module extends React.Component<ModulePropModel & ModuleDispatchPropModel, 
                                         <Col md={8}><span className="font-small font-italic">{this.props.Module.Name}</span></Col>
                                     </Row>
                                     <Row>
-                                        <Col md={4}><span className="font-bold font-small">Bundle:</span></Col>
-                                        <Col md={8}><span className="font-small font-italic">{this.props.Module.Assembly.Bundle}</span></Col>
-                                    </Row>
-                                    <Row>
                                         <Col md={4}><span className="font-bold font-small">State:</span></Col>
                                         <Col md={8}><span className="font-small"><HealthStateBadge HealthState={this.props.Module.HealthState} /></span></Col>
                                     </Row>

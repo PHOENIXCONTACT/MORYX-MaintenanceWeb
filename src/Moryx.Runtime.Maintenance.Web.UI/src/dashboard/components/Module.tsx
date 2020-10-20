@@ -43,10 +43,6 @@ export class Module extends React.Component<ModulePropsModel, {}> {
                                 <Col md={8}><span className="font-small"><HealthStateBadge HealthState={this.props.ServerModule.HealthState} /></span></Col>
                             </Row>
                             <Row>
-                                <Col md={4}><span className="font-bold font-small">Bundle:</span></Col>
-                                <Col md={8}><span className="font-small font-italic">{this.props.ServerModule.Assembly.Bundle}</span></Col>
-                            </Row>
-                            <Row>
                                 <Col md={4}><span className="font-bold font-small">Assembly:</span></Col>
                                 <Col md={8}><span className="font-small font-italic">{this.props.ServerModule.Assembly.Name}</span></Col>
                             </Row>
