@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moryx.Runtime.Maintenance" Version="3.0.0-dev.153" />
+    <PackageReference Include="Moryx.Runtime.Maintenance" />
   </ItemGroup>
 
   <ItemGroup>
