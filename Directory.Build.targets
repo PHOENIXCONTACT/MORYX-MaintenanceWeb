@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <MoryxPlatformVersion>3.0.0-dev.173</MoryxPlatformVersion>
+  </PropertyGroup>
+
+  <!-- Package versions for package references across all projects -->
+  <ItemGroup>
+    <!--Platform dependencies-->
+    <PackageReference Update="Moryx.Runtime.Maintenance" Version="$(MoryxPlatformVersion)" />
+    <PackageReference Update="Moryx.Runtime.Kernel" Version="$(MoryxPlatformVersion)" />
+  </ItemGroup>
+
+</Project>

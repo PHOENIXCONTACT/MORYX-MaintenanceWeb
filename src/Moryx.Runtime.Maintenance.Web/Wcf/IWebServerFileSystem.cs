@@ -12,7 +12,7 @@ namespace Moryx.Runtime.Maintenance.Web
     /// Service contract for the maintenance file system.
     /// </summary>
     [ServiceContract]
-    [ServiceVersion(ServerVersion = "1.0.0.0", MinClientVersion = "1.0.0.0")]
+    [ServiceVersion("1.0.0")]
     internal interface IWebServerFileSystem
     {
         [OperationContract]
