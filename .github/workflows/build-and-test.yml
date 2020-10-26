@@ -52,6 +52,23 @@ jobs:
           path: artifacts/Packages/
           retention-days: 1
 
+  Documentation:
+    needs: [Build]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate docFx
+        shell: pwsh
+        run: ./Build.ps1 -GenerateDocs
+
+      - name: Upload documentation results
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: artifacts/Documentation/
+          retention-days: 1
+
   Publish:
     needs: [Build]
     if: (github.event_name == 'push')
