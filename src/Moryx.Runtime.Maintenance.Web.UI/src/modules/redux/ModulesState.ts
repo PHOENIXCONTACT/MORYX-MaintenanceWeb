@@ -12,7 +12,7 @@ import { ModuleServerModuleState } from "../models/ModuleServerModuleState";
 import { ModuleStartBehaviour } from "../models/ModuleStartBehaviour";
 import NotificationModel from "../models/NotificationModel";
 import ServerModuleModel from "../models/ServerModuleModel";
-import { UPDATE_FAILURE_BEHAVIOUR, UPDATE_HEALTHSTATE, UPDATE_MODULES, UPDATE_NOTIFICATIONS, UPDATE_START_BEHAVIOUR } from "./ModulesActions";
+import { UPDATE_FAILURE_BEHAVIOUR, UPDATE_HEALTHSTATE, UPDATE_MODULES, UPDATE_NOTIFICATIONS, UPDATE_RESTCLIENT_ENDPOINT, UPDATE_START_BEHAVIOUR } from "./ModulesActions";
 
 export interface ModulesState {
   RestClient: ModulesRestClient;
@@ -28,6 +28,10 @@ export const initialModulesState: ModulesState = {
 
 export function getModulesReducer(state: ModulesState = initialModulesState, action: ActionType<{}>): ModulesState {
   switch (action.type) {
+    case UPDATE_RESTCLIENT_ENDPOINT: {
+      state.RestClient.updateUrl(action.payload as string);
+      return { ...state };
+  }
     case UPDATE_MODULES: {
       return { ...state, Modules: action.payload as ServerModuleModel[] };
     }

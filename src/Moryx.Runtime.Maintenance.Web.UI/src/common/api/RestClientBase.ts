@@ -12,6 +12,10 @@ export default class RestClientBase {
         this.url = `http://${host}:${port}`;
     }
 
+    public updateUrl(url: string): void {
+        this.url = url;
+    }
+
     public get<T>(path: string, errorInstance: T): Promise<T> {
         return fetch(this.url + path)
             .then((results) => results.json())
