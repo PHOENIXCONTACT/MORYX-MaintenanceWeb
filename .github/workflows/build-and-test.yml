@@ -33,7 +33,7 @@ jobs:
 
       - name: Build HTML
         shell: pwsh
-        run: .\Build.ps1 -BuildHtml
+        run: .\Build.ps1 -SetAssemblyVersion -BuildHtml
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
