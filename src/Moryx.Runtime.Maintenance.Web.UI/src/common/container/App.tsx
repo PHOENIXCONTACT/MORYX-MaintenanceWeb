@@ -10,38 +10,43 @@ import * as React from "react";
 import NotificationSystem = require("react-notification-system");
 import { connect } from "react-redux";
 import { Link, Route, RouteComponentProps, Switch, withRouter } from "react-router-dom";
-import { Card, CardBody, CardFooter, CardHeader, CardText, CardTitle, Col, Collapse, Container, Modal, ModalBody, ModalHeader, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row } from "reactstrap";
+import { Col, Collapse, Container, Modal, ModalBody, ModalHeader, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Row } from "reactstrap";
 import Dashboard from "../../dashboard/container/Dashboard";
 import { updateApplicationInfo, updateApplicationLoad, updateHostInfo, updateSystemLoad } from "../../dashboard/redux/DashboardActions";
+import DatabasesRestClient from "../../databases/api/DatabasesRestClient";
 import Databases from "../../databases/container/Databases";
-import DataModel from "../../databases/models/DataModel";
+import { updateDatabasesRestClientEndpoint } from "../../databases/redux/DatabaseActions";
+import LogRestClient from "../../log/api/LogRestClient";
 import Log from "../../log/container/Log";
+import { updateLogRestClientEndpoint } from "../../log/redux/LogActions";
 import ModulesRestClient from "../../modules/api/ModulesRestClient";
 import Modules from "../../modules/container/Modules";
-import Config from "../../modules/models/Config";
 import { ModuleServerModuleState } from "../../modules/models/ModuleServerModuleState";
 import NotificationModel from "../../modules/models/NotificationModel";
 import ServerModuleModel from "../../modules/models/ServerModuleModel";
-import { updateHealthState, updateModules, updateNotifications } from "../../modules/redux/ModulesActions";
+import { updateHealthState, updateModules, updateModulesRestClientEndpoint, updateNotifications } from "../../modules/redux/ModulesActions";
 import { VERSION } from "../../Version";
 import CommonRestClient from "../api/CommonRestClient";
 import ApplicationInformationResponse from "../api/responses/ApplicationInformationResponse";
 import ApplicationLoadResponse from "../api/responses/ApplicationLoadResponse";
 import HostInformationResponse from "../api/responses/HostInformationResponse";
 import SystemLoadResponse from "../api/responses/SystemLoadResponse";
+import VersionRestClient from "../api/VersionRestClient";
 import Clock from "../components/Clock";
-import RestClientEndpoint from "../models/RestClientEnpoint";
 import { AppState } from "../redux/AppState";
-import { updateIsConnected, updateNotificationInstance, updateRestClientEndpoint, updateServerTime } from "../redux/CommonActions";
+import { updateCommonRestClientEndpoint, updateEndpointsLoaded, updateIsConnected, updateNotificationInstance, updateServerTime } from "../redux/CommonActions";
 import { ActionType } from "../redux/Types";
 import "../scss/maintenance.scss";
 
 interface AppPropModel {
     ModulesRestClient: ModulesRestClient;
-    RestClient: CommonRestClient;
+    CommonRestClient: CommonRestClient;
+    DatabasesRestClient: DatabasesRestClient;
+    LogRestClient: LogRestClient;
     IsConnected: boolean;
     ShowWaitDialog: boolean;
     Modules: ServerModuleModel[];
+    EndpointsLoaded: boolean;
 }
 
 interface AppDispatchPropModel {
@@ -55,15 +60,23 @@ interface AppDispatchPropModel {
     onUpdateModuleNotifications?(moduleName: string, notifications: NotificationModel[]): void;
     onUpdateIsConnected?(isConnected: boolean): void;
     onUpdateNotificationSystemInstance?(notificationSystem: NotificationSystem.System): void;
+    onUpdateCommonRestClientAddress?(address: string): void;
+    onUpdateModulesRestClientAddress?(address: string): void;
+    onUpdateDatabasesRestClientAddress?(address: string): void;
+    onUpdateLogRestClientAddress?(address: string): void;
+    onUpdateEnpointsLoaded?(loaded: boolean): void;
 }
 
 const mapStateToProps = (state: AppState): AppPropModel => {
     return {
         ModulesRestClient: state.Modules.RestClient,
-        RestClient: state.Common.RestClient,
+        CommonRestClient: state.Common.RestClient,
+        DatabasesRestClient: state.Databases.RestClient,
+        LogRestClient: state.Log.RestClient,
         IsConnected: state.Common.IsConnected,
         ShowWaitDialog: state.Common.ShowWaitDialog,
         Modules: state.Modules.Modules,
+        EndpointsLoaded: state.Common.EndpointsLoaded
     };
 };
 
@@ -78,7 +91,12 @@ const mapDispatchToProps = (dispatch: React.Dispatch<ActionType<{}>>): AppDispat
         onUpdateModuleHealthState: (moduleName: string, healthState: ModuleServerModuleState) => dispatch(updateHealthState(moduleName, healthState)),
         onUpdateModuleNotifications: (moduleName: string, notifications: NotificationModel[]) => dispatch(updateNotifications(moduleName, notifications)),
         onUpdateIsConnected: (isConnected: boolean) => dispatch(updateIsConnected(isConnected)),
-        onUpdateNotificationSystemInstance: (notificationSystem: NotificationSystem.System)  => dispatch(updateNotificationInstance(notificationSystem)),
+        onUpdateNotificationSystemInstance: (notificationSystem: NotificationSystem.System) => dispatch(updateNotificationInstance(notificationSystem)),
+        onUpdateCommonRestClientAddress: (address: string) => dispatch(updateCommonRestClientEndpoint(address)),
+        onUpdateModulesRestClientAddress: (address: string) => dispatch(updateModulesRestClientEndpoint(address)),
+        onUpdateDatabasesRestClientAddress: (address: string) => dispatch(updateDatabasesRestClientEndpoint(address)),
+        onUpdateLogRestClientAddress: (address: string) => dispatch(updateLogRestClientEndpoint(address)),
+        onUpdateEnpointsLoaded: (loaded: boolean) => dispatch(updateEndpointsLoaded(loaded))
     };
 };
 
@@ -95,19 +113,38 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 
     public componentDidMount(): void {
-        this.updateClockTimer = setInterval(this.clockUpdater, 1000);
-        this.updateLoadAndModulesTimer = setInterval(this.loadAndModulesUpdater, 5000);
+        this.configureServices().then((p) => {
+            this.props.onUpdateEnpointsLoaded(true);
 
-        this.props.RestClient.applicationInfo().then((data) => this.props.onUpdateApplicationInfo(data));
-        this.props.RestClient.hostInfo().then((data) => this.props.onUpdateHostInfo(data));
-        this.props.RestClient.applicationLoad().then((data) => this.props.onUpdateApplicationLoad(data));
-        this.props.RestClient.systemLoad().then((data) => this.props.onUpdateSystemLoad(data));
-        this.props.ModulesRestClient.modules().then((data) => this.props.onUpdateModules(data));
+            this.updateClockTimer = setInterval(this.clockUpdater, 1000);
+            this.updateLoadAndModulesTimer = setInterval(this.loadAndModulesUpdater, 5000);
+
+            this.props.CommonRestClient.applicationInfo().then((data) => this.props.onUpdateApplicationInfo(data));
+            this.props.CommonRestClient.hostInfo().then((data) => this.props.onUpdateHostInfo(data));
+            this.props.CommonRestClient.applicationLoad().then((data) => this.props.onUpdateApplicationLoad(data));
+            this.props.CommonRestClient.systemLoad().then((data) => this.props.onUpdateSystemLoad(data));
+            this.props.ModulesRestClient.modules().then((data) => this.props.onUpdateModules(data));
+        });
     }
 
     public componentWillUnmount(): void {
         clearInterval(this.updateClockTimer);
         clearInterval(this.updateLoadAndModulesTimer);
+    }
+
+    private async configureServices(): Promise<void> {
+        const versionClient: VersionRestClient = new VersionRestClient(window.location.hostname, parseInt(RESTSERVER_PORT, 10));
+        await versionClient.loadEndpoints();
+
+        const commonAddress: string = versionClient.addressByServiceType("ICommonMaintenance");
+        const modulesAddress: string = versionClient.addressByServiceType("IModuleMaintenance");
+        const logAddress: string = versionClient.addressByServiceType("ILogMaintenance");
+        const databasesAddress: string = versionClient.addressByServiceType("IDatabaseMaintenance");
+
+        this.props.onUpdateCommonRestClientAddress(commonAddress);
+        this.props.onUpdateModulesRestClientAddress(modulesAddress);
+        this.props.onUpdateDatabasesRestClientAddress(databasesAddress);
+        this.props.onUpdateLogRestClientAddress(logAddress);
     }
 
     public render(): React.ReactNode {
@@ -190,6 +227,8 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
                         </Collapse>
                     </Navbar>
 
+                    {this.props.EndpointsLoaded &&
+
                     <Container fluid={true} id="body" className="content">
                         <Switch>
                             <Route exact={true} path="/" component={Dashboard} />
@@ -198,6 +237,7 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
                             <Route path="/log" component={Log} />
                         </Switch>
                     </Container>
+                    }
 
                     <Modal isOpen={this.props.ShowWaitDialog}>
                         <ModalHeader tag="h2">Please wait...</ModalHeader>
@@ -229,7 +269,7 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 
     private loadAndModulesUpdater(): void {
-        this.props.RestClient.systemLoad().then((data) => this.props.onUpdateSystemLoad(data));
+        this.props.CommonRestClient.systemLoad().then((data) => this.props.onUpdateSystemLoad(data));
         this.props.Modules.forEach((module) => {
             this.props.ModulesRestClient.healthState(module.Name).then((data) => this.props.onUpdateModuleHealthState(module.Name, data));
             this.props.ModulesRestClient.notifications(module.Name).then((data) => this.props.onUpdateModuleNotifications(module.Name, data));
@@ -237,7 +277,7 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 
     private clockUpdater(): void {
-        this.props.RestClient.serverTime().then((data) => {
+        this.props.CommonRestClient.serverTime().then((data) => {
             if (data.ServerTime === "") {
                 this.props.onUpdateIsConnected(false);
                 return;

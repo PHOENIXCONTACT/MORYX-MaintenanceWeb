@@ -4,18 +4,22 @@
 */
 
 import { ActionType } from "../../common/redux/Types";
-import Config from "../models/Config";
 import { FailureBehaviour } from "../models/FailureBehaviour";
 import { ModuleServerModuleState } from "../models/ModuleServerModuleState";
 import { ModuleStartBehaviour } from "../models/ModuleStartBehaviour";
 import NotificationModel from "../models/NotificationModel";
 import ServerModuleModel from "../models/ServerModuleModel";
 
+export const UPDATE_RESTCLIENT_ENDPOINT = "UPDATE_MODULES_RESTCLIENT_ENDPOINT";
 export const UPDATE_MODULES = "UPDATE_MODULES";
 export const UPDATE_HEALTHSTATE = "UPDATE_HEALTHSTATE";
 export const UPDATE_NOTIFICATIONS = "UPDATE_NOTIFICATIONS";
 export const UPDATE_START_BEHAVIOUR = "UPDATE_START_BEHAVIOUR";
 export const UPDATE_FAILURE_BEHAVIOUR = "UPDATE_FAILURE_BEHAVIOUR";
+
+export function updateModulesRestClientEndpoint(address: string): ActionType<string> {
+    return { type: UPDATE_RESTCLIENT_ENDPOINT, payload: address };
+}
 
 export function updateModules(modules: ServerModuleModel[]): ActionType<ServerModuleModel[]> {
     return { type: UPDATE_MODULES, payload: modules };
