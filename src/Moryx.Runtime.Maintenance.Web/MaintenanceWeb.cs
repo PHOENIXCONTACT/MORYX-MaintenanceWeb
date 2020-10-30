@@ -3,8 +3,6 @@
 
 using Moryx.Container;
 using Moryx.Modules;
-using Moryx.Runtime.Maintenance.Contracts;
-using Moryx.Runtime.Maintenance.Plugins;
 
 namespace Moryx.Runtime.Maintenance.Web
 {

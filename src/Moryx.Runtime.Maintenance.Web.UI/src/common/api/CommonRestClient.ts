@@ -12,22 +12,22 @@ import RestClientBase from "./RestClientBase";
 
 export default class CommonRestClient extends RestClientBase {
     public serverTime(): Promise<ServerTimeResponse> {
-        return this.get<ServerTimeResponse>("/ServerTime", new ServerTimeResponse());
+        return this.get<ServerTimeResponse>("/time", new ServerTimeResponse());
     }
 
     public applicationInfo(): Promise<ApplicationInformationResponse> {
-        return this.get<ApplicationInformationResponse>("/ApplicationInfo", new ApplicationInformationResponse());
-    }
-
-    public hostInfo(): Promise<HostInformationResponse> {
-        return this.get<HostInformationResponse>("/HostInfo", new HostInformationResponse());
-    }
-
-    public systemLoad(): Promise<SystemLoadResponse> {
-        return this.get<SystemLoadResponse>("/SystemLoad", new SystemLoadResponse());
+        return this.get<ApplicationInformationResponse>("/info/application", new ApplicationInformationResponse());
     }
 
     public applicationLoad(): Promise<ApplicationLoadResponse> {
-        return this.get<ApplicationLoadResponse>("/ApplicationLoad", new ApplicationLoadResponse());
+        return this.get<ApplicationLoadResponse>("/info/application/load", new ApplicationLoadResponse());
+    }
+
+    public hostInfo(): Promise<HostInformationResponse> {
+        return this.get<HostInformationResponse>("/info/system", new HostInformationResponse());
+    }
+
+    public systemLoad(): Promise<SystemLoadResponse> {
+        return this.get<SystemLoadResponse>("/info/system/load", new SystemLoadResponse());
     }
 }

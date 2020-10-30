@@ -5,10 +5,8 @@
 
 import InvocationResponse from "../../common/api/responses/InvocationResponse";
 import RestClientBase from "../../common/api/RestClientBase";
-import BackupModel from "../models/BackupModel";
 import DatabaseConfigModel from "../models/DatabaseConfigModel";
 import DataModel from "../models/DataModel";
-import { TestConnectionResult } from "../models/TestConnectionResult";
 import ExecuteSetupRequest from "./requests/ExecuteSetupRequest";
 import RestoreDatabaseRequest from "./requests/RestoreDatabaseRequest";
 import DatabaseUpdateSummary from "./responses/DatabaseUpdateSummary";
@@ -16,50 +14,50 @@ import TestConnectionResponse from "./responses/TestConnectionResponse";
 
 export default class DatabasesRestClient extends RestClientBase {
     public databaseModels(): Promise<DataModel[]> {
-        return this.get<DataModel[]>("/models", []);
+        return this.get<DataModel[]>("/", []);
     }
 
     public deleteAllDatabaseModels(): Promise<InvocationResponse> {
-        return this.deleteNoBody<InvocationResponse>("/models", new InvocationResponse());
+        return this.deleteNoBody<InvocationResponse>("/", new InvocationResponse());
     }
 
     public databaseModel(targetModel: string): Promise<DataModel> {
-        return this.get<DataModel>("/models/"  + targetModel, new DataModel());
+        return this.get<DataModel>("/model/"  + targetModel, new DataModel());
     }
 
     public saveDatabaseConfig(request: DatabaseConfigModel, targetModel: string): Promise<Response> {
-        return this.post<DatabaseConfigModel, Response>("/models/" + targetModel + "/config", request, new Response());
+        return this.post<DatabaseConfigModel, Response>("/model/" + targetModel + "/config", request, new Response());
     }
 
     public testDatabaseConfig(request: DatabaseConfigModel, targetModel: string): Promise<TestConnectionResponse> {
-        return this.post<DatabaseConfigModel, TestConnectionResponse>("/models/" + targetModel + "/config/test", request, new TestConnectionResponse());
+        return this.post<DatabaseConfigModel, TestConnectionResponse>("/model/" + targetModel + "/config/test", request, new TestConnectionResponse());
     }
 
     public createDatabase(request: DatabaseConfigModel, targetModel: string): Promise<InvocationResponse> {
-        return this.post<DatabaseConfigModel, InvocationResponse>("/models/" + targetModel + "/create", request, new InvocationResponse());
+        return this.post<DatabaseConfigModel, InvocationResponse>("/model/" + targetModel + "/create", request, new InvocationResponse());
     }
 
     public eraseDatabase(request: DatabaseConfigModel, targetModel: string): Promise<InvocationResponse> {
-        return this.delete<DatabaseConfigModel, InvocationResponse>("/models/" + targetModel, request, new InvocationResponse());
+        return this.delete<DatabaseConfigModel, InvocationResponse>("/model/" + targetModel, request, new InvocationResponse());
     }
 
     public dumpDatabase(request: DatabaseConfigModel, targetModel: string): Promise<InvocationResponse> {
-        return this.post<DatabaseConfigModel, InvocationResponse>("/models/" + targetModel + "/dump", request, new InvocationResponse());
+        return this.post<DatabaseConfigModel, InvocationResponse>("/model/" + targetModel + "/dump", request, new InvocationResponse());
     }
 
     public restoreDatabase(request: RestoreDatabaseRequest, targetModel: string): Promise<InvocationResponse> {
-        return this.post<RestoreDatabaseRequest, InvocationResponse>("/models/" + targetModel + "/restore", request, new InvocationResponse());
+        return this.post<RestoreDatabaseRequest, InvocationResponse>("/model/" + targetModel + "/restore", request, new InvocationResponse());
     }
 
     public applyMigration(targetModel: string, migrationName: string, request: DatabaseConfigModel): Promise<DatabaseUpdateSummary> {
-        return this.post<DatabaseConfigModel, DatabaseUpdateSummary>("/models/" + targetModel + "/" + migrationName + "/migrate", request, new DatabaseUpdateSummary());
+        return this.post<DatabaseConfigModel, DatabaseUpdateSummary>("/model/" + targetModel + "/" + migrationName + "/migrate", request, new DatabaseUpdateSummary());
     }
 
     public rollbackDatabase(targetModel: string, request: DatabaseConfigModel): Promise<InvocationResponse> {
-        return this.post<DatabaseConfigModel, InvocationResponse>("/models/" + targetModel + "/rollback", request, new InvocationResponse());
+        return this.post<DatabaseConfigModel, InvocationResponse>("/model/" + targetModel + "/rollback", request, new InvocationResponse());
     }
 
     public executeSetup(targetModel: string, request: ExecuteSetupRequest): Promise<InvocationResponse> {
-        return this.post<ExecuteSetupRequest, InvocationResponse>("/models/"  + targetModel + "/setup", request, new InvocationResponse());
+        return this.post<ExecuteSetupRequest, InvocationResponse>("/model/"  + targetModel + "/setup", request, new InvocationResponse());
     }
 }

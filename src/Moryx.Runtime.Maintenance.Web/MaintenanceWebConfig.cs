@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0
 
 using System.Runtime.Serialization;
-using Moryx.Runtime.Maintenance.Contracts;
 using Moryx.Tools.Wcf;
 
 namespace Moryx.Runtime.Maintenance.Web
