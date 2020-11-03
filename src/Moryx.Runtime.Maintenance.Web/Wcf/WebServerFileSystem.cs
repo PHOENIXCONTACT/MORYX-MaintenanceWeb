@@ -10,7 +10,7 @@ using Moryx.Container;
 namespace Moryx.Runtime.Maintenance.Web
 {
     /// <summary>
-    /// Service for the file system. 
+    /// Service for the file system.
     /// </summary>
     [Plugin(LifeCycle.Transient, typeof(IWebServerFileSystem))]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, IncludeExceptionDetailInFaults = true)]
