@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Moryx.Runtime.Maintenance plugin which hosts a HTML5 Maintenance website.</Description>
     <CreatePackage>true</CreatePackage>
   </PropertyGroup>
