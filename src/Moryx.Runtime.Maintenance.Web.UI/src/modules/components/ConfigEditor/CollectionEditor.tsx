@@ -8,8 +8,14 @@ import Icon from "@mdi/react";
 import * as React from "react";
 import { Button, ButtonGroup, Col, Collapse, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Row } from "reactstrap";
 import Entry from "../../models/Entry";
+import { EntryValueType } from "../../models/EntryValueType";
+import BooleanEditor from "./BooleanEditor";
+import ByteEditor from "./ByteEditor";
 import CollapsibleEntryEditorBase, { CollapsibleEntryEditorBasePropModel } from "./CollapsibleEntryEditorBase";
 import ConfigEditor from "./ConfigEditor";
+import EnumEditor from "./EnumEditor";
+import NumberEditor from "./NumberEditor";
+import StringEditor from "./StringEditor";
 
 interface CollectionEditorStateModel {
     SelectedEntry: string;
@@ -74,6 +80,35 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
     }
 
     public preRenderConfigEditor(entry: Entry): React.ReactNode {
+        if (!Entry.isClassOrCollection(entry)) {
+            switch (entry.Value.Type) {
+                case EntryValueType.Byte: {
+                    return (<ByteEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
+                }
+                case EntryValueType.Boolean: {
+                    return (<BooleanEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
+                }
+                case EntryValueType.Int16:
+                case EntryValueType.UInt16:
+                case EntryValueType.Int32:
+                case EntryValueType.UInt32:
+                case EntryValueType.Int64:
+                case EntryValueType.UInt64:
+                case EntryValueType.Single:
+                case EntryValueType.Double: {
+                    return (<NumberEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
+                }
+                case EntryValueType.String: {
+                    return (<StringEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
+                }
+                case EntryValueType.Enum: {
+                    return (<EnumEditor Entry={entry} IsReadOnly={this.props.IsReadOnly} />);
+                }
+            }
+
+            return (<span>Not implemented yet: {entry.Value.Type}</span>);
+        }
+
         return <ConfigEditor ParentEntry={entry}
                              Entries={entry.SubEntries}
                              Root={this.props.Root}
@@ -87,32 +122,52 @@ export default class CollectionEditor extends CollapsibleEntryEditorBase<Collect
                 <Collapse isOpen={this.props.IsExpanded}>
                     <Container fluid={true} className="no-padding up-space down-space">
                         {
-                            this.props.Entry.SubEntries.map((entry, idx) =>
-                                <div key={idx}>
-                                    <Row className="table-row down-space">
-                                        <Col md={6} className="no-padding">{entry.DisplayName}</Col>
-                                        <Col md={6} className="no-padding">
-                                            <ButtonGroup>
-                                                <Button color="secondary" onClick={() => this.props.navigateToEntry(entry)}>
-                                                    <Icon path={mdiFolderOpen} className="icon right-space" />
-                                                    Open
-                                                </Button>
-                                                <Button color="secondary" onClick={() => this.toggleCollapsible(entry.UniqueIdentifier)}>
-                                                    <Icon path={mdiChevronDown} className="icon right-space" />
-                                                    Expand
-                                                </Button>
-                                                <Button color="secondary" onClick={() => this.removeEntry(entry)} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
-                                                    <Icon path={mdiTrashCanOutline} className="icon right-space" />
-                                                    Remove
-                                                </Button>
-                                            </ButtonGroup>
-                                        </Col>
-                                    </Row>
-                                    <Collapse isOpen={this.isExpanded(entry.UniqueIdentifier)}>
-                                        {this.preRenderConfigEditor(entry)}
-                                    </Collapse>
-                                </div>,
-                            )
+                            this.props.Entry.SubEntries.map((entry, idx) => {
+                                if (Entry.isClassOrCollection(entry)) {
+                                    return (
+                                        <div key={idx}>
+                                            <Row className="table-row down-space">
+                                                <Col md={6} className="no-padding">{entry.DisplayName}</Col>
+                                                <Col md={6} className="no-padding">
+                                                    <ButtonGroup>
+                                                        <Button color="secondary" onClick={() => this.props.navigateToEntry(entry)}>
+                                                            <Icon path={mdiFolderOpen} className="icon right-space" />
+                                                            Open
+                                                        </Button>
+                                                        <Button color="secondary" onClick={() => this.toggleCollapsible(entry.UniqueIdentifier)}>
+                                                            <Icon path={mdiChevronDown} className="icon right-space" />
+                                                            Expand
+                                                        </Button>
+                                                        <Button color="secondary" onClick={() => this.removeEntry(entry)} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
+                                                            <Icon path={mdiTrashCanOutline} className="icon right-space" />
+                                                            Remove
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                </Col>
+                                            </Row>
+                                            <Collapse isOpen={this.isExpanded(entry.UniqueIdentifier)}>
+                                                {this.preRenderConfigEditor(entry)}
+                                            </Collapse>
+                                        </div>
+                                    );
+                                } else {
+                                    return (
+                                        <div key={idx}>
+                                            <Row className="table-row down-space">
+                                                <Col md={6} className="no-padding">{this.preRenderConfigEditor(entry)}</Col>
+                                                <Col md={6} className="no-padding">
+                                                    <ButtonGroup>
+                                                        <Button color="secondary" onClick={() => this.removeEntry(entry)} disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}>
+                                                            <Icon path={mdiTrashCanOutline} className="icon right-space" />
+                                                            Remove
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    );
+                                }
+                            })
                         }
                         <Row>
                             <Col md={12} className="no-padding">

@@ -7,6 +7,7 @@ import uuidv1 = require("uuid/v1");
 import Config from "./Config";
 import EntryValidation from "./EntryValidation";
 import EntryValue from "./EntryValue";
+import { EntryValueType } from "./EntryValueType";
 
 export default class Entry {
     public DisplayName: string;
@@ -25,6 +26,10 @@ export default class Entry {
         this.SubEntries = [];
         this.Prototypes = [];
         this.Validation = new EntryValidation();
+    }
+
+    public static isClassOrCollection(entry: Entry): boolean {
+        return entry.Value.Type === EntryValueType.Class || entry.Value.Type === EntryValueType.Collection;
     }
 
     public static entryChain(entry: Entry): Entry[] {
