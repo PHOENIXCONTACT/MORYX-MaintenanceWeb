@@ -7,4 +7,6 @@ export default class AssemblyModel
 {
     Name : string;
     Version : string;
+    FileVersion : string;
+    InformationalVersion : string;
 }
