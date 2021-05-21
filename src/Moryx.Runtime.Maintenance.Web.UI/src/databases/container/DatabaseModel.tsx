@@ -50,7 +50,7 @@ interface DatabaseModelStateModel {
     username: string;
     password: string;
     selectedMigration: string;
-    selectedSetup: string;
+    selectedSetup: number;
     selectedBackup: string;
     testConnectionPending: boolean;
     testConnectionResult: TestConnectionResult;
@@ -67,7 +67,7 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
             username: this.props.DataModel.Config.User,
             password: this.props.DataModel.Config.Password,
             selectedMigration: (this.props.DataModel.AvailableMigrations.length !== 0 ? this.props.DataModel.AvailableMigrations[0].Name : ""),
-            selectedSetup : (this.props.DataModel.Setups.length !== 0 ? this.props.DataModel.Setups[0].Name : ""),
+            selectedSetup : (this.props.DataModel.Setups.length !== 0 ? 0 : -1),
             selectedBackup : (this.props.DataModel.Backups.length !== 0 ? this.props.DataModel.Backups[0].FileName : ""),
             testConnectionPending: false,
             testConnectionResult: TestConnectionResult.ConfigurationError,
@@ -97,7 +97,7 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
     }
 
     public onSelectSetup(e: React.FormEvent<HTMLInputElement>): void {
-        this.setState({selectedSetup: (e.target as HTMLSelectElement).value});
+        this.setState({selectedSetup: (e.target as HTMLSelectElement).selectedIndex});
     }
 
     public onSelectBackup(e: React.FormEvent<HTMLInputElement>): void {
@@ -236,11 +236,13 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
     public onExecuteSetup(): void {
         this.props.onShowWaitDialog(true);
 
-        this.props.RestClient.executeSetup(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Setup: this.props.DataModel.Setups.find((setup: SetupModel) => setup.Name === this.state.selectedSetup) }).then((data) => {
+        const foundSetup = this.props.DataModel.Setups[this.state.selectedSetup];
+
+        this.props.RestClient.executeSetup(this.props.DataModel.TargetModel, { Config: this.createConfigModel(), Setup: foundSetup }).then((data) => {
             this.props.onShowWaitDialog(false);
 
             if (data.Success) {
-                this.props.NotificationSystem.addNotification({ title: "Success", message: "Setup '" + this.state.selectedSetup + "' executed successfully", level: "success", autoDismiss: 5 });
+                this.props.NotificationSystem.addNotification({ title: "Success", message: "Setup '" + foundSetup.Name + "' executed successfully", level: "success", autoDismiss: 5 });
             } else {
                 this.props.NotificationSystem.addNotification({ title: "Error", message: data.ErrorMessage, level: "error", autoDismiss: 5 });
             }
@@ -459,7 +461,7 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                                                     <Col md={12}>
                                                         <Button color="primary"
                                                                 onClick={() => this.onExecuteSetup()}
-                                                                disabled={this.state.selectedSetup === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
+                                                                disabled={this.state.selectedSetup === -1 || this.state.testConnectionResult !== TestConnectionResult.Success}>
                                                             Execute setup
                                                         </Button>
                                                     </Col>
