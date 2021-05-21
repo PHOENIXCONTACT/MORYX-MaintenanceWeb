@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Description>Moryx.Runtime.Maintenance plugin which hosts a HTML5 Maintenance website.</Description>
+    <Description>Web frontend to interact with and configure MORYX applications.</Description>
     <CreatePackage>true</CreatePackage>
+    <PackageTags>MORYX;Web;Runtime;UI;Frontend</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -20,7 +20,7 @@ Root
 |   └ bundle.js - Transpiled application
 |
 └ node_modules
-|   └ Contains alle third libraries that are reference in package.json
+|   └ Contains all third libraries that are reference in package.json
 |
 └ src
 |   └ Application sources
