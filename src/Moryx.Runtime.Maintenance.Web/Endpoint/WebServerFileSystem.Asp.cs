@@ -16,7 +16,7 @@ namespace Moryx.Runtime.Maintenance.Web
     [Plugin(LifeCycle.Transient, typeof(IWebServerFileSystem))]
     [ApiController, Route(Endpoint), Produces("application/json")]
     [Endpoint(Name = nameof(IWebServerFileSystem), Version = "1.0.0")]
-    public class WebServerFileSystem : Controller, IWebServerFileSystem
+    internal class WebServerFileSystem : Controller, IWebServerFileSystem
     {
         internal const string Endpoint = "MaintenanceWeb";
 
@@ -27,7 +27,6 @@ namespace Moryx.Runtime.Maintenance.Web
             AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
         }
 
-        /// <inheritdoc />
         [HttpGet]
         public IActionResult Html()
         {
@@ -35,7 +34,6 @@ namespace Moryx.Runtime.Maintenance.Web
             return File(fs, "text/html");
         }
 
-        /// <inheritdoc />
         [HttpGet("bundle.js")]
         public IActionResult BundleJs()
         {
@@ -43,7 +41,6 @@ namespace Moryx.Runtime.Maintenance.Web
             return File(fs, "text/javascript");
         }
 
-        /// <inheritdoc />
         [HttpGet("favicon.ico")]
         public IActionResult FavIcon()
         {
