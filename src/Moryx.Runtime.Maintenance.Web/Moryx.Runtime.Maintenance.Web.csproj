@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net45;netcoreapp3.1;net5.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>Web frontend to interact with and configure MORYX applications.</Description>
     <CreatePackage>true</CreatePackage>
@@ -13,16 +13,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.ServiceModel" />
-	</ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
+    <DefineConstants>USE_WCF</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' OR '$(TargetFramework)'=='net5.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\index.html" Link="wwwroot\index.html" />
     <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\bundle.js" Link="wwwroot\bundle.js" />
+    <EmbeddedResource Include="..\Moryx.Runtime.Maintenance.Web.UI\dist\favicon.ico" Link="wwwroot\favicon.ico" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,10 @@
 // Licensed under the Apache License, Version 2.0
 
 using System.Runtime.Serialization;
+
+#if USE_WCF
 using Moryx.Tools.Wcf;
+#endif
 
 namespace Moryx.Runtime.Maintenance.Web
 {
@@ -14,10 +17,12 @@ namespace Moryx.Runtime.Maintenance.Web
         /// </summary>
         public MaintenanceWebConfig()
         {
+#if USE_WCF
             ProvidedEndpoint = new HostConfig
             {
                 Endpoint = "MaintenanceWeb",
             };
+#endif
         }
 
         /// <summary>

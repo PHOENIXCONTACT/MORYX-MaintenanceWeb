@@ -1,10 +1,11 @@
 // Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
 // Licensed under the Apache License, Version 2.0
 
+#if USE_WCF
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Moryx.Tools.Wcf;
+using Moryx.Communication.Endpoints;
 
 namespace Moryx.Runtime.Maintenance.Web
 {
@@ -12,7 +13,7 @@ namespace Moryx.Runtime.Maintenance.Web
     /// Service contract for the maintenance file system.
     /// </summary>
     [ServiceContract]
-    [ServiceVersion("1.0.0")]
+    [Endpoint(Name = nameof(IWebServerFileSystem), Version = "1.0.0")]
     internal interface IWebServerFileSystem
     {
         [OperationContract]
@@ -28,3 +29,4 @@ namespace Moryx.Runtime.Maintenance.Web
         Stream FavIcon();
     }
 }
+#endif

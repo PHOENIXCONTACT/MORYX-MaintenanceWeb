@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45</TargetFrameworks>
+    <TargetFrameworks>net45;net5.0</TargetFrameworks>
     <Description>StartProject of the Maintenance.Web. This is for debugging only.</Description>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
@@ -14,6 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moryx.Runtime.Maintenance.Web\Moryx.Runtime.Maintenance.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Moryx.Runtime.Kestrel" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
