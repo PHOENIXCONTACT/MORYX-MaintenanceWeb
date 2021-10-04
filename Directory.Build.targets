@@ -2,7 +2,7 @@
 <Project>
 
   <PropertyGroup>
-    <MoryxPlatformVersion>3.0.0</MoryxPlatformVersion>
+    <MoryxPlatformVersion>3.2.0-dev.338</MoryxPlatformVersion>
   </PropertyGroup>
 
   <Import Project=".build\Common.props" Condition="'$(CreatePackage)' == 'true'" />
@@ -17,6 +17,7 @@
     <!--Platform dependencies-->
     <PackageReference Update="Moryx.Runtime.Maintenance" Version="$(MoryxPlatformVersion)" />
     <PackageReference Update="Moryx.Runtime.Kernel" Version="$(MoryxPlatformVersion)" />
+    <PackageReference Update="Moryx.Runtime.Kestrel" Version="$(MoryxPlatformVersion)" />
   </ItemGroup>
 
 </Project>
