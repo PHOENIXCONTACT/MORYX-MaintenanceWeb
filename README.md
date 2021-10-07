@@ -16,12 +16,12 @@
 
 # MORYX MaintenanceWeb
 
-The **MORYX MaintenanceWeb** project is an web based implementation for maintaining the [MORYX Platform](https://github.com/PHOENIXCONTACT/MORYX-Platform), create databases, manage configuration, and administrate modules.
+The **MORYX MaintenanceWeb** project is an web based implementation for maintaining the [MORYX Core](https://github.com/PHOENIXCONTACT/MORYX-Core), create databases, manage configuration, and administrate modules.
 
 **Links**
 - [Package Feed](https://www.myget.org/feed/Packages/moryx)
 - [Application Skeleton](https://github.com/PHOENIXCONTACT/MORYX-Template)
-- [MORYX Platform](https://github.com/PHOENIXCONTACT/MORYX-Platform)
+- [MORYX Core](https://github.com/PHOENIXCONTACT/MORYX-Core)
 - [MORYX ClientFramework](https://github.com/PHOENIXCONTACT/MORYX-ClientFramework)
 - [MORYX Abstraction Layer](https://github.com/PHOENIXCONTACT/MORYX-AbstractionLayer)
 
