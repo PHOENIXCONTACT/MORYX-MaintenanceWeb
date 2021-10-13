@@ -13,27 +13,27 @@ import AddAppenderResponse from "./responses/AddAppenderResponse";
 
 export default class LogRestClient extends RestClientBase {
     public loggers(): Promise<LoggerModel[]> {
-        return this.get<LoggerModel[]>("/", []);
+        return this.get<LoggerModel[]>("", []);
     }
 
     public addRemoteAppender(name: string, minLevel: LogLevel): Promise<AddAppenderResponse> {
         const request = new AddRemoteAppenderRequest();
         request.MinLevel = minLevel;
         request.Name = name;
-        return this.post<AddRemoteAppenderRequest, AddAppenderResponse>("/appender", request, new AddAppenderResponse());
+        return this.post<AddRemoteAppenderRequest, AddAppenderResponse>("appender", request, new AddAppenderResponse());
     }
 
     public removeRemoteAppender(appenderId: number): Promise<InvocationResponse> {
-        return this.deleteNoBody<InvocationResponse>("/appender/" + appenderId.toString(), new InvocationResponse());
+        return this.deleteNoBody<InvocationResponse>("appender/" + appenderId.toString(), new InvocationResponse());
     }
 
     public messages(appenderId: number): Promise<LogMessageModel[]> {
-        return this.get<LogMessageModel[]>("/appender/" + appenderId.toString(), []);
+        return this.get<LogMessageModel[]>("appender/" + appenderId.toString(), []);
     }
 
     public logLevel(loggerName: string, level: LogLevel): Promise<InvocationResponse> {
         const request = new SetLogLevelRequest();
         request.Level = level;
-        return this.put<SetLogLevelRequest, InvocationResponse>("/logger/" + loggerName + "/loglevel", request, new InvocationResponse());
+        return this.put<SetLogLevelRequest, InvocationResponse>("logger/" + loggerName + "/loglevel", request, new InvocationResponse());
     }
 }
