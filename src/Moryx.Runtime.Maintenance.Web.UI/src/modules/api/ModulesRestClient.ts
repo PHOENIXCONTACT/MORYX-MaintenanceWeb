@@ -14,51 +14,51 @@ import SaveConfigRequest from "./requests/SaveConfigRequest";
 
 export default class ModulesRestClient extends RestClientBase {
     public modules(): Promise<ServerModuleModel[]> {
-        return this.get<ServerModuleModel[]>("/", []);
+        return this.get<ServerModuleModel[]>("", []);
     }
 
     public healthState(moduleName: string): Promise<ModuleServerModuleState> {
-        return this.get<ModuleServerModuleState>("/module/" + moduleName + "/healthstate", ModuleServerModuleState.Failure);
+        return this.get<ModuleServerModuleState>("module/" + moduleName + "/healthstate", ModuleServerModuleState.Failure);
     }
 
     public notifications(moduleName: string): Promise<NotificationModel[]> {
-        return this.get<NotificationModel[]>("/module/" + moduleName + "/notifications", []);
+        return this.get<NotificationModel[]>("module/" + moduleName + "/notifications", []);
     }
 
     public startModule(moduleName: string): Promise<Response> {
-        return this.postNoBody<Response>("/module/" + moduleName + "/start", new Response());
+        return this.postNoBody<Response>("module/" + moduleName + "/start", new Response());
     }
 
     public stopModule(moduleName: string): Promise<Response> {
-        return this.postNoBody<Response>("/module/" + moduleName + "/stop", new Response());
+        return this.postNoBody<Response>("module/" + moduleName + "/stop", new Response());
     }
 
     public reincarnateModule(moduleName: string): Promise<Response> {
-        return this.postNoBody<Response>("/module/" + moduleName + "/reincarnate", new Response());
+        return this.postNoBody<Response>("module/" + moduleName + "/reincarnate", new Response());
     }
 
     public confirmModuleWarning(moduleName: string): Promise<Response> {
-        return this.postNoBody<Response>("/module/" + moduleName + "/confirm", new Response());
+        return this.postNoBody<Response>("module/" + moduleName + "/confirm", new Response());
     }
 
     public updateModule(request: ServerModuleModel): Promise<Response> {
-        return this.post<ServerModuleModel, Response>("/module/" + request.Name, request, new Response());
+        return this.post<ServerModuleModel, Response>("module/" + request.Name, request, new Response());
     }
 
     public moduleConfig(moduleName: string): Promise<Config> {
-        return this.get<Config>("/module/" + moduleName + "/config", new Config());
+        return this.get<Config>("module/" + moduleName + "/config", new Config());
     }
 
     public saveModuleConfig(moduleName: string, request: SaveConfigRequest): Promise<Response> {
-        return this.post<SaveConfigRequest, Response>("/module/" + moduleName + "/config", request, new Response(), ModulesRestClient.entryReplacer);
+        return this.post<SaveConfigRequest, Response>("module/" + moduleName + "/config", request, new Response(), ModulesRestClient.entryReplacer);
     }
 
     public moduleMethods(moduleName: string): Promise<MethodEntry[]> {
-        return this.get<MethodEntry[]>("/module/" + moduleName + "/console", []);
+        return this.get<MethodEntry[]>("module/" + moduleName + "/console", []);
     }
 
     public invokeMethod(moduleName: string, request: MethodEntry): Promise<Entry> {
-        return this.post<MethodEntry, Entry>("/module/" + moduleName + "/console", request, new Entry(), ModulesRestClient.entryReplacer);
+        return this.post<MethodEntry, Entry>("module/" + moduleName + "/console", request, new Entry(), ModulesRestClient.entryReplacer);
     }
 
     private static entryReplacer(key: string, value: any): any {
