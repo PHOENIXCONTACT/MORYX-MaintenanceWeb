@@ -7,5 +7,6 @@ export enum TestConnectionResult {
     ConfigurationError,
     ConnectionError,
     ConnectionOkDbDoesNotExist,
+    PendingMigrations,
     Success,
 }

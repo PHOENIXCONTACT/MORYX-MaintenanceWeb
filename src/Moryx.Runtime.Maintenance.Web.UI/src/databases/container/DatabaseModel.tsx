@@ -3,7 +3,7 @@
  * Licensed under the Apache License, Version 2.0
 */
 
-import { mdiBriefcase, mdiCheck, mdiDatabase, mdiExclamationThick, mdiLoading, mdiPowerPlug, mdiTable} from "@mdi/js";
+import { mdiBriefcase, mdiCheck, mdiDatabase, mdiDatabaseCheck, mdiDatabaseRefresh, mdiExclamationThick, mdiLoading, mdiPowerPlug, mdiTable} from "@mdi/js";
 import Icon from "@mdi/react";
 import * as moment from "moment";
 import * as React from "react";
@@ -20,6 +20,7 @@ import DatabasesRestClient from "../api/DatabasesRestClient";
 import DatabaseConfigModel from "../models/DatabaseConfigModel";
 import DataModel from "../models/DataModel";
 import DbMigrationsModel from "../models/DbMigrationsModel";
+import { MigrationResult } from "../models/MigrationResult";
 import SetupModel from "../models/SetupModel";
 import { TestConnectionResult } from "../models/TestConnectionResult";
 import { updateDatabaseConfig } from "../redux/DatabaseActions";
@@ -49,7 +50,6 @@ interface DatabaseModelStateModel {
     database: string;
     username: string;
     password: string;
-    selectedMigration: string;
     selectedSetup: number;
     selectedBackup: string;
     testConnectionPending: boolean;
@@ -66,7 +66,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
             database: this.props.DataModel.Config.Database,
             username: this.props.DataModel.Config.User,
             password: this.props.DataModel.Config.Password,
-            selectedMigration: (this.props.DataModel.AvailableMigrations.length !== 0 ? this.props.DataModel.AvailableMigrations[0].Name : ""),
             selectedSetup : (this.props.DataModel.Setups.length !== 0 ? 0 : -1),
             selectedBackup : (this.props.DataModel.Backups.length !== 0 ? this.props.DataModel.Backups[0].FileName : ""),
             testConnectionPending: false,
@@ -90,10 +89,6 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
 
     public activeTab(tabId: string): void {
         this.setState({activeTab: tabId});
-    }
-
-    public onSelectMigration(e: React.FormEvent<HTMLInputElement>): void {
-        this.setState({selectedMigration: (e.target as HTMLSelectElement).value});
     }
 
     public onSelectSetup(e: React.FormEvent<HTMLInputElement>): void {
@@ -203,32 +198,19 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
 
-    public onApplyMigration(): void {
+    public onMigrate(): void {
         this.props.onShowWaitDialog(true);
 
-        this.props.RestClient.applyMigration(this.props.DataModel.TargetModel, this.state.selectedMigration, this.createConfigModel()).then((data) => {
+        this.props.RestClient.applyMigration(this.props.DataModel.TargetModel, this.createConfigModel()).then((data) => {
             this.props.onShowWaitDialog(false);
 
-            if (data.WasUpdated) {
+            if (data.Result === MigrationResult.Migrated) {
                 this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
-                this.props.NotificationSystem.addNotification({ title: "Success", message: "Migration applied", level: "success", autoDismiss: 5 });
+                this.props.NotificationSystem.addNotification({ title: "Success", message: "Migrations applied", level: "success", autoDismiss: 5 });
+            } else if (data.Result === MigrationResult.NoMigrationsAvailable) {
+                this.props.NotificationSystem.addNotification({ title: "Error", message: "No migrations available", level: "error", autoDismiss: 5 });
             } else {
-                this.props.NotificationSystem.addNotification({ title: "Error", message: "Migration not applied", level: "error", autoDismiss: 5 });
-            }
-        }).catch((d) => this.props.onShowWaitDialog(false));
-    }
-
-    public onRollbackDatabase(): void {
-        this.props.onShowWaitDialog(true);
-
-        this.props.RestClient.rollbackDatabase(this.props.DataModel.TargetModel, this.createConfigModel()).then((data) => {
-            this.props.onShowWaitDialog(false);
-
-            if (data.Success) {
-                this.props.RestClient.databaseModel(this.props.DataModel.TargetModel).then((databaseConfig) => this.props.onUpdateDatabaseConfig(databaseConfig));
-                this.props.NotificationSystem.addNotification({ title: "Success", message: "Database rollback completed successfully", level: "success", autoDismiss: 5 });
-            } else {
-                this.props.NotificationSystem.addNotification({ title: "Error", message: "Database rollback failed: " + data.ErrorMessage, level: "error", autoDismiss: 5 });
+                this.props.NotificationSystem.addNotification({ title: "Error", message: "Migrations not applied", level: "error", autoDismiss: 5 });
             }
         }).catch((d) => this.props.onShowWaitDialog(false));
     }
@@ -266,7 +248,7 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                             <Icon path={mdiExclamationThick} className="icon-red right-space" />
                             <Icon path={mdiPowerPlug} className="icon-red"/>
                             <UncontrolledTooltip placement="right" target="TestConnectionErrorHint">
-                                Please check host, port and credentials.
+                                The connection to the database could not be established. Please check host, port and credentials.
                             </UncontrolledTooltip>
                         </div>);
             case TestConnectionResult.ConnectionOkDbDoesNotExist:
@@ -275,6 +257,14 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                         <Icon path={mdiDatabase} className="icon-red"/>
                         <UncontrolledTooltip placement="right" target="TestConnectionErrorHint">
                             The connection to the database could be established but the database could not be found. Please check the name of the database or create it before.
+                        </UncontrolledTooltip>
+                    </div>);
+            case TestConnectionResult.PendingMigrations:
+                return (<div style={{display: "inline", color: "red"}} id="TestConnectionErrorHint">
+                        <Icon path={mdiExclamationThick} className="icon-red right-space" />
+                        <Icon path={mdiDatabaseRefresh} className="icon-red"/>
+                        <UncontrolledTooltip placement="right" target="TestConnectionErrorHint">
+                            The connection to the database could be established and the database was found, but there are pending migrations.
                         </UncontrolledTooltip>
                     </div>);
             default:
@@ -380,7 +370,7 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                                     </Button>
                                     <Button color="primary"
                                             onClick={() => this.onEraseDatabase()}
-                                            disabled={this.state.testConnectionResult !== TestConnectionResult.Success}>
+                                            disabled={this.state.testConnectionResult < TestConnectionResult.PendingMigrations}>
                                         Erase database
                                     </Button>
                                 </ButtonGroup>
@@ -390,58 +380,14 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                             <Col md={12}>
                                 <Nav tabs={true}>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab === "1"} className={"selectable"} onClick={() => { this.activeTab("1"); }}>Migrations</NavLink>
+                                        <NavLink active={this.state.activeTab === "1"} className={"selectable"} onClick={() => { this.activeTab("1"); }}>Setups</NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink active={this.state.activeTab === "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Setups</NavLink>
+                                        <NavLink active={this.state.activeTab === "2"} className={"selectable"} onClick={() => { this.activeTab("2"); }}>Migrations</NavLink>
                                     </NavItem>
                                 </Nav>
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        { this.props.DataModel.AvailableMigrations.length !== 0 ?
-                                            (
-                                            <Container fluid={true}>
-                                                <Row>
-                                                    <Col md={12}>
-                                                        <Input type="select" size={10} className="auto-height"
-                                                            onChange={(e: React.FormEvent<HTMLInputElement>) => this.onSelectMigration(e)}>
-                                                        {
-                                                            this.props.DataModel.AvailableMigrations.map((migration, idx) => {
-                                                                const installed = this.props.DataModel.AppliedMigrations.find((installedMigration: DbMigrationsModel) => installedMigration.Name === migration.Name);
-                                                                const option = migration.Name + " (" + (installed ? "Installed" : "Not installed") + ")";
-
-                                                                return (<option key={idx} value={migration.Name}>{option}</option>);
-                                                            })
-                                                        }
-                                                        </Input>
-                                                    </Col>
-                                                </Row>
-                                                <Row className="up-space-lg">
-                                                    <Col md={12}>
-                                                        <ButtonGroup>
-                                                            <Button color="primary"
-                                                                    onClick={() => this.onApplyMigration()}
-                                                                    disabled={this.state.selectedMigration === "" || this.state.testConnectionResult !== TestConnectionResult.Success}>
-                                                                Apply selected migration
-                                                            </Button>
-                                                            <Button color="primary"
-                                                                    onClick={() => this.onRollbackDatabase()}
-                                                                    disabled={this.props.DataModel.AvailableMigrations.length === 0 || this.state.testConnectionResult !== TestConnectionResult.Success}>
-                                                                Rollback all migrations
-                                                            </Button>
-                                                        </ButtonGroup>
-                                                    </Col>
-                                                </Row>
-                                            </Container>
-                                            ) : (
-                                                <Row>
-                                                    <Col>
-                                                        <span className="font-italic">No migrations found.</span>
-                                                    </Col>
-                                                </Row>
-                                            )}
-                                    </TabPane>
-                                    <TabPane tabId="2">
                                         { this.props.DataModel.Setups.length !== 0 ?
                                             (
                                             <Container fluid={true}>
@@ -471,6 +417,39 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                                                 <Row>
                                                     <Col>
                                                         <span className="font-italic">No setups found.</span>
+                                                    </Col>
+                                                </Row>
+                                            )}
+                                    </TabPane>
+                                    <TabPane tabId="2">
+                                        { this.props.DataModel.AvailableMigrations.length !== 0 ?
+                                            (
+                                            <Container fluid={true}>
+                                                <Row>
+                                                    <Col md={12}>
+                                                        <Input type="select" size={10} className="auto-height">
+                                                        {
+                                                            this.props.DataModel.AvailableMigrations.map((migration, idx) => {
+                                                                return (<option key={idx} value={migration.Name}>{migration.Name}</option>);
+                                                            })
+                                                        }
+                                                        </Input>
+                                                    </Col>
+                                                </Row>
+                                                <Row className="up-space-lg">
+                                                    <Col md={12}>
+                                                        <ButtonGroup>
+                                                            <Button color="primary" onClick={() => this.onMigrate()}>
+                                                                Apply migrations
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                            ) : (
+                                                <Row>
+                                                    <Col>
+                                                        <span className="font-italic">No migrations found.</span>
                                                     </Col>
                                                 </Row>
                                             )}

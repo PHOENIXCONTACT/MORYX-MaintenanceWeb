@@ -9,7 +9,7 @@ import DatabaseConfigModel from "../models/DatabaseConfigModel";
 import DataModel from "../models/DataModel";
 import ExecuteSetupRequest from "./requests/ExecuteSetupRequest";
 import RestoreDatabaseRequest from "./requests/RestoreDatabaseRequest";
-import DatabaseUpdateSummary from "./responses/DatabaseUpdateSummary";
+import DatabaseMigrationSummary from "./responses/DatabaseMigrationSummary";
 import TestConnectionResponse from "./responses/TestConnectionResponse";
 
 export default class DatabasesRestClient extends RestClientBase {
@@ -49,12 +49,8 @@ export default class DatabasesRestClient extends RestClientBase {
         return this.post<RestoreDatabaseRequest, InvocationResponse>("model/" + targetModel + "/restore", request, new InvocationResponse());
     }
 
-    public applyMigration(targetModel: string, migrationName: string, request: DatabaseConfigModel): Promise<DatabaseUpdateSummary> {
-        return this.post<DatabaseConfigModel, DatabaseUpdateSummary>("model/" + targetModel + "/" + migrationName + "/migrate", request, new DatabaseUpdateSummary());
-    }
-
-    public rollbackDatabase(targetModel: string, request: DatabaseConfigModel): Promise<InvocationResponse> {
-        return this.post<DatabaseConfigModel, InvocationResponse>("model/" + targetModel + "/rollback", request, new InvocationResponse());
+    public applyMigration(targetModel: string, request: DatabaseConfigModel): Promise<DatabaseMigrationSummary> {
+        return this.post<DatabaseConfigModel, DatabaseMigrationSummary>("model/" + targetModel + "/migrate", request, new DatabaseMigrationSummary());
     }
 
     public executeSetup(targetModel: string, request: ExecuteSetupRequest): Promise<InvocationResponse> {
