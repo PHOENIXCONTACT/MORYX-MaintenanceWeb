@@ -54,13 +54,13 @@ export default class Entry {
         });
     }
 
-    public static cloneFromPrototype(prototype: Entry, parent: Entry): Entry {
-        const entryClone = JSON.parse(JSON.stringify(prototype));
+    public static entryFromPrototype(prototype: Entry, parent: Entry): Entry {
+        const entryPrototype = JSON.parse(JSON.stringify(prototype));
 
-        Config.patchParent(entryClone, parent);
+        Config.patchParent(entryPrototype, parent);
 
-        entryClone.Identifier = "CREATED";
-        Entry.generateUniqueIdentifiers(entryClone);
-        return entryClone;
+        entryPrototype.Identifier = "CREATED";
+        Entry.generateUniqueIdentifiers(entryPrototype);
+        return entryPrototype;
     }
 }
