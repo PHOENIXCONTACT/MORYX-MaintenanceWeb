@@ -97,17 +97,17 @@ export default class ConfigEditor extends React.Component<ConfigEditorPropModel,
                 return;
         }
 
-        const clone = Entry.cloneFromPrototype(prototype, this.props.ParentEntry.Parent);
-        clone.Prototypes = JSON.parse(JSON.stringify(this.props.ParentEntry.Prototypes));
-        clone.DisplayName = this.props.ParentEntry.DisplayName;
-        clone.Identifier = this.props.ParentEntry.Identifier;
+        const entryPrototype = Entry.entryFromPrototype(prototype, this.props.ParentEntry.Parent);
+        entryPrototype.Prototypes = JSON.parse(JSON.stringify(this.props.ParentEntry.Prototypes));
+        entryPrototype.DisplayName = this.props.ParentEntry.DisplayName;
+        entryPrototype.Identifier = this.props.ParentEntry.Identifier;
 
         const subEntries: Entry[] = this.props.ParentEntry.Parent.SubEntries;
 
         const idx = subEntries.indexOf(this.props.ParentEntry);
         if (idx !== -1) {
-            subEntries[idx] = clone;
-            this.setState({SelectedEntryType: clone.Value.Current});
+            subEntries[idx] = entryPrototype;
+            this.setState({SelectedEntryType: entryPrototype.Value.Current});
             this.props.navigateToEntry(this.props.ParentEntry);
         }
     }
