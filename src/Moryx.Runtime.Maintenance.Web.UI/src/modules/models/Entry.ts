@@ -54,13 +54,20 @@ export default class Entry {
         });
     }
 
+    /**
+     * @deprecated It should be replaced by entryFromPrototype after the major release
+     */
     public static cloneFromPrototype(prototype: Entry, parent: Entry): Entry {
-        const entryClone = JSON.parse(JSON.stringify(prototype));
+        return Entry.entryFromPrototype(prototype, parent);
+    }
 
-        Config.patchParent(entryClone, parent);
+    public static entryFromPrototype(prototype: Entry, parent: Entry): Entry {
+        const entryPrototype = JSON.parse(JSON.stringify(prototype));
 
-        entryClone.Identifier = "CREATED";
-        Entry.generateUniqueIdentifiers(entryClone);
-        return entryClone;
+        Config.patchParent(entryPrototype, parent);
+
+        entryPrototype.Identifier = "CREATED";
+        Entry.generateUniqueIdentifiers(entryPrototype);
+        return entryPrototype;
     }
 }
