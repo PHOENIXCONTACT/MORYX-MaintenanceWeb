@@ -22,7 +22,7 @@ env:
 
 jobs:
   Build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps: 
       - uses: actions/checkout@v2
 
@@ -53,7 +53,7 @@ jobs:
 
   Documentation:
     needs: [Build]
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
 
@@ -71,7 +71,7 @@ jobs:
   Publish:
     needs: [Build]
     if: (github.event_name == 'push')
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
 
