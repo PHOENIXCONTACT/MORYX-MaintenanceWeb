@@ -29,7 +29,7 @@ export function updateIsConnected(isConnected: boolean): ActionType<boolean> {
     return { type: UPDATE_IS_CONNECTED, payload: isConnected };
 }
 
-export function updateNotificationInstance(notificationSystem: NotificationSystem.System): ActionType<NotificationSystem.System> {
+export function updateNotificationInstance(notificationSystem: NotificationSystem): ActionType<NotificationSystem> {
     return { type: UPDATE_NOTIFICATION_INSTANCE, payload: notificationSystem };
 }
 

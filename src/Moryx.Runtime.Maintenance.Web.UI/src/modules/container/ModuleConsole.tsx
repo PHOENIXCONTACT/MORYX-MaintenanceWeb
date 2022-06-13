@@ -22,7 +22,7 @@ import MethodEntry from "../models/MethodEntry";
 interface ModuleConsolePropModel {
     RestClient?: ModulesRestClient;
     ModuleName: string;
-    NotificationSystem: NotificationSystem.System;
+    NotificationSystem: NotificationSystem;
 }
 
 interface ModuleConsoleDispatchPropsModel {

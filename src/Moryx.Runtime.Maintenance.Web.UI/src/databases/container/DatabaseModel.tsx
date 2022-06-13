@@ -27,7 +27,7 @@ import { updateDatabaseConfig } from "../redux/DatabaseActions";
 interface DatabaseModelPropsModel {
     RestClient: DatabasesRestClient;
     DataModel: DataModel;
-    NotificationSystem: NotificationSystem.System;
+    NotificationSystem: NotificationSystem;
 }
 
 interface DatabaseModelDispatchPropsModel {

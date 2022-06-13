@@ -18,7 +18,7 @@ import Entry from "../models/Entry";
 interface ModuleConfigurationPropModel {
     RestClient?: ModulesRestClient;
     ModuleName: string;
-    NotificationSystem: NotificationSystem.System;
+    NotificationSystem: NotificationSystem;
 }
 
 interface ModuleConfigurationStateModel {

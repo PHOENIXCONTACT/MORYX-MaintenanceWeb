@@ -23,7 +23,7 @@ import DatabaseModel from "./DatabaseModel";
 interface DatabasesPropsModel {
     RestClient?: DatabasesRestClient;
     DatabaseConfigs?: DataModel[];
-    NotificationSystem?: NotificationSystem.System;
+    NotificationSystem?: NotificationSystem;
 }
 
 interface DatabasesDispatchPropModel {
