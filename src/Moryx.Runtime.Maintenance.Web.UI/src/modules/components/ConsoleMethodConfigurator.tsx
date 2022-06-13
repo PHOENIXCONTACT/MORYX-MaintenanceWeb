@@ -71,4 +71,4 @@ class ConsoleMethodConfigurator extends React.Component<ConsoleMethodConfigurato
     }
 }
 
-export default withRouter<ConsoleMethodConfiguratorPropModel & RouteComponentProps<{}>>(ConsoleMethodConfigurator);
+export default withRouter<ConsoleMethodConfiguratorPropModel & RouteComponentProps<{}>, React.ComponentType<any>>(ConsoleMethodConfigurator);

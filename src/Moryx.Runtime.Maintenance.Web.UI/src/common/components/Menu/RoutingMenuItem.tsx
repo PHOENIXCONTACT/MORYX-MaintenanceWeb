@@ -101,4 +101,4 @@ class RoutingMenuItem extends React.Component<RouteComponentProps<{}> & MenuItem
     }
 }
 
-export default withRouter<RouteComponentProps<{}> & MenuItemProps>(RoutingMenuItem);
+export default withRouter<RouteComponentProps<{}> & MenuItemProps, React.ComponentType<any>>(RoutingMenuItem);

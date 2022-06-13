@@ -117,4 +117,4 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
     }
 }
 
-export default withRouter<ModuleConfigurationPropModel & RouteComponentProps<{}>>(ModuleConfiguration);
+export default withRouter<ModuleConfigurationPropModel & RouteComponentProps<{}>, React.ComponentType<any>>(ModuleConfiguration);

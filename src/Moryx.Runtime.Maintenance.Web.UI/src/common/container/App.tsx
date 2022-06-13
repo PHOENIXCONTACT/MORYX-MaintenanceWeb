@@ -294,4 +294,4 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 }
 
-export default withRouter<RouteComponentProps<{}>>(connect<AppPropModel, AppDispatchPropModel>(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter<RouteComponentProps<{}>, React.ComponentType<any>>(connect<AppPropModel, AppDispatchPropModel>(mapStateToProps, mapDispatchToProps)(App));
