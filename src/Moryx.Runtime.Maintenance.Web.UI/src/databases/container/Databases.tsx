@@ -84,7 +84,7 @@ class Database extends React.Component<DatabasesPropsModel & DatabasesDispatchPr
         let idx = 0;
 
         this.props.DatabaseConfigs.forEach((model) => {
-            routes.push(<Route key={idx} path={"/databases/" + model.TargetModel} exact={true} render={() => <DatabaseModel DataModel={model} RestClient={this.props.RestClient} NotificationSystem={this.props.NotificationSystem}>{model.TargetModel}</DatabaseModel>}/>);
+            routes.push(<Route key={idx} path={"/databases/" + model.TargetModel} exact={true} render={() => <DatabaseModel DataModel={model} RestClient={this.props.RestClient} NotificationSystem={this.props.NotificationSystem} />}/>);
             ++idx;
         });
 
