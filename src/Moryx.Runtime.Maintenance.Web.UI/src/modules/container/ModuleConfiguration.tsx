@@ -18,7 +18,7 @@ import Entry from "../models/Entry";
 interface ModuleConfigurationPropModel {
     RestClient?: ModulesRestClient;
     ModuleName: string;
-    NotificationSystem: NotificationSystem.System;
+    NotificationSystem: NotificationSystem;
 }
 
 interface ModuleConfigurationStateModel {
@@ -117,4 +117,4 @@ class ModuleConfiguration extends React.Component<ModuleConfigurationPropModel &
     }
 }
 
-export default withRouter<ModuleConfigurationPropModel & RouteComponentProps<{}>>(ModuleConfiguration);
+export default withRouter<ModuleConfigurationPropModel & RouteComponentProps<{}>, React.ComponentType<any>>(ModuleConfiguration);

@@ -27,7 +27,7 @@ import { updateLoggers } from "../redux/LogActions";
 interface LogPropsModel {
     RestClient?: LogRestClient;
     Loggers?: LoggerModel[];
-    NotificationSystem?: NotificationSystem.System;
+    NotificationSystem?: NotificationSystem;
 }
 
 interface LogDispatchPropModel {

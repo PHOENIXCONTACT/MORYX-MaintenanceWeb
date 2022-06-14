@@ -59,7 +59,7 @@ interface AppDispatchPropModel {
     onUpdateModuleHealthState?(moduleName: string, healthState: ModuleServerModuleState): void;
     onUpdateModuleNotifications?(moduleName: string, notifications: NotificationModel[]): void;
     onUpdateIsConnected?(isConnected: boolean): void;
-    onUpdateNotificationSystemInstance?(notificationSystem: NotificationSystem.System): void;
+    onUpdateNotificationSystemInstance?(notificationSystem: NotificationSystem): void;
     onUpdateCommonRestClientAddress?(address: string): void;
     onUpdateModulesRestClientAddress?(address: string): void;
     onUpdateDatabasesRestClientAddress?(address: string): void;
@@ -91,7 +91,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<ActionType<{}>>): AppDispat
         onUpdateModuleHealthState: (moduleName: string, healthState: ModuleServerModuleState) => dispatch(updateHealthState(moduleName, healthState)),
         onUpdateModuleNotifications: (moduleName: string, notifications: NotificationModel[]) => dispatch(updateNotifications(moduleName, notifications)),
         onUpdateIsConnected: (isConnected: boolean) => dispatch(updateIsConnected(isConnected)),
-        onUpdateNotificationSystemInstance: (notificationSystem: NotificationSystem.System) => dispatch(updateNotificationInstance(notificationSystem)),
+        onUpdateNotificationSystemInstance: (notificationSystem: NotificationSystem) => dispatch(updateNotificationInstance(notificationSystem)),
         onUpdateCommonRestClientAddress: (address: string) => dispatch(updateCommonRestClientEndpoint(address)),
         onUpdateModulesRestClientAddress: (address: string) => dispatch(updateModulesRestClientEndpoint(address)),
         onUpdateDatabasesRestClientAddress: (address: string) => dispatch(updateDatabasesRestClientEndpoint(address)),
@@ -103,7 +103,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<ActionType<{}>>): AppDispat
 class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDispatchPropModel> {
     private updateClockTimer: NodeJS.Timeout;
     private updateLoadAndModulesTimer: NodeJS.Timeout;
-    private notificationSystem: NotificationSystem.System = null;
+    private notificationSystem: NotificationSystem = null;
 
     constructor(props: AppPropModel & RouteComponentProps<{}> & AppDispatchPropModel) {
         super(props);
@@ -148,7 +148,7 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 
     public render(): React.ReactNode {
-        const ref = (instance: NotificationSystem.System) => {
+        const ref = (instance: NotificationSystem) => {
             if (this.notificationSystem == null) {
                 this.notificationSystem = instance;
                 this.props.onUpdateNotificationSystemInstance(instance);
@@ -294,4 +294,4 @@ class App extends React.Component<AppPropModel & RouteComponentProps<{}> & AppDi
     }
 }
 
-export default withRouter<RouteComponentProps<{}>>(connect<AppPropModel, AppDispatchPropModel>(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter<RouteComponentProps<{}>, React.ComponentType<any>>(connect<AppPropModel, AppDispatchPropModel>(mapStateToProps, mapDispatchToProps)(App));
