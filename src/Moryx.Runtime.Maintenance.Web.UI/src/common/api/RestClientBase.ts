@@ -9,7 +9,9 @@ export default class RestClientBase {
     private url: string;
 
     constructor(host: string, port: number) {
-        this.url = `http://${host}:${port}`;
+       /* this.url = `https://${host}:${port}`;*/
+        this.url = `${window.location.protocol}//${host}:${port}`;
+
     }
 
     public updateUrl(url: string): void {
