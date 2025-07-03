@@ -9,9 +9,22 @@ export default class RestClientBase {
     private url: string;
 
     constructor(host: string, port: number) {
-       /* this.url = `https://${host}:${port}`;*/
-        this.url = `${window.location.protocol}//${host}:${port}`;
+        let protocol: string;
 
+        // Wenn das Protokoll im Browser verfügbar ist
+        if (typeof window !== "undefined" && window.location.protocol) {
+            protocol = window.location.protocol.replace(":", ""); // "http" oder "https"
+        }
+        // Fallback, falls kein Protokoll gesetzt wurde und hoffentlich der Port passt
+        if (!protocol) {
+            protocol = (port === 443 || port === 444) ? "https" : "http";
+        }
+        // Setzen des Ports 443 explizit. Das passiert bei https wenn der Browser den Port als default https Port weg lässt.
+        // Alle anderen für https genutzen Ports (wie z.b. 444) werden wieder normal übergeben.
+        if ((port <= 0 || isNaN(port) || port === 80) && protocol === "https") {
+            port = 443;
+        }
+        this.url = `${protocol}://${host}:${port}`;
     }
 
     public updateUrl(url: string): void {
