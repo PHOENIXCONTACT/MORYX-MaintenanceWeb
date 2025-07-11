@@ -28,7 +28,7 @@ interface ModulesPropModel {
     RestClient: ModulesRestClient;
     Modules: ServerModuleModel[];
     Configs: IConfig[];
-    NotificationSystem?: NotificationSystem;
+    NotificationSystem?: NotificationSystem.System;
 }
 
 interface ModulesDispatchPropModel {

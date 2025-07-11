@@ -22,14 +22,14 @@ env:
 
 jobs:
   Build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps: 
       - uses: actions/checkout@v2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 10.x
+          node-version: 12.22.x
 
       - name: Build HTML
         shell: pwsh
@@ -45,7 +45,7 @@ jobs:
         run: ./Build.ps1 -Build -Pack
 
       - name: Upload package artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: artifacts/Packages/
@@ -53,7 +53,7 @@ jobs:
 
   Documentation:
     needs: [Build]
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
 
@@ -62,7 +62,7 @@ jobs:
         run: ./Build.ps1 -GenerateDocs
 
       - name: Upload documentation results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: artifacts/Documentation/
@@ -71,7 +71,7 @@ jobs:
   Publish:
     needs: [Build]
     if: (github.event_name == 'push')
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
 

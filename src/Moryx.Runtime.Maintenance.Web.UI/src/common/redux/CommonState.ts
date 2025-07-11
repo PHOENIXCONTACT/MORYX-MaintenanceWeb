@@ -14,7 +14,7 @@ export interface CommonState {
     ServerTime: string;
     RestClient: CommonRestClient;
     ShowWaitDialog: boolean;
-    NotificationSystem: NotificationSystem;
+    NotificationSystem: NotificationSystem.System;
     EndpointsLoaded: boolean;
 }
 
@@ -43,7 +43,7 @@ export function getCommonReducer(state: CommonState = initialCommonState, action
         return { ...state, IsConnected: action.payload as boolean };
     }
     case UPDATE_NOTIFICATION_INSTANCE: {
-        return { ...state, NotificationSystem: action.payload as NotificationSystem };
+        return { ...state, NotificationSystem: action.payload as NotificationSystem.System };
     }
     case UPDATE_SHOW_WAIT_DIALOG: {
         return { ...state, ShowWaitDialog: action.payload as boolean };

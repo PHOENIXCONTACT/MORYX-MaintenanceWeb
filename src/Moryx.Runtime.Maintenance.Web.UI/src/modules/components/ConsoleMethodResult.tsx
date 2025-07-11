@@ -68,4 +68,4 @@ class ConsoleMethodResult extends React.Component<ConsoleMethodResultPropModel &
     }
 }
 
-export default withRouter<ConsoleMethodResultPropModel & RouteComponentProps<{}>, React.ComponentType<any>>(ConsoleMethodResult);
+export default withRouter<ConsoleMethodResultPropModel & RouteComponentProps<{}>>(ConsoleMethodResult);
