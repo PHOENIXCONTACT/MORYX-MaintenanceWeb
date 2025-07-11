@@ -15,7 +15,7 @@ import { AppState, getAppReducer, initialAppState } from "./common/redux/AppStat
 import { ActionType } from "./common/redux/Types";
 
 export const history = createHashHistory();
-const store = createStore<AppState, ActionType<{}>, any, any>(getAppReducer);
+const store = createStore<AppState, ActionType<{}>, any, any>(getAppReducer, initialAppState);
 
 ReactDOM.render(
     <Provider store={store}>
