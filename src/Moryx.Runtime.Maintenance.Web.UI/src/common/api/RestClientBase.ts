@@ -22,9 +22,10 @@ export default class RestClientBase {
         // Setzen des Ports 443 explizit. Das passiert bei https wenn der Browser den Port als default https Port weg lässt.
         // Alle anderen für https genutzen Ports (wie z.b. 444) werden wieder normal übergeben.
         if ((port <= 0 || isNaN(port) || port === 80) && protocol === "https") {
-            port = 443;
+            this.url = `${protocol}://${host}:443`;
+        } else {
+            this.url = `${protocol}://${host}:${port}`;
         }
-        this.url = `${protocol}://${host}:${port}`;
     }
 
     public updateUrl(url: string): void {
