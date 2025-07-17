@@ -3,31 +3,33 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
-    branches:
+    branches: 
       - dev
+      - future
     tags:
       - v[0-9]+.[0-9]+.[0-9]+ # Matches all semantic versioning tags with major, minor, patch
   pull_request:
-    branches:
+    branches: 
       - dev
+      - future
 
 env:
   MORYX_OPTIMIZE_CODE: "false"
   MORYX_BUILD_CONFIG: "Release"
   MORYX_BUILDNUMBER: ${{github.run_number}}
-  dotnet_sdk_version: '5.0.100'
+  dotnet_sdk_version: '5.0.403'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 jobs:
   Build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps: 
       - uses: actions/checkout@v2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 10.x
+          node-version: 12.22.x
 
       - name: Build HTML
         shell: pwsh
@@ -43,7 +45,7 @@ jobs:
         run: ./Build.ps1 -Build -Pack
 
       - name: Upload package artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: artifacts/Packages/
@@ -51,7 +53,7 @@ jobs:
 
   Documentation:
     needs: [Build]
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
 
@@ -60,7 +62,7 @@ jobs:
         run: ./Build.ps1 -GenerateDocs
 
       - name: Upload documentation results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: artifacts/Documentation/
@@ -69,7 +71,7 @@ jobs:
   Publish:
     needs: [Build]
     if: (github.event_name == 'push')
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
 
@@ -79,18 +81,27 @@ jobs:
           dotnet-version: ${{ env.dotnet_sdk_version }}
   
       - name: Download package artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: packages
           path: artifacts/Packages/
 
-      - name: Publish on MyGet
-        if: ${{ startsWith(github.ref, 'refs/heads/') }} # Normal branches are published to myget
+      - name: Publish on MyGet-CI
+        if: ${{ github.ref == 'refs/heads/dev' }} # dev branche is published to myget moryx
         shell: pwsh
         env:
           MORYX_NUGET_APIKEY: ${{secrets.MYGET_TOKEN}}
           MORYX_PACKAGE_TARGET: "https://www.myget.org/F/moryx/api/v2/package"
           MORYX_PACKAGE_TARGET_V3: "https://www.myget.org/F/moryx/api/v3/index.json"
+        run: ./Build.ps1 -Publish
+
+      - name: Publish on MyGet-Future
+        if: ${{ github.ref == 'refs/heads/future' }} # Future branch is published to myget moryx-future
+        shell: pwsh
+        env:
+          MORYX_NUGET_APIKEY: ${{secrets.MYGET_TOKEN}}
+          MORYX_PACKAGE_TARGET: "https://www.myget.org/F/moryx-future/api/v2/package"
+          MORYX_PACKAGE_TARGET_V3: "https://www.myget.org/F/moryx-future/api/v3/index.json"
         run: ./Build.ps1 -Publish
 
       - name: Publish on NuGet
