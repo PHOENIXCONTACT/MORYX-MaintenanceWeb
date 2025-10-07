@@ -5,6 +5,7 @@
 
 import * as React from "react";
 import { Input } from "reactstrap";
+import { EntryUnitType } from "../../models/EntryUnitType";
 import { InputEditorBasePropModel } from "./InputEditorBase";
 import SelectionEditorBase from "./SelectionEditorBase";
 
@@ -14,7 +15,7 @@ export default class StringEditor extends SelectionEditorBase {
     }
 
     private preRenderInput(): React.ReactNode {
-        return (<Input type={this.props.Entry.Validation.IsPassword ? "password" : "text"}
+        return (<Input type={this.props.Entry.Value.UnitType === EntryUnitType.Password ? "password" : "text"}
                         onChange={(e: React.FormEvent<HTMLInputElement>) => this.onValueChange(e, this.props.Entry)}
                         placeholder={"Please enter a string ..."}
                         disabled={this.props.Entry.Value.IsReadOnly || this.props.IsReadOnly}
