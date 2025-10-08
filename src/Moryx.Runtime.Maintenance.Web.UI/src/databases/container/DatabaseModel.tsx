@@ -160,6 +160,10 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
     }
 
     public onEraseDatabase(): void {
+        if (confirm("Do you really want to delete the entire database?") == false) {
+            return;
+        }
+
         this.props.onShowWaitDialog(true);
 
         this.props.RestClient.eraseDatabase(this.createConfigModel(), this.props.DataModel.TargetModel).then((data) => {
@@ -366,24 +370,34 @@ class DatabaseModel extends React.Component<DatabaseModelPropsModel & DatabaseMo
                             </Col>
                         </Row>
                         <Row className="up-space-lg">
+                            <Col md={6}/>
                             <Col md={6}>
-                                <h3>Migration &amp; Setup</h3>
+                                <Container fluid={true}>
+                                    <Row>
+                                        <h3>Database</h3>
+                                    </Row>
+                                    <Row>
+                                        <Col md={12}>
+                                            <ButtonGroup>
+                                                <Button color="primary"
+                                                        onClick={() => this.onCreateDatabase()}
+                                                        disabled={this.state.testConnectionResult !== TestConnectionResult.ConnectionOkDbDoesNotExist}>
+                                                    Create database
+                                                </Button>
+                                                <Button color="primary"
+                                                        onClick={() => this.onEraseDatabase()}
+                                                        disabled={this.state.testConnectionResult !== TestConnectionResult.Success}>
+                                                    Erase database
+                                                </Button>
+                                            </ButtonGroup>
+                                        </Col>
+                                    </Row>
+                                </Container>
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className="up-space-lg">
                             <Col md={6}>
-                                <ButtonGroup>
-                                    <Button color="primary"
-                                            onClick={() => this.onCreateDatabase()}
-                                            disabled={this.state.testConnectionResult !== TestConnectionResult.ConnectionOkDbDoesNotExist}>
-                                        Create database
-                                    </Button>
-                                    <Button color="primary"
-                                            onClick={() => this.onEraseDatabase()}
-                                            disabled={this.state.testConnectionResult !== TestConnectionResult.Success}>
-                                        Erase database
-                                    </Button>
-                                </ButtonGroup>
+                                <h3>Migration &amp; Setup</h3>
                             </Col>
                         </Row>
                         <Row className="up-space-lg">
